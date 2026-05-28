@@ -1,0 +1,53 @@
+# Copyright (C) 2026 The Qt Company Ltd.
+# SPDX-License-Identifier: BSD-3-Clause
+
+qt_internal_add_module(Versit
+    PLUGIN_TYPES versit
+    SOURCES
+        qversitcontactexporter.cpp
+        qversitcontactexporter_p.cpp
+        qversitcontacthandler.cpp
+        qversitcontactimporter.cpp
+        qversitcontactimporter_p.cpp
+        qversitcontactpluginloader_p.cpp
+        qversitdocument.cpp
+        qversitdocument_p.cpp
+        qversitdocumentwriter_p.cpp
+        qversitproperty.cpp
+        qversitreader.cpp
+        qversitreader_p.cpp
+        qversitresourcehandler.cpp
+        qversitutils.cpp
+        qversitwriter.cpp
+        qversitwriter_p.cpp
+        qvcard21writer.cpp
+        qvcard30writer.cpp
+        qvcardrestorehandler_p.cpp
+        qversitcontactexporter.h
+        qversitcontacthandler.h
+        qversitcontactimporter.h
+        qversitdocument.h
+        qversitglobal.h
+        qversitproperty.h
+        qversitreader.h
+        qversitresourcehandler.h
+        qversitwriter.h
+        qversitcontactexporter_p.h
+        qversitcontactimporter_p.h
+        qversitcontactpluginloader_p.h
+        qversitcontactsdefs_p.h
+        qversitdefs_p.h
+        qversitdocument_p.h
+        qversitdocumentwriter_p.h
+        qversitpluginsearch_p.h
+        qversitproperty_p.h
+        qversitreader_p.h
+        qversitutils_p.h
+        qversitwriter_p.h
+        qvcard21writer_p.h
+        qvcard30writer_p.h
+        qvcardrestorehandler_p.h
+    PUBLIC_LIBRARIES
+        Qt::Contacts
+        Qt::Core
+)
