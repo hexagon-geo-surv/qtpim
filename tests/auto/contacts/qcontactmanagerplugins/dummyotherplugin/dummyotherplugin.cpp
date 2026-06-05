@@ -19,8 +19,7 @@ class BoringFactory : public QObject, public BoringInterface
 {
     Q_OBJECT
     Q_INTERFACES(BoringInterface)
+    Q_PLUGIN_METADATA(IID "REALLYBORING!")
 };
-
-Q_EXPORT_PLUGIN2(contacts_testotherdummy, BoringFactory);
 
 #include "dummyotherplugin.moc"

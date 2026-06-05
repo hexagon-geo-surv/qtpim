@@ -8,6 +8,8 @@
 #include <QtCore/qobject.h>
 #include <QtCore/qstringlist.h>
 
+#include <utility>
+
 #include <QtContacts/qcontact.h>
 #include <QtContacts/qcontactcollection.h>
 #include <QtContacts/qcontactid.h>
@@ -140,7 +142,7 @@ Q_SIGNALS:
     void collectionsAdded(const QList<QContactCollectionId> &collectionIds);
     void collectionsChanged(const QList<QContactCollectionId> &collectionIds);
     void collectionsRemoved(const QList<QContactCollectionId> &collectionIds);
-    void collectionsModified(const QList<QPair<QContactCollectionId, QContactManager::Operation> > &collectionIds);
+    void collectionsModified(const QList<std::pair<QContactCollectionId, QContactManager::Operation> > &collectionIds);
 
 protected:
     void connectNotify(const QMetaMethod &signal) override;

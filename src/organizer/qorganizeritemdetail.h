@@ -1,5 +1,6 @@
 // Copyright (C) 2026 The Qt Company Ltd.
 // SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// Qt-Security score:significant reason:default
 
 #ifndef QORGANIZERITEMDETAIL_H
 #define QORGANIZERITEMDETAIL_H
@@ -76,7 +77,7 @@ protected:
     QOrganizerItemDetail &assign(const QOrganizerItemDetail &other, DetailType expectedDetailType);
 
 private:
-    friend Q_ORGANIZER_EXPORT size_t qHash(const QOrganizerItemDetail &key);
+    friend Q_ORGANIZER_EXPORT size_t qHash(const QOrganizerItemDetail &key, size_t seed) noexcept;
     friend class QOrganizerItem;
     friend class QOrganizerItemDetailPrivate;
 
@@ -87,7 +88,11 @@ private:
     QSharedDataPointer<QOrganizerItemDetailPrivate> d;
 };
 
-Q_ORGANIZER_EXPORT size_t qHash(const QOrganizerItemDetail &key);
+Q_ORGANIZER_EXPORT size_t qHash(const QOrganizerItemDetail &key, size_t seed = 0) noexcept;
+
+inline size_t qHash(QOrganizerItemDetail::DetailType key, size_t seed = 0) noexcept
+{ return ::qHash(static_cast<int>(key), seed); }
+
 #ifndef QT_NO_DATASTREAM
 Q_ORGANIZER_EXPORT QDataStream &operator<<(QDataStream &out, const QOrganizerItemDetail &detail);
 Q_ORGANIZER_EXPORT QDataStream &operator>>(QDataStream &in, QOrganizerItemDetail &detail);

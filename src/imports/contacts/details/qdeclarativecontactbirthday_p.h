@@ -40,7 +40,7 @@ public:
         connect(this, SIGNAL(valueChanged()), SIGNAL(detailChanged()));
     }
 
-    DetailType detailType() const
+    DetailType detailType() const override
     {
         return QDeclarativeContactDetail::Birthday;
     }

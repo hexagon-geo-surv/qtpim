@@ -32,7 +32,7 @@ public:
     {
         QStringList managerNames = QOrganizerManager::availableManagers();
 
-        foreach(const QString& mgr, managerNames) {
+        for (const QString& mgr : managerNames) {
             // Don't bother with these
             if (mgr == "memory" || mgr == "invalid" || mgr == "testdummy" || mgr == "maliciousplugin" || mgr == "skeleton")
                 continue;
@@ -44,7 +44,7 @@ public:
                 QList<QOrganizerItem> items = cm->itemsForExport(QDateTime(), QDateTime(), QOrganizerItemFilter());
                 savedItems.insert(cm->managerName(),items);
                 QList<QOrganizerItemId> ids;
-                foreach(const QOrganizerItem& item, items)
+                for (const QOrganizerItem& item : items)
                     ids.append(item.id());
                 cm->removeItems(ids);
                 delete cm;
@@ -54,7 +54,7 @@ public:
 
     ~QOrganizerManagerDataHolder()
     {
-        foreach(const QString& mgrUri, savedItems.keys()) {
+        for (const QString& mgrUri : savedItems.keys()) {
             QOrganizerManager* cm = QOrganizerManager::fromUri(mgrUri);
             if (cm) {
                 qDebug() << "Restoring items for" << mgrUri;

@@ -98,7 +98,7 @@ public:
         Q_UNUSED(which);
         QSet<QContactActionTarget> retn;
         QList<QContactDetail> intDets = contact.details("IntegerDefinition");
-        foreach (const QContactDetail& det, intDets) {
+        for (const QContactDetail& det : intDets) {
             if (det.variantValue("IntegerField").isValid()) {
                 QContactActionTarget curr(contact, det);
                 retn << curr;

@@ -114,10 +114,10 @@ size_t qHash(const QVersitDocument &key)
     size_t hash = QT_PREPEND_NAMESPACE(qHash)(key.type());
     hash += QT_PREPEND_NAMESPACE(qHash)(key.componentType());
     hash += key.properties().length() + key.subDocuments().length();
-    foreach (const QVersitProperty& property, key.properties()) {
+    for (const QVersitProperty& property : key.properties()) {
         hash += qHash(property);
     }
-    foreach (const QVersitDocument& nested, key.subDocuments()) {
+    for (const QVersitDocument& nested : key.subDocuments()) {
         hash += qHash(nested);
     }
     return hash;
@@ -127,10 +127,10 @@ size_t qHash(const QVersitDocument &key)
 QDebug operator<<(QDebug dbg, const QVersitDocument& document)
 {
     dbg.nospace() << "QVersitDocument(" << document.type() << ", " << document.componentType() << ')';
-    foreach (const QVersitProperty& property, document.properties()) {
+    for (const QVersitProperty& property : document.properties()) {
         dbg.space() << '\n' << property;
     }
-    foreach (const QVersitDocument& nested, document.subDocuments()) {
+    for (const QVersitDocument& nested : document.subDocuments()) {
         dbg.space() << '\n' << nested;
     }
     return dbg.maybeSpace();

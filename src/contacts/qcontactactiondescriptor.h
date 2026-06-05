@@ -62,10 +62,10 @@ private:
 #ifndef QT_NO_DEBUG_STREAM
     Q_CONTACTS_EXPORT friend QDebug& operator<<(QDebug dbg, const QContactActionDescriptor& descriptor);
 #endif
-    Q_CONTACTS_EXPORT friend size_t qHash(const QContactActionDescriptor& key);
+    Q_CONTACTS_EXPORT friend size_t qHash(const QContactActionDescriptor& key, size_t seed) noexcept;
 };
 
-Q_CONTACTS_EXPORT size_t qHash(const QContactActionDescriptor& key);
+Q_CONTACTS_EXPORT size_t qHash(const QContactActionDescriptor& key, size_t seed = 0) noexcept;
 #ifndef QT_NO_DEBUG_STREAM
 Q_CONTACTS_EXPORT QDebug& operator<<(QDebug dbg, const QContactActionDescriptor& descriptor);
 #endif

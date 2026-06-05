@@ -5,10 +5,8 @@
 
 #include <QtCore/qbuffer.h>
 #include <QtCore/qregularexpression.h>
+#include <QtCore/qstringconverter.h>
 #include <QtCore/qvariant.h>
-#include <QtCore/qurl.h>
-
-#include <QTextCodec>
 
 #include "qversitproperty.h"
 #include "qversitutils_p.h"
@@ -42,10 +40,8 @@ void QVCard30Writer::encodeVersitProperty(const QVersitProperty& property)
     encodeGroupsAndName(modifiedProperty);
 
     QVariant variant(modifiedProperty.variantValue());
-    if (variant.metaType().id() == QMetaType::QByteArray) {
+    if (variant.type() == QVariant::ByteArray) {
         modifiedProperty.insertParameter(QStringLiteral("ENCODING"), QStringLiteral("b"));
-    } else if (variant.metaType().id() == QMetaType::QUrl) {
-        variant = QVariant(variant.toUrl().toString());
     }
     encodeParameters(modifiedProperty.parameters());
     writeString(QStringLiteral(":"));
@@ -58,18 +54,18 @@ void QVCard30Writer::encodeVersitProperty(const QVersitProperty& property)
         QBuffer buffer(&data);
         buffer.open(QIODevice::WriteOnly);
         QVCard30Writer subWriter(mType);
-        subWriter.setCodec(mCodec);
+        subWriter.setEncoding(mEncoding);
         subWriter.setDevice(&buffer);
         subWriter.encodeVersitDocument(embeddedDocument);
-        QString documentString(mCodec->toUnicode(data));
+        QString documentString(QStringDecoder(mEncoding)(data));
         backSlashEscape(&documentString);
         renderedValue = documentString;
-    } else if (variant.metaType().id() == QMetaType::QString) {
+    } else if (variant.type() == QVariant::String) {
         renderedValue = variant.toString();
         if (property.valueType() != QVersitProperty::PreformattedType) {
             backSlashEscape(&renderedValue);
         }
-    } else if (variant.metaType().id() == QMetaType::QStringList) {
+    } else if (variant.type() == QVariant::StringList) {
         // We need to backslash escape and concatenate the values in the list
         QStringList values = property.variantValue().toStringList();
         QString separator;
@@ -84,7 +80,7 @@ void QVCard30Writer::encodeVersitProperty(const QVersitProperty& property)
             separator = QStringLiteral(",");
         }
         bool first = true;
-        foreach (QString value, values) {
+        for (QString value : values) {
             if (!(value.isEmpty() && property.valueType() == QVersitProperty::ListType)) {
                 if (!first) {
                     renderedValue += separator;
@@ -94,11 +90,13 @@ void QVCard30Writer::encodeVersitProperty(const QVersitProperty& property)
                 first = false;
             }
         }
-    } else if (variant.metaType().id() == QMetaType::QByteArray) {
+    } else if (variant.type() == QVariant::ByteArray) {
         if (mCodecIsAsciiCompatible) // optimize by not converting to unicode
             renderedBytes = variant.toByteArray().toBase64();
         else
             renderedValue = QLatin1String(variant.toByteArray().toBase64().data());
+    } else if (variant.metaType() == QMetaType::fromType<QUrl>()) {
+        renderedValue = variant.value<QUrl>().toString();
     }
 
     if (renderedBytes.isEmpty())
@@ -116,7 +114,7 @@ void QVCard30Writer::encodeParameters(const QMultiHash<QString,QString>& paramet
     // Sort the parameter names to yield deterministic ordering
     QList<QString> names = parameters.uniqueKeys();
     std::sort(names.begin(), names.end());
-    foreach (QString nameString, names) {
+    for (QString nameString : names) {
         writeString(QStringLiteral(";"));
         QStringList values = parameters.values(nameString);
         backSlashEscape(&nameString);
@@ -141,17 +139,17 @@ void QVCard30Writer::encodeParameters(const QMultiHash<QString,QString>& paramet
  */
 void QVCard30Writer::backSlashEscape(QString* text)
 {
-    static const QString m1(QStringLiteral("([;,\\\\])"));
+    static const QRegularExpression re1(QStringLiteral("([;,\\\\])"));
     static const QString r1(QStringLiteral("\\\\1"));
-    static const QString m2(QStringLiteral("\r\n|\r|\n"));
+    static const QRegularExpression re2(QStringLiteral("\r\n|\r|\n"));
     static const QString r2(QStringLiteral("\\n"));
     /* replaces ; with \;
                 , with \,
                 \ with \\
      */
-    text->replace(QRegularExpression(m1), r1);
+    text->replace(re1, r1);
     // replaces any CRLFs with \n
-    text->replace(QRegularExpression(m2), r2);
+    text->replace(re2, r2);
 }
 
 QT_END_NAMESPACE_VERSIT

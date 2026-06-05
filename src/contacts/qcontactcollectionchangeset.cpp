@@ -6,6 +6,8 @@
 
 #include "qcontactmanagerengine.h"
 
+#include <utility>
+
 QT_BEGIN_NAMESPACE_CONTACTS
 
 /*!
@@ -84,7 +86,7 @@ QSet<QContactCollectionId> QContactCollectionChangeSet::addedCollections() const
 void QContactCollectionChangeSet::insertAddedCollection(const QContactCollectionId &collectionId)
 {
     d->m_addedCollections.insert(collectionId);
-    d->m_modifiedCollections.append(QPair<QContactCollectionId, QContactManager::Operation>(collectionId, QContactManager::Add));
+    d->m_modifiedCollections.append(std::make_pair(collectionId, QContactManager::Add));
 }
 
 /*!
@@ -93,9 +95,9 @@ void QContactCollectionChangeSet::insertAddedCollection(const QContactCollection
  */
 void QContactCollectionChangeSet::insertAddedCollections(const QList<QContactCollectionId> &collectionIds)
 {
-    foreach (const QContactCollectionId &id, collectionIds) {
+    for (const QContactCollectionId &id : collectionIds) {
         d->m_addedCollections.insert(id);
-        d->m_modifiedCollections.append(QPair<QContactCollectionId, QContactManager::Operation>(id, QContactManager::Add));
+        d->m_modifiedCollections.append(std::make_pair(id, QContactManager::Add));
     }
 }
 
@@ -122,7 +124,7 @@ QSet<QContactCollectionId> QContactCollectionChangeSet::changedCollections() con
 void QContactCollectionChangeSet::insertChangedCollection(const QContactCollectionId &collectionId)
 {
     d->m_changedCollections.insert(collectionId);
-    d->m_modifiedCollections.append(QPair<QContactCollectionId, QContactManager::Operation>(collectionId, QContactManager::Change));
+    d->m_modifiedCollections.append(std::make_pair(collectionId, QContactManager::Change));
 }
 
 /*!
@@ -131,9 +133,9 @@ void QContactCollectionChangeSet::insertChangedCollection(const QContactCollecti
  */
 void QContactCollectionChangeSet::insertChangedCollections(const QList<QContactCollectionId> &collectionIds)
 {
-    foreach (const QContactCollectionId &id, collectionIds) {
+    for (const QContactCollectionId &id : collectionIds) {
         d->m_changedCollections.insert(id);
-        d->m_modifiedCollections.append(QPair<QContactCollectionId, QContactManager::Operation>(id, QContactManager::Change));
+        d->m_modifiedCollections.append(std::make_pair(id, QContactManager::Change));
     }
 }
 
@@ -160,7 +162,7 @@ QSet<QContactCollectionId> QContactCollectionChangeSet::removedCollections() con
 void QContactCollectionChangeSet::insertRemovedCollection(const QContactCollectionId &collectionId)
 {
     d->m_removedCollections.insert(collectionId);
-    d->m_modifiedCollections.append(QPair<QContactCollectionId, QContactManager::Operation>(collectionId, QContactManager::Remove));
+    d->m_modifiedCollections.append(std::make_pair(collectionId, QContactManager::Remove));
 }
 
 /*!
@@ -169,9 +171,9 @@ void QContactCollectionChangeSet::insertRemovedCollection(const QContactCollecti
  */
 void QContactCollectionChangeSet::insertRemovedCollections(const QList<QContactCollectionId> &collectionIds)
 {
-    foreach (const QContactCollectionId &id, collectionIds) {
+    for (const QContactCollectionId &id : collectionIds) {
         d->m_removedCollections.insert(id);
-        d->m_modifiedCollections.append(QPair<QContactCollectionId, QContactManager::Operation>(id, QContactManager::Remove));
+        d->m_modifiedCollections.append(std::make_pair(id, QContactManager::Remove));
     }
 }
 
@@ -188,7 +190,7 @@ void QContactCollectionChangeSet::clearRemovedCollections()
     the database. The list includes information about which database operation was done. The ids and
     operations are ordered so that the first operation is first in the list.
  */
-QList<QPair<QContactCollectionId, QContactManager::Operation> > QContactCollectionChangeSet::modifiedCollections() const
+QList<std::pair<QContactCollectionId, QContactManager::Operation> > QContactCollectionChangeSet::modifiedCollections() const
 {
     return d->m_modifiedCollections;
 }
@@ -226,11 +228,11 @@ void QContactCollectionChangeSet::emitSignals(QContactManagerEngine *engine) con
         emit engine->dataChanged();
     } else {
         if (!d->m_addedCollections.isEmpty())
-            emit engine->collectionsAdded(d->m_addedCollections.values());
+            emit engine->collectionsAdded(QList<QContactCollectionId>(d->m_addedCollections.begin(), d->m_addedCollections.end()));
         if (!d->m_changedCollections.isEmpty())
-            emit engine->collectionsChanged(d->m_changedCollections.values());
+            emit engine->collectionsChanged(QList<QContactCollectionId>(d->m_changedCollections.begin(), d->m_changedCollections.end()));
         if (!d->m_removedCollections.isEmpty())
-            emit engine->collectionsRemoved(d->m_removedCollections.values());
+            emit engine->collectionsRemoved(QList<QContactCollectionId>(d->m_removedCollections.begin(), d->m_removedCollections.end()));
         if (!d->m_modifiedCollections.isEmpty())
             emit engine->collectionsModified(d->m_modifiedCollections);
 

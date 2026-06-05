@@ -4,9 +4,7 @@
 #include "qversitdocumentwriter_p.h"
 
 #include <QtCore/qiodevice.h>
-#include <QtCore/qbytearray.h>
-
-#include <QTextCodec>
+#include <QtCore/qstringconverter.h>
 
 #include "qversitutils_p.h"
 
@@ -29,10 +27,11 @@ QT_BEGIN_NAMESPACE_VERSIT
  */
 QVersitDocumentWriter::QVersitDocumentWriter(QVersitDocument::VersitType type)
     : mType(type),
-    mDevice(0),
-    mCodec(0),
+    mDevice(nullptr),
+    mEncoding(QStringConverter::Utf8),
     mCodecIsAscii(false),
-    mEncoder(0),
+    mCodecIsAsciiCompatible(true),
+    mEncoder(QStringConverter::Utf8),
     mSuccessful(true),
     mCurrentLineLength(0)
 {
@@ -40,26 +39,22 @@ QVersitDocumentWriter::QVersitDocumentWriter(QVersitDocument::VersitType type)
 
 QVersitDocumentWriter::~QVersitDocumentWriter()
 {
-    if (mEncoder)
-        delete mEncoder;
 }
 
 /*!
-  Sets the codec to write with.
+  Sets the encoding to write with.
   */
-void QVersitDocumentWriter::setCodec(QTextCodec *codec)
+void QVersitDocumentWriter::setEncoding(QStringConverter::Encoding encoding)
 {
-    if (mEncoder)
-        delete mEncoder;
-    mCodec = codec;
-    mEncoder = codec->makeEncoder(mCodec->name() == QByteArrayLiteral("UTF-8")
-                ? QStringConverterBase::Flag::Default
-                : QStringConverterBase::Flag::WriteBom);
+    mEncoding = encoding;
+    // Create encoder without BOM - for UTF-8 the BOM is not added by default
+    mEncoder = QStringEncoder(encoding);
 
-    // UTF-(16|32)(LE|BE) are the only codecs where characters in the base64 range aren't encoded
-    // the same as in ASCII.  For ASCII compatible codecs, we can do some optimizations.
-    mCodecIsAsciiCompatible = !(mCodec->name().startsWith("UTF-16")
-                             || mCodec->name().startsWith("UTF-32"));
+    // UTF-16 and UTF-32 are the only encodings where characters in the base64 range aren't encoded
+    // the same as in ASCII.  For ASCII-compatible encodings, we can do some optimizations.
+    mCodecIsAsciiCompatible = (encoding == QStringConverter::Utf8
+                               || encoding == QStringConverter::Latin1
+                               || encoding == QStringConverter::System);
 }
 
 /*!
@@ -117,12 +112,12 @@ bool QVersitDocumentWriter::encodeVersitDocument(const QVersitDocument& document
         }
     }
 
-    foreach (const QVersitProperty& property, document.properties()) {
+    for (const QVersitProperty& property : document.properties()) {
         encodeVersitProperty(property);
     }
 
-    foreach (const QVersitDocument& document, document.subDocuments()) {
-        encodeVersitDocument(document, false);
+    for (const QVersitDocument& subDoc : document.subDocuments()) {
+        encodeVersitDocument(subDoc, false);
     }
 
     if (document.componentType().isEmpty()) {
@@ -187,18 +182,16 @@ void QVersitDocumentWriter::writeString(const QString &value)
     QString crlfSpace(QStringLiteral("\r\n "));
     while (spaceRemaining < value.length() - charsWritten) {
         // Write the first "spaceRemaining" characters
-        QStringView line(value.constData() + charsWritten, spaceRemaining);
+        QString line = value.mid(charsWritten, spaceRemaining);
         charsWritten += spaceRemaining;
-        const QByteArray encodedLine = mEncoder->fromUnicode(line.constData(), line.length());
-        const QByteArray encodedCrlfSpace = mEncoder->fromUnicode(crlfSpace);
-        if (mDevice->write(encodedLine) < 0 || mDevice->write(encodedCrlfSpace) < 0)
+        if (mDevice->write(mEncoder.encode(line)) < 0
+               || mDevice->write(mEncoder.encode(crlfSpace)) < 0)
             mSuccessful = false;
         spaceRemaining = MAX_LINE_LENGTH - 1; // minus 1 for the space at the front.
         mCurrentLineLength = 1;
     }
 
-    const QByteArray encodedRemainder = mEncoder->fromUnicode(value.mid(charsWritten));
-    if (mDevice->write(encodedRemainder) < 0)
+    if (mDevice->write(mEncoder.encode(value.mid(charsWritten))) < 0)
         mSuccessful = false;
     mCurrentLineLength += value.length() - charsWritten;
 }
@@ -222,17 +215,17 @@ void QVersitDocumentWriter::writeStringQp(const QString &value)
         } else if (value[charsWritten + spaceRemaining - 1] == QLatin1Char('=')) {
             spaceRemaining -= 1;
         }
-        QStringView line(value.constData() + charsWritten, spaceRemaining);
+        QString line = value.mid(charsWritten, spaceRemaining);
 
         charsWritten += spaceRemaining;
-        if (mDevice->write(mEncoder->fromUnicode(line.constData(), line.length())) < 0
-               || mDevice->write(mEncoder->fromUnicode(softBreak)) < 0)
+        if (mDevice->write(mEncoder.encode(line)) < 0
+               || mDevice->write(mEncoder.encode(softBreak)) < 0)
             mSuccessful = false;
         spaceRemaining = MAX_LINE_LENGTH - 1; // minus 1 for the equals required at the end
         mCurrentLineLength = 0;
     }
 
-    if (mDevice->write(mEncoder->fromUnicode(value.mid(charsWritten))) < 0)
+    if (mDevice->write(mEncoder.encode(value.mid(charsWritten))) < 0)
         mSuccessful = false;
     mCurrentLineLength += value.length() - charsWritten;
 }

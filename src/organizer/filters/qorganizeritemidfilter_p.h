@@ -33,7 +33,7 @@ public:
     {
     }
 
-    virtual bool compare(const QOrganizerItemFilterPrivate *other) const override
+    bool compare(const QOrganizerItemFilterPrivate *other) const override
     {
         const QOrganizerItemIdFilterPrivate *od = static_cast<const QOrganizerItemIdFilterPrivate *>(other);
         if (od)

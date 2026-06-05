@@ -428,7 +428,7 @@ QContactCollectionId QContactManagerEngine::defaultCollectionId() const
     \c QContactManager::DoesNotExistError.
 
 */
-QContactCollection QContactManagerEngine::collection(const QContactCollectionId& collectionId, QContactManager::Error* error) const
+QContactCollection QContactManagerEngine::collection(const QContactCollectionId& collectionId, QContactManager::Error* error)
 {
     Q_UNUSED(collectionId);
     *error = QContactManager::NotSupportedError;
@@ -439,7 +439,7 @@ QContactCollection QContactManagerEngine::collection(const QContactCollectionId&
     This function should be reimplemented to support synchronous calls to fetch all the collections
     managed by this backend. Any errors encountered during this operation should be stored to \a error.
  */
-QList<QContactCollection> QContactManagerEngine::collections(QContactManager::Error* error) const
+QList<QContactCollection> QContactManagerEngine::collections(QContactManager::Error* error)
 {
     *error = QContactManager::NotSupportedError;
     return QList<QContactCollection>();
@@ -651,9 +651,9 @@ bool QContactManagerEngine::isFilterSupported(const QContactFilter& filter) cons
 /*!
   Returns the list of data types supported by this engine.
  */
-QList<QMetaType::Type> QContactManagerEngine::supportedDataTypes() const
+QList<QVariant::Type> QContactManagerEngine::supportedDataTypes() const
 {
-    return QList<QMetaType::Type>();
+    return QList<QVariant::Type>();
 }
 
 /*!
@@ -1080,7 +1080,7 @@ static inline int compareStrings(const QString& left, const QString& right, Qt::
 
 /*!
   Compares \a first against \a second.  If the types are
-  strings (QMetaType::QString), the \a sensitivity argument controls
+  strings (QVariant::String), the \a sensitivity argument controls
   case sensitivity when comparing.  Also, when comparing strings,
   a locale aware comparison is used, and if the sensitivity is
   CaseSensitive, strings that are identical under a case insensitive
@@ -1112,70 +1112,69 @@ static inline int compareStrings(const QString& left, const QString& right, Qt::
  */
 int QContactManagerEngine::compareVariant(const QVariant& first, const QVariant& second, Qt::CaseSensitivity sensitivity)
 {
-    switch (first.metaType().id()) {
-        case QMetaType::Int:
+    switch(first.type()) {
+        case QVariant::Int:
             {
                 const int a = first.toInt();
                 const int b = second.toInt();
                 return (a < b) ? -1 : ((a == b) ? 0 : 1);
             }
 
-        case QMetaType::LongLong:
+        case QVariant::LongLong:
             {
                 const qlonglong a = first.toLongLong();
                 const qlonglong b = second.toLongLong();
                 return (a < b) ? -1 : ((a == b) ? 0 : 1);
             }
 
-        case QMetaType::Bool:
-        case QMetaType::UInt:
+        case QVariant::Bool:
+        case QVariant::UInt:
             {
                 const uint a = first.toUInt();
                 const uint b = second.toUInt();
                 return (a < b) ? -1 : ((a == b) ? 0 : 1);
             }
 
-        case QMetaType::ULongLong:
+        case QVariant::ULongLong:
             {
                 const qulonglong a = first.toULongLong();
                 const qulonglong b = second.toULongLong();
                 return (a < b) ? -1 : ((a == b) ? 0 : 1);
             }
 
-        case QMetaType::Char: // Needs to do proper string comparison
-        case QMetaType::QChar:
-        case QMetaType::QString:
+        case QVariant::Char: // Needs to do proper string comparison
+        case QVariant::String:
             return compareStrings(first.toString(), second.toString(), sensitivity);
 
-        case QMetaType::Double:
+        case QVariant::Double:
             {
                 const double a = first.toDouble();
                 const double b = second.toDouble();
                 return (a < b) ? -1 : ((a == b) ? 0 : 1);
             }
 
-        case QMetaType::QDateTime:
+        case QVariant::DateTime:
             {
                 const QDateTime a = first.toDateTime();
                 const QDateTime b = second.toDateTime();
                 return (a < b) ? -1 : ((a == b) ? 0 : 1);
             }
 
-        case QMetaType::QDate:
+        case QVariant::Date:
             {
                 const QDate a = first.toDate();
                 const QDate b = second.toDate();
                 return (a < b) ? -1 : ((a == b) ? 0 : 1);
             }
 
-        case QMetaType::QTime:
+        case QVariant::Time:
             {
                 const QTime a = first.toTime();
                 const QTime b = second.toTime();
                 return (a < b) ? -1 : ((a == b) ? 0 : 1);
             }
 
-        case QMetaType::QStringList:
+        case QVariant::StringList:
             {
                 // We don't actually sort on these, I hope
                 // {} < {"aa"} < {"aa","bb"} < {"aa", "cc"} < {"bb"}
@@ -1492,7 +1491,7 @@ bool QContactManagerEngine::testFilter(const QContactFilter &filter, const QCont
                 allRelationships = contact.relationships();
 
                 // now check to see if we have a match.
-                foreach (const QContactRelationship& rel, allRelationships) {
+                for (const QContactRelationship &rel : allRelationships) {
                     // perform the matching.
                     if (rf.relatedContactRole() == QContactRelationship::Second) { // this is the role of the related contact; ie, to match, contact must be the first in the relationship.
                         if ((rf.relationshipType().isEmpty() || rel.relationshipType() == rf.relationshipType())
@@ -1651,7 +1650,7 @@ void QContactManagerEngine::setContactRelationships(QContact* contact, const QLi
  */
 int QContactManagerEngine::compareContact(const QContact& a, const QContact& b, const QList<QContactSortOrder>& sortOrders)
 {
-    foreach(const QContactSortOrder& sortOrder, sortOrders) {
+    for (const QContactSortOrder &sortOrder : sortOrders) {
         if (!sortOrder.isValid())
             break;
 
@@ -1683,10 +1682,10 @@ int QContactManagerEngine::compareContact(const QContact& a, const QContact& b, 
         bool bIsNull = false;
 
         // treat empty strings as null qvariants.
-        if ((aVal.metaType().id() == QMetaType::QString && aVal.toString().isEmpty()) || aVal.isNull()) {
+        if ((aVal.type() == QVariant::String && aVal.toString().isEmpty()) || aVal.isNull()) {
             aIsNull = true;
         }
-        if ((bVal.metaType().id() == QMetaType::QString && bVal.toString().isEmpty()) || bVal.isNull()) {
+        if ((bVal.type() == QVariant::String && bVal.toString().isEmpty()) || bVal.isNull()) {
             bIsNull = true;
         }
 
@@ -1752,7 +1751,7 @@ QList<QContactId> QContactManagerEngine::sortContacts(const QList<QContact>& cs,
         std::stable_sort(sortedContacts.begin(), sortedContacts.end(), lessThan);
     }
 
-    foreach(const QContact& c, sortedContacts) {
+    for (const QContact &c : sortedContacts) {
         sortedIds.append(c.id());
     }
     return sortedIds;
@@ -2293,7 +2292,7 @@ bool QContactManagerEngine::saveContacts(QList<QContact> *contacts, const QList<
         // Prepare the list to save
         QList<QContact> contactsToSave;
         QList<int> savedToOriginalMap; // contactsToSave index to contacts index
-        QSet<QContactDetail::DetailType> mask(typeMask.begin(), typeMask.end());
+        QSet<QContactDetail::DetailType> mask(typeMask.cbegin(), typeMask.cend());
 
         for (int i = 0; i < contacts->count(); i++) {
             // See if this is an existing contact or a new one
@@ -2319,9 +2318,9 @@ bool QContactManagerEngine::saveContacts(QList<QContact> *contacts, const QList<
             // Now copy in the details from the arguments
             const QContact& c = contacts->at(i);
 
-            foreach (QContactDetail::DetailType type, mask) {
+            for (QContactDetail::DetailType type : mask) {
                 QList<QContactDetail> details = c.details(type);
-                foreach(QContactDetail detail, details) {
+                for (QContactDetail detail : details) {
                     contactToSave.saveDetail(&detail);
                 }
             }
@@ -2446,6 +2445,6 @@ void QContactManagerEngine::updateContactFetchByIdRequest(QContactFetchByIdReque
 #endif
 }
 
-QT_END_NAMESPACE_CONTACTS
-
 #include "moc_qcontactmanagerengine.cpp"
+
+QT_END_NAMESPACE_CONTACTS

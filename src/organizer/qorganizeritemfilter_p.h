@@ -35,7 +35,7 @@
 
 #define Q_IMPLEMENT_ORGANIZERITEMFILTER_VIRTUALCTORS(Class, Type) \
     QOrganizerItemFilterPrivate* clone() const override { return new Class##Private(*this); } \
-    virtual QOrganizerItemFilter::FilterType type() const override {return Type;} \
+    QOrganizerItemFilter::FilterType type() const override {return Type;} \
     static void copyIfPossible(QSharedDataPointer<QOrganizerItemFilterPrivate>& d_ptr, const QOrganizerItemFilter& other) \
     { \
         if (other.type() == Type) \

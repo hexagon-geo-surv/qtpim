@@ -35,7 +35,7 @@ public:
     {
     }
 
-    virtual bool compare(const QOrganizerItemFilterPrivate *other) const override
+    bool compare(const QOrganizerItemFilterPrivate *other) const override
     {
         const QOrganizerItemCollectionFilterPrivate *od = static_cast<const QOrganizerItemCollectionFilterPrivate *>(other);
         if (od)
@@ -63,7 +63,7 @@ public:
     QDebug &debugStreamOut(QDebug &dbg) const override
     {
         dbg.nospace() << "QOrganizerItemCollectionFilter(collectionIds=";
-        QList<QOrganizerCollectionId> ids(m_ids.values());
+        QList<QOrganizerCollectionId> ids(m_ids.cbegin(), m_ids.cend());
         std::sort(ids.begin(), ids.end());
         dbg.nospace() << ids;
         dbg.nospace() << ")";

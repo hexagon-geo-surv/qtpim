@@ -401,7 +401,7 @@ bool QOrganizerItem::operator==(const QOrganizerItem &other) const
     }
 
     QList<QOrganizerItemDetail> searchList(d->m_details);
-    foreach (const QOrganizerItemDetail &detail, other.d->m_details) {
+    for (const QOrganizerItemDetail &detail : other.d->m_details) {
         if (!searchList.removeOne(detail))
             return false;
     }
@@ -418,7 +418,7 @@ size_t qHash(const QOrganizerItem &key)
 {
     size_t hash = qHash(key.id());
     hash += qHash(key.collectionId());
-    foreach (const QOrganizerItemDetail &detail, key.details())
+    for (const QOrganizerItemDetail &detail : key.details())
         hash += qHash(detail);
     return hash;
 }
@@ -431,7 +431,7 @@ size_t qHash(const QOrganizerItem &key)
 QDebug operator<<(QDebug dbg, const QOrganizerItem &item)
 {
     dbg.nospace() << "QOrganizerItem(" << item.id() << ") in collection(" << item.collectionId() << ")";
-    foreach (const QOrganizerItemDetail& detail, item.details())
+    for (const QOrganizerItemDetail &detail : item.details())
         dbg.space() << '\n' << detail;
     return dbg.maybeSpace();
 }
@@ -567,7 +567,7 @@ void QOrganizerItem::clearComments()
 void QOrganizerItem::setComments(const QStringList &comments)
 {
     d->removeOnly(QOrganizerItemDetail::TypeComment);
-    foreach (const QString &comment, comments)
+    for (const QString &comment : comments)
         addComment(comment);
 }
 
@@ -619,7 +619,7 @@ void QOrganizerItem::addTag(const QString &tag)
 void QOrganizerItem::setTags(const QStringList &tags)
 {
     d->removeOnly(QOrganizerItemDetail::TypeTag);
-    foreach (const QString &tag, tags)
+    for (const QString &tag : tags)
         addTag(tag);
 }
 

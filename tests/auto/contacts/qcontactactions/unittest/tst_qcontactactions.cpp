@@ -45,7 +45,7 @@ tst_QContactActions::tst_QContactActions()
 
     // clean up any actions/services.
     QStringList allServices = sm.findServices();
-    foreach(const QString& serv, allServices) {
+    for (const QString& serv : allServices) {
         if (serv.startsWith("tst_qcontact")) {
             if (!sm.removeService(serv)) {
                 qDebug() << " tst_qca: ctor: cleaning up test service" << serv << "failed:" << sm.error();
@@ -67,7 +67,7 @@ tst_QContactActions::~tst_QContactActions()
     // clean up any actions/services.
     QServiceManager sm;
     QStringList allServices = sm.findServices();
-    foreach(const QString& serv, allServices) {
+    for (const QString& serv : allServices) {
         if (serv.startsWith("tst_qcontact")) {
             if (!sm.removeService(serv)) {
                 qDebug() << " tst_qca: ctor: cleaning up test service" << serv << "failed:" << sm.error();

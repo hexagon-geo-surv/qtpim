@@ -51,7 +51,7 @@ public:
         setDetail(QContactGlobalPresence());
         connect(this, SIGNAL(valueChanged()), SIGNAL(detailChanged()));
     }
-    DetailType detailType() const
+    DetailType detailType() const override
     {
         return QDeclarativeContactDetail::GlobalPresence;
     }

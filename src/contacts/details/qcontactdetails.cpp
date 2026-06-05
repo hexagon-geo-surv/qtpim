@@ -3451,13 +3451,14 @@ QContactFilter QContactName::match(const QString &firstName, const QString &last
 QContactFilter QContactName::match(const QString &name)
 {
     QContactUnionFilter nameFilter;
-    QList<int> nameFields;
-    nameFields << QContactName::FieldFirstName
-            << QContactName::FieldLastName
-            << QContactName::FieldMiddleName
-            << QContactName::FieldPrefix
-            << QContactName::FieldSuffix;
-    foreach (int fieldName, nameFields) {
+    const QList<int> nameFields = {
+        QContactName::FieldFirstName,
+        QContactName::FieldLastName,
+        QContactName::FieldMiddleName,
+        QContactName::FieldPrefix,
+        QContactName::FieldSuffix
+    };
+    for (int fieldName : nameFields) {
         QContactDetailFilter subFilter;
         subFilter.setDetailType(QContactName::Type, fieldName);
         subFilter.setValue(name);

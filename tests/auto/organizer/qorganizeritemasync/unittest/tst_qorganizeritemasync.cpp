@@ -228,8 +228,8 @@ bool tst_QOrganizerItemAsync::compareItemLists(QList<QOrganizerItem> lista, QLis
     // NOTE: This compare is item order insensitive.
 
     // Remove matching items
-    foreach (QOrganizerItem a, lista) {
-        foreach (QOrganizerItem b, listb) {
+    for (QOrganizerItem a : lista) {
+        for (QOrganizerItem b : listb) {
             if (compareItems(a, b)) {
                 lista.removeOne(a);
                 listb.removeOne(b);
@@ -251,8 +251,8 @@ bool tst_QOrganizerItemAsync::compareItems(QOrganizerItem ca, QOrganizerItem cb)
     QList<QOrganizerItemDetail> bDetails = cb.details();
 
     // Remove matching details
-    foreach (QOrganizerItemDetail ad, aDetails) {
-        foreach (QOrganizerItemDetail bd, bDetails) {
+    for (QOrganizerItemDetail ad : aDetails) {
+        for (QOrganizerItemDetail bd : bDetails) {
             if (ad == bd) {
                 ca.removeDetail(&ad);
                 cb.removeDetail(&bd);
@@ -300,8 +300,8 @@ bool tst_QOrganizerItemAsync::compareIgnoringTimestamps(const QOrganizerItem& ca
 
     // They can be in any order, so loop
     // First remove any matches, and any timestamps
-    foreach (QOrganizerItemDetail d, aDetails) {
-        foreach (QOrganizerItemDetail d2, bDetails) {
+    for (QOrganizerItemDetail d : aDetails) {
+        for (QOrganizerItemDetail d2 : bDetails) {
             if (d == d2) {
                 a.removeDetail(&d);
                 b.removeDetail(&d2);
@@ -345,8 +345,8 @@ bool tst_QOrganizerItemAsync::compareIgnoringDetailKeys(const QOrganizerItem& ca
 
     // They can be in any order, so loop
     // First remove any matches, and any timestamps
-    foreach (QOrganizerItemDetail d, aDetails) {
-        foreach (QOrganizerItemDetail d2, bDetails) {
+    for (QOrganizerItemDetail d : aDetails) {
+        for (QOrganizerItemDetail d2 : bDetails) {
             if (d == d2) {
                 a.removeDetail(&d);
                 b.removeDetail(&d2);
@@ -375,9 +375,9 @@ bool tst_QOrganizerItemAsync::compareIgnoringDetailKeys(const QOrganizerItem& ca
     // now compare the details, ignoring the keys.
     aDetails = a.details();
     bDetails = b.details();
-    foreach (QOrganizerItemDetail d, aDetails) {
+    for (QOrganizerItemDetail d : aDetails) {
         bool foundCurrentDetail = false;
-        foreach (QOrganizerItemDetail d2, bDetails) {
+        for (QOrganizerItemDetail d2 : bDetails) {
             if (d.type() == d2.type() && d.values() == d2.values()) {
                 foundCurrentDetail = true;
             }
@@ -403,7 +403,7 @@ bool tst_QOrganizerItemAsync::compareIgnoringDetailKeys(const QOrganizerItem& ca
 bool tst_QOrganizerItemAsync::detailListContainsDetailIgnoringDetailKeys(const QList<QOrganizerItemDetail>& dets, const QOrganizerItemDetail& det)
 {
     bool foundCurrentDetail = false;
-    foreach (const QOrganizerItemDetail d2, dets) {
+    for (const QOrganizerItemDetail d2 : dets) {
         if (det == d2) {
             foundCurrentDetail = true;
         }
@@ -432,7 +432,7 @@ bool tst_QOrganizerItemAsync::detailListContainsDetailIgnoringDetailKeys(const Q
 bool tst_QOrganizerItemAsync::containsAllCollectionIds(const QList<QOrganizerCollectionId>& target, const QList<QOrganizerCollectionId>& ids)
 {
     bool containsAllIds = true;
-    foreach(QOrganizerCollectionId id, ids) {
+    for (QOrganizerCollectionId id : ids) {
         if (!target.contains(id)) {
             containsAllIds = false;
             break;
@@ -586,7 +586,7 @@ void tst_QOrganizerItemAsync::itemFetch()
         }
         currRestricted.setId(currFull.id());
         QList<QOrganizerItemDetail> descriptions = currFull.details(QOrganizerItemDetail::TypeDescription);
-        foreach (const QOrganizerItemDescription& description, descriptions) {
+        for (const QOrganizerItemDescription& description : descriptions) {
             QOrganizerItemDescription descr = description;
             if (!descr.isEmpty()) {
                 currRestricted.saveDetail(&descr);
@@ -596,7 +596,7 @@ void tst_QOrganizerItemAsync::itemFetch()
         // now find the item in the retrieved list which our restricted item mimics
         QOrganizerItem retrievedRestricted;
         bool found = false;
-        foreach (const QOrganizerItem& retrieved, items) {
+        for (const QOrganizerItem& retrieved : items) {
             if (retrieved.id() == currRestricted.id()) {
                 retrievedRestricted = retrieved;
                 found = true;
@@ -608,7 +608,7 @@ void tst_QOrganizerItemAsync::itemFetch()
         // ensure that the item is the same (except synth fields)
         QList<QOrganizerItemDetail> retrievedDetails = retrievedRestricted.details();
         QList<QOrganizerItemDetail> expectedDetails = currRestricted.details();
-        foreach (const QOrganizerItemDetail& det, expectedDetails) {
+        for (const QOrganizerItemDetail& det : expectedDetails) {
             // ignore backend synthesised details
             // again, this requires a "default item details" function to work properly.
             if (det.type() == QOrganizerItemDetail::TypeTimestamp)
@@ -1231,7 +1231,7 @@ void tst_QOrganizerItemAsync::itemFetchForExport()
         QOrganizerEvent currRestricted; // in prepare model, the item types were "Event"
         currRestricted.setId(currFull.id());
         QList<QOrganizerItemDetail> descriptions = currFull.details(QOrganizerItemDetail::TypeDescription);
-        foreach (const QOrganizerItemDescription& description, descriptions) {
+        for (const QOrganizerItemDescription& description : descriptions) {
             QOrganizerItemDescription descr = description;
             if (!descr.isEmpty())
                 currRestricted.saveDetail(&descr);
@@ -1240,7 +1240,7 @@ void tst_QOrganizerItemAsync::itemFetchForExport()
         // now find the item in the retrieved list which our restricted item mimics
         QOrganizerItem retrievedRestricted;
         bool found = false;
-        foreach (const QOrganizerItem& retrieved, items) {
+        for (const QOrganizerItem& retrieved : items) {
             if (retrieved.id() == currRestricted.id()) {
                 retrievedRestricted = retrieved;
                 found = true;
@@ -1252,7 +1252,7 @@ void tst_QOrganizerItemAsync::itemFetchForExport()
         // ensure that the item is the same (except synth fields)
         QList<QOrganizerItemDetail> retrievedDetails = retrievedRestricted.details();
         QList<QOrganizerItemDetail> expectedDetails = currRestricted.details();
-        foreach (const QOrganizerItemDetail& det, expectedDetails) {
+        for (const QOrganizerItemDetail& det : expectedDetails) {
             // ignore backend synthesised details
             // again, this requires a "default item details" function to work properly.
             if (det.type() == QOrganizerItemDetail::TypeTimestamp)
@@ -2421,7 +2421,7 @@ void tst_QOrganizerItemAsync::collectionSave()
     result << oim->collection(csr.collections().at(0).id());
 
     // find the saved one, compare.
-    foreach (const QOrganizerCollection &col, result)
+    for (const QOrganizerCollection &col : result)
         QVERIFY(col.id() == expected.at(0).id());
 
     // update a previously saved collection
@@ -2447,7 +2447,7 @@ void tst_QOrganizerItemAsync::collectionSave()
     result.clear();
     result = oim->collections();
     // find the saved one, compare.
-    foreach (const QOrganizerCollection& col, result) {
+    for (const QOrganizerCollection& col : result) {
         if (col.id() == expected.at(0).id()) {
             QVERIFY(col == expected.at(0)); // XXX TODO: if we change the semantic so that save merely updates the id...?
         }
@@ -3086,7 +3086,7 @@ void tst_QOrganizerItemAsync::addManagers(QStringList stringlist)
     if (!stringlist.contains("skeleton"))
         managers.removeAll("skeleton");
 
-    foreach(QString mgr, managers) {
+    for (QString mgr : managers) {
         QMap<QString, QString> params;
         QTest::newRow(QString("mgr='%1'").arg(mgr).toLatin1().constData()) << QOrganizerManager::buildUri(mgr, params);
         if (mgr == "memory") {
@@ -3103,7 +3103,7 @@ QOrganizerManager* tst_QOrganizerItemAsync::prepareModel(const QString& managerU
     // XXX TODO: ensure that this is the case:
     // there should be no items in the database.
     QList<QOrganizerItemId> toRemove = oim->itemIds();
-    foreach (const QOrganizerItemId& removeId, toRemove)
+    for (const QOrganizerItemId& removeId : toRemove)
         oim->removeItem(removeId);
 
     QOrganizerEvent a, b, c;

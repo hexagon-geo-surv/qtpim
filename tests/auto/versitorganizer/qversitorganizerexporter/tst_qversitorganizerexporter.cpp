@@ -170,7 +170,7 @@ void tst_QVersitOrganizerExporter::testExportEventDetails()
 
     QVersitOrganizerExporter exporter;
     QOrganizerEvent item;
-    foreach (QOrganizerItemDetail detail, details) {
+    for (QOrganizerItemDetail detail : details) {
         item.saveDetail(&detail);
     }
     QVERIFY(exporter.exportItems(QList<QOrganizerItem>() << item));
@@ -179,7 +179,7 @@ void tst_QVersitOrganizerExporter::testExportEventDetails()
     QList<QVersitDocument> subDocuments = document.subDocuments();
     QCOMPARE(subDocuments.size(), 1);
     int currentVAlarmSubDocumentIndex = 0;
-    foreach(const QVersitProperty& expectedProperty, expectedProperties) {
+    for (const QVersitProperty& expectedProperty : expectedProperties) {
         QList<QVersitProperty> actualProperties =
             findPropertiesByName(subDocuments.first(), expectedProperty.name());
         if (expectedProperty.valueType() == QVersitProperty::VersitDocumentType) {
@@ -188,7 +188,7 @@ void tst_QVersitOrganizerExporter::testExportEventDetails()
                     subDocuments.first().subDocuments().at(currentVAlarmSubDocumentIndex);
             QVersitDocument expectedVAlarmDocument =
                     expectedProperty.variantValue().value<QVersitDocument>();
-            foreach (const QVersitProperty &valarmProp, expectedVAlarmDocument.properties()) {
+            for (const QVersitProperty &valarmProp : expectedVAlarmDocument.properties()) {
                 if (!actualVAlarmDocument.properties().contains(valarmProp)) {
                             qDebug() << "Actual:" << actualVAlarmDocument.properties();
                             qDebug() << "Expected to find:" << valarmProp;
@@ -1033,7 +1033,7 @@ void tst_QVersitOrganizerExporter::testExportTodoDetails()
 
     QVersitOrganizerExporter exporter;
     QOrganizerTodo item;
-    foreach (QOrganizerItemDetail detail, details) {
+    for (QOrganizerItemDetail detail : details) {
         item.saveDetail(&detail);
     }
     QVERIFY(exporter.exportItems(QList<QOrganizerItem>() << item));
@@ -1041,7 +1041,7 @@ void tst_QVersitOrganizerExporter::testExportTodoDetails()
     QVersitDocument document = exporter.document();
     QList<QVersitDocument> subDocuments = document.subDocuments();
     QCOMPARE(subDocuments.size(), 1);
-    foreach(const QVersitProperty& expectedProperty, expectedProperties) {
+    for (const QVersitProperty& expectedProperty : expectedProperties) {
         QList<QVersitProperty> actualProperties =
             findPropertiesByName(subDocuments.first(), expectedProperty.name());
         if (expectedProperty.valueType() == QVersitProperty::VersitDocumentType) {
@@ -1050,7 +1050,7 @@ void tst_QVersitOrganizerExporter::testExportTodoDetails()
                     subDocuments.first().subDocuments().first();
             QVersitDocument expectedVAlarmDocument =
                     expectedProperty.variantValue().value<QVersitDocument>();
-            foreach (const QVersitProperty &valarmProp, expectedVAlarmDocument.properties()) {
+            for (const QVersitProperty &valarmProp : expectedVAlarmDocument.properties()) {
                 if (!actualVAlarmDocument.properties().contains(valarmProp)) {
                             qDebug() << "Actual:" << actualVAlarmDocument.properties();
                             qDebug() << "Expected to find:" << valarmProp;
@@ -1612,7 +1612,7 @@ void tst_QVersitOrganizerExporter::testMultipleExtendedDetails()
 
     QVersitDocument document = exporter.document().subDocuments().first();
     QCOMPARE(findPropertiesByName(document, expectedProperties.first().name()).size(), 2);
-    foreach (const QVersitProperty& expectedProperty, expectedProperties) {
+    for (const QVersitProperty& expectedProperty : expectedProperties) {
         QList<QVersitProperty> actualProperties =
             findPropertiesByName(document, expectedProperty.name());
         if (!actualProperties.contains(expectedProperty)) {
@@ -1657,7 +1657,7 @@ QList<QVersitProperty> tst_QVersitOrganizerExporter::findPropertiesByName(
         const QVersitDocument &document, const QString &propertyName)
 {
     QList<QVersitProperty> retval;
-    foreach (const QVersitProperty& property, document.properties()) {
+    for (const QVersitProperty& property : document.properties()) {
         if (property.name() == propertyName)
             retval << property;
     }

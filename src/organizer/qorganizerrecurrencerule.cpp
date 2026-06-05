@@ -449,43 +449,43 @@ Qt::DayOfWeek QOrganizerRecurrenceRule::firstDayOfWeek() const
     \relates QOrganizerRecurrenceRule
     Returns the hash value for \a key.
  */
-size_t qHash(const QOrganizerRecurrenceRule &key)
+size_t qHash(const QOrganizerRecurrenceRule &key, size_t seed) noexcept
 {
-    size_t hash(0);
-    static const size_t prime1 = 11;
-    static const size_t prime2 = 31;
-    static const size_t prime3 = 47;
+    size_t hash(seed);
+    static const unsigned int prime1 = 11;
+    static const unsigned int prime2 = 31;
+    static const unsigned int prime3 = 47;
 
-    foreach (int day, key.daysOfMonth())
+    for (int day : key.daysOfMonth())
         hash += day;
     hash *= prime1;
 
-    foreach (Qt::DayOfWeek day, key.daysOfWeek())
-        hash += day;
+    for (Qt::DayOfWeek day : key.daysOfWeek())
+        hash += static_cast<uint>(day);
     hash *= prime2;
 
-    foreach (int day, key.daysOfYear())
+    for (int day : key.daysOfYear())
         hash += day;
     hash *= prime3;
 
-    foreach (QOrganizerRecurrenceRule::Month month, key.monthsOfYear())
-        hash += month;
+    for (QOrganizerRecurrenceRule::Month month : key.monthsOfYear())
+        hash += static_cast<uint>(month);
     hash *= prime1;
 
-    foreach (int week, key.weeksOfYear())
+    for (int week : key.weeksOfYear())
         hash += week;
     hash *= prime2;
 
-    foreach (int pos, key.positions())
+    for (int pos : key.positions())
         hash += pos;
     hash *= prime3;
 
-    hash += static_cast<size_t>(key.firstDayOfWeek())
-            + static_cast<size_t>(key.frequency())
-            + static_cast<size_t>(key.interval())
-            + static_cast<size_t>(key.limitCount())
+    hash += static_cast<uint>(key.firstDayOfWeek())
+            + static_cast<uint>(key.frequency())
+            + key.interval()
+            + key.limitCount()
             + qHash(key.limitDate())
-            + static_cast<size_t>(key.limitType());
+            + static_cast<uint>(key.limitType());
 
     return hash * prime1;
 }
@@ -519,45 +519,50 @@ QDebug operator<<(QDebug dbg, const QOrganizerRecurrenceRule &rule)
         break;
     }
     dbg.nospace() << ",daysOfWeek=\"";
-    QList<Qt::DayOfWeek> wdays(rule.daysOfWeek().values());
+    const auto wdaysSet = rule.daysOfWeek();
+    QList<Qt::DayOfWeek> wdays(wdaysSet.cbegin(), wdaysSet.cend());
     std::sort(wdays.begin(), wdays.end());
-    foreach (Qt::DayOfWeek day, wdays) {
+    for (Qt::DayOfWeek day : std::as_const(wdays)) {
         dbg.nospace() << static_cast<quint32>(day);
         dbg.space();
     }
     dbg.nospace() << "\"";
 
     dbg.nospace() << ",daysOfMonth=\"";
-    QList<int> mdays(rule.daysOfMonth().values());
+    const auto mdaysSet = rule.daysOfMonth();
+    QList<int> mdays(mdaysSet.cbegin(), mdaysSet.cend());
     std::sort(mdays.begin(), mdays.end());
-    foreach (int day, mdays) {
+    for (int day : std::as_const(mdays)) {
         dbg.nospace() << day;
         dbg.space();
     }
     dbg.nospace() << "\"";
 
     dbg.nospace() << ",daysOfYear=\"";
-    QList<int> ydays(rule.daysOfYear().values());
+    const auto ydaysSet = rule.daysOfYear();
+    QList<int> ydays(ydaysSet.cbegin(), ydaysSet.cend());
     std::sort(ydays.begin(), ydays.end());
-    foreach (int day, ydays) {
+    for (int day : std::as_const(ydays)) {
         dbg.nospace() << day;
         dbg.space();
     }
     dbg.nospace() << "\"";
 
     dbg.nospace() << ",monthsOfYear=\"";
-    QList<QOrganizerRecurrenceRule::Month> months(rule.monthsOfYear().values());
+    const auto monthsSet = rule.monthsOfYear();
+    QList<QOrganizerRecurrenceRule::Month> months(monthsSet.cbegin(), monthsSet.cend());
     std::sort(months.begin(), months.end());
-    foreach (QOrganizerRecurrenceRule::Month month, months) {
+    for (QOrganizerRecurrenceRule::Month month : std::as_const(months)) {
         dbg.nospace() << static_cast<quint32>(month);
         dbg.space();
     }
     dbg.nospace() << "\"";
 
     dbg.nospace() << ",positions=\"";
-    QList<int> positions(rule.positions().values());
+    const auto positionsSet = rule.positions();
+    QList<int> positions(positionsSet.cbegin(), positionsSet.cend());
     std::sort(positions.begin(), positions.end());
-    foreach (int position, positions) {
+    for (int position : std::as_const(positions)) {
         dbg.nospace() << position;
         dbg.space();
     }

@@ -72,7 +72,7 @@ void QDeclarativeOrganizerItemFetchHint::setOptimizationHints(OptimizationHints 
 QList<int> QDeclarativeOrganizerItemFetchHint::detailTypesHint() const
 {
     QList<int> savedList;
-    foreach (const QOrganizerItemDetail::DetailType &detailTypeHint, d.detailTypesHint())
+    for (const QOrganizerItemDetail::DetailType &detailTypeHint : d.detailTypesHint())
         savedList << static_cast<int>(detailTypeHint);
 
     return savedList;
@@ -80,9 +80,10 @@ QList<int> QDeclarativeOrganizerItemFetchHint::detailTypesHint() const
 
 void QDeclarativeOrganizerItemFetchHint::setDetailTypesHint(const QList<int> &detailTypes)
 {
-    if (QSet<int>(detailTypes.constBegin(), detailTypes.constEnd()) != QSet<int>(detailTypesHint().constBegin(), detailTypesHint().constEnd())) {
+    const QList<int> current = detailTypesHint();
+    if (QSet<int>(detailTypes.cbegin(), detailTypes.cend()) != QSet<int>(current.cbegin(), current.cend())) {
         QList<QOrganizerItemDetail::DetailType> convertedDetailTypes;
-        foreach (const int detailType, detailTypes)
+        for (const int detailType : detailTypes)
             convertedDetailTypes << static_cast<QOrganizerItemDetail::DetailType>(detailType);
 
         d.setDetailTypesHint(convertedDetailTypes);
@@ -107,6 +108,6 @@ void QDeclarativeOrganizerItemFetchHint::setFetchHint(const QOrganizerItemFetchH
     emit fetchHintChanged();
 }
 
-QT_END_NAMESPACE
-
 #include "moc_qdeclarativeorganizeritemfetchhint_p.cpp"
+
+QT_END_NAMESPACE

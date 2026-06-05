@@ -64,14 +64,14 @@ public:
         Yahoo = QContactOnlineAccount::ProtocolYahoo
     };
 
-    QDeclarativeContactOnlineAccount(QObject* parent = nullptr)
+    QDeclarativeContactOnlineAccount(QObject* parent = Q_NULLPTR)
         :QDeclarativeContactDetail(parent)
     {
         setDetail(QContactOnlineAccount());
         connect(this, SIGNAL(valueChanged()), SIGNAL(detailChanged()));
     }
 
-    DetailType detailType() const
+    DetailType detailType() const override
     {
         return QDeclarativeContactDetail::OnlineAccount;
     }
@@ -96,7 +96,7 @@ public:
 
     void setCapabilities(const QStringList& v)
     {
-        if (!readOnly() && QSet<QString>(v.constBegin(), v.constEnd()) != QSet<QString>(capabilities().constBegin(), capabilities().constEnd())) {
+        if (!readOnly() && QSet<QString>(v.cbegin(), v.cend()) != QSet<QString>(capabilities().cbegin(), capabilities().cend())) {
             detail().setValue(QContactOnlineAccount::FieldCapabilities, v);
             emit valueChanged();
         }
@@ -107,7 +107,7 @@ public:
     {
         QList<int> oldList = detail().value< QList<int> >(QContactOnlineAccount::FieldSubTypes);
 
-        if (!readOnly() && QSet<int>(subTypes.constBegin(), subTypes.constEnd()) != QSet<int>(oldList.constBegin(), oldList.constEnd())) {
+        if (!readOnly() && QSet<int>(subTypes.cbegin(), subTypes.cend()) != QSet<int>(oldList.cbegin(), oldList.cend())) {
             detail().setValue(QContactOnlineAccount::FieldSubTypes, QVariant::fromValue(subTypes));
             emit valueChanged();
         }

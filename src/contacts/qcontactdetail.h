@@ -1,5 +1,6 @@
 // Copyright (C) 2026 The Qt Company Ltd.
 // SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// Qt-Security score:significant reason:default
 
 #ifndef QCONTACTDETAIL_H
 #define QCONTACTDETAIL_H
@@ -164,7 +165,7 @@ private:
 #endif
 };
 
-Q_CONTACTS_EXPORT size_t qHash(const QContactDetail& key);
+Q_CONTACTS_EXPORT size_t qHash(const QContactDetail &key, size_t seed = 0) noexcept;
 #ifndef QT_NO_DEBUG_STREAM
 Q_CONTACTS_EXPORT QDebug operator<<(QDebug dbg, const QContactDetail& detail);
 #endif

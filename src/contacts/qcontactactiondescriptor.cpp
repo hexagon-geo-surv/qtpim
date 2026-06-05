@@ -267,15 +267,15 @@ bool QContactActionDescriptor::operator!=(const QContactActionDescriptor& other)
 }
 
 /*! Returns the hash value for \a key. */
-size_t qHash(const QContactActionDescriptor& key)
+size_t qHash(const QContactActionDescriptor& key, size_t seed) noexcept
 {
-    size_t ret = 0;
+    size_t ret = seed;
 
-    ret += QT_PREPEND_NAMESPACE(qHash)(key.serviceName())
-            + QT_PREPEND_NAMESPACE(qHash)(key.actionName())
-            + QT_PREPEND_NAMESPACE(qHash)(key.d.constData()->m_identifier)
-            + QT_PREPEND_NAMESPACE(qHash)(key.implementationVersion())
-            + QT_PREPEND_NAMESPACE(qHash)(key.d.constData()->m_factory);
+    ret ^= QT_PREPEND_NAMESPACE(qHash)(key.serviceName(), seed)
+            ^ QT_PREPEND_NAMESPACE(qHash)(key.actionName(), seed)
+            ^ QT_PREPEND_NAMESPACE(qHash)(key.d.constData()->m_identifier, seed)
+            ^ QT_PREPEND_NAMESPACE(qHash)(key.implementationVersion(), seed)
+            ^ QT_PREPEND_NAMESPACE(qHash)(key.d.constData()->m_factory, seed);
 
     return ret;
 }

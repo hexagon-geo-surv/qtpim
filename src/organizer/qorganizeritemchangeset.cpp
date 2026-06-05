@@ -29,7 +29,7 @@ QT_BEGIN_NAMESPACE_ORGANIZER
    rather than of multiple changes affecting the same item.
 
    \code
-        foreach (QOrganizerItemChangeSet::ItemChangeList changeList, set.changedItems()) {
+        for (const QOrganizerItemChangeSet::ItemChangeList &changeList : set.changedItems()) {
             if (changeList.first.contains(QOrganizerItemDetail::TypeDescription)) {
                 qDebug() << "Item IDs with description changes:" << changeList.second;
             }
@@ -105,7 +105,7 @@ QSet<QOrganizerItemId> QOrganizerItemChangeSet::addedItems() const
 void QOrganizerItemChangeSet::insertAddedItem(const QOrganizerItemId &itemId)
 {
     d->m_addedItems.insert(itemId);
-    d->m_modifiedItems.append(QPair<QOrganizerItemId, QOrganizerManager::Operation>(itemId, QOrganizerManager::Add));
+    d->m_modifiedItems.append(std::make_pair(itemId, QOrganizerManager::Add));
 }
 
 /*!
@@ -114,9 +114,9 @@ void QOrganizerItemChangeSet::insertAddedItem(const QOrganizerItemId &itemId)
  */
 void QOrganizerItemChangeSet::insertAddedItems(const QList<QOrganizerItemId> &itemIds)
 {
-    foreach (const QOrganizerItemId &id, itemIds) {
+    for (const QOrganizerItemId &id : itemIds) {
         d->m_addedItems.insert(id);
-        d->m_modifiedItems.append(QPair<QOrganizerItemId, QOrganizerManager::Operation>(id, QOrganizerManager::Add));
+        d->m_modifiedItems.append(std::make_pair(id, QOrganizerManager::Add));
     }
 }
 
@@ -181,12 +181,12 @@ void QOrganizerItemChangeSet::insertChangedItems(const QList<QOrganizerItemId> &
     }
     if (it == end) {
         // Add a list for this set of changes
-        d->m_changedItems.append(qMakePair(changeSet, itemIds));
+        d->m_changedItems.append(std::make_pair(changeSet, itemIds));
     } else {
         QList<QOrganizerItemId> &changedIds((*it).second);
         QList<QOrganizerItemId>::iterator iit = changedIds.begin();
 
-        foreach (const QOrganizerItemId &itemId, itemIds) {
+        for (const QOrganizerItemId &itemId : itemIds) {
             // Add this ID if not yet present
             iit = std::lower_bound(iit, changedIds.end(), itemId);
             if (iit == changedIds.end() || *iit != itemId) {
@@ -196,8 +196,8 @@ void QOrganizerItemChangeSet::insertChangedItems(const QList<QOrganizerItemId> &
     }
 
     // These items are all now modified
-    foreach (const QOrganizerItemId &id, itemIds)
-        d->m_modifiedItems.append(QPair<QOrganizerItemId, QOrganizerManager::Operation>(id, QOrganizerManager::Change));
+    for (const QOrganizerItemId &id : itemIds)
+        d->m_modifiedItems.append(std::make_pair(id, QOrganizerManager::Change));
 }
 
 /*!
@@ -223,7 +223,7 @@ QSet<QOrganizerItemId> QOrganizerItemChangeSet::removedItems() const
 void QOrganizerItemChangeSet::insertRemovedItem(const QOrganizerItemId &itemId)
 {
     d->m_removedItems.insert(itemId);
-    d->m_modifiedItems.append(QPair<QOrganizerItemId, QOrganizerManager::Operation>(itemId, QOrganizerManager::Remove));
+    d->m_modifiedItems.append(std::make_pair(itemId, QOrganizerManager::Remove));
 }
 
 /*!
@@ -232,9 +232,9 @@ void QOrganizerItemChangeSet::insertRemovedItem(const QOrganizerItemId &itemId)
  */
 void QOrganizerItemChangeSet::insertRemovedItems(const QList<QOrganizerItemId> &itemIds)
 {
-    foreach (const QOrganizerItemId &id, itemIds) {
+    for (const QOrganizerItemId &id : itemIds) {
         d->m_removedItems.insert(id);
-        d->m_modifiedItems.append(QPair<QOrganizerItemId, QOrganizerManager::Operation>(id, QOrganizerManager::Remove));
+        d->m_modifiedItems.append(std::make_pair(id, QOrganizerManager::Remove));
     }
 }
 
@@ -251,7 +251,7 @@ void QOrganizerItemChangeSet::clearRemovedItems()
    the database. The list includes information about which database operation was done. The ids and
    operations are ordered so that the first operation is first in the list.
  */
-QList<QPair<QOrganizerItemId, QOrganizerManager::Operation> > QOrganizerItemChangeSet::modifiedItems() const
+QList<std::pair<QOrganizerItemId, QOrganizerManager::Operation>> QOrganizerItemChangeSet::modifiedItems() const
 {
     return d->m_modifiedItems;
 }
@@ -289,14 +289,14 @@ void QOrganizerItemChangeSet::emitSignals(QOrganizerManagerEngine *engine) const
         emit engine->dataChanged();
     } else {
         if (!d->m_addedItems.isEmpty())
-            emit engine->itemsAdded(d->m_addedItems.values());
+            emit engine->itemsAdded(QList<QOrganizerItemId>(d->m_addedItems.cbegin(), d->m_addedItems.cend()));
         if (!d->m_changedItems.isEmpty()) {
             QList<ItemChangeList>::const_iterator it = d->m_changedItems.constBegin(), end = d->m_changedItems.constEnd();
             for ( ; it != end; ++it)
                 emit engine->itemsChanged((*it).second, (*it).first);
         }
         if (!d->m_removedItems.isEmpty())
-            emit engine->itemsRemoved(d->m_removedItems.values());
+            emit engine->itemsRemoved(QList<QOrganizerItemId>(d->m_removedItems.cbegin(), d->m_removedItems.cend()));
         if (!d->m_modifiedItems.isEmpty())
             emit engine->itemsModified(d->m_modifiedItems);
     }

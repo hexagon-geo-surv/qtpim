@@ -165,7 +165,7 @@ private:
 
     template<typename T> T* getDetail(const QDeclarativeContactDetail::DetailType &type)
     {
-        foreach (QDeclarativeContactDetail *detail, m_details) {
+        for (QDeclarativeContactDetail *detail : std::as_const(m_details)) {
             if (type == detail->detailType())
             {
                 T* tempDetail = static_cast<T *>(detail);

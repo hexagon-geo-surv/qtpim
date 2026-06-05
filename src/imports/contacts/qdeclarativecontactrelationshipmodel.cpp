@@ -77,9 +77,9 @@ QDeclarativeContactRelationshipModel::~QDeclarativeContactRelationshipModel()
 
 QHash<int, QByteArray> QDeclarativeContactRelationshipModel::roleNames() const
 {
-    QHash<int, QByteArray> roleNames = QAbstractItemModel::roleNames();
-    roleNames.insert(RelationshipRole, "relationship");
-    return roleNames;
+    QHash<int, QByteArray> roles = QAbstractItemModel::roleNames();
+    roles.insert(RelationshipRole, "relationship");
+    return roles;
 }
 
 /*!
@@ -311,22 +311,22 @@ void QDeclarativeContactRelationshipModel::requestUpdated()
         QList<QContactRelationship> relationships = req->relationships();
 
         beginResetModel();
-        foreach(QDeclarativeContactRelationship* dcr, d->m_declarativeRelationships) {
+        endResetModel();
+        beginInsertRows(QModelIndex(), 0, relationships.count());
+
+        for (QDeclarativeContactRelationship *dcr : std::as_const(d->m_declarativeRelationships)) {
             dcr->deleteLater();
         }
         d->m_declarativeRelationships.clear();
         d->m_relationships.clear();
-        endResetModel();
 
-        beginInsertRows(QModelIndex(), 0, relationships.count());
-        foreach (const QContactRelationship& cr, relationships) {
+        for (const QContactRelationship &cr : std::as_const(relationships)) {
             QDeclarativeContactRelationship* dcr = new QDeclarativeContactRelationship(this);
             dcr->setRelationship(cr);
             d->m_declarativeRelationships.append(dcr);
             d->m_relationships.append(cr);
         }
         endInsertRows();
-
         req->deleteLater();
         emit relationshipsChanged();
     }
@@ -384,7 +384,7 @@ void QDeclarativeContactRelationshipModel::relationshipsRemoved()
                     endRemoveRows();
                 } else {
                     //impossible?
-                    qmlWarning(this) << tr("this relationship '") << row << tr("' was already removed!");
+                    qmlInfo(this) << tr("this relationship '") << row << tr("' was already removed!");
                 }
             }
         }
@@ -392,6 +392,6 @@ void QDeclarativeContactRelationshipModel::relationshipsRemoved()
     }
 }
 
-QT_END_NAMESPACE
-
 #include "moc_qdeclarativecontactrelationshipmodel_p.cpp"
+
+QT_END_NAMESPACE

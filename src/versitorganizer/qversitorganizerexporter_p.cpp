@@ -6,6 +6,8 @@
 
 #include <QtCore/qdebug.h>
 
+#include <utility>
+
 #include <QtOrganizer/qorganizer.h>
 
 #include <QtVersit/qversitdocument.h>
@@ -29,7 +31,7 @@ QVersitOrganizerExporterPrivate::QVersitOrganizerExporterPrivate(const QString& 
     for (int i = 0; i < versitPropertyCount; i++) {
         mPropertyMappings.insert(
                 versitOrganizerDetailMappings[i].detailType,
-                QPair<int, QString>(
+                std::make_pair(
                     versitOrganizerDetailMappings[i].detailField,
                     QLatin1String(versitOrganizerDetailMappings[i].versitPropertyName)));
     }
@@ -40,7 +42,7 @@ QVersitOrganizerExporterPrivate::QVersitOrganizerExporterPrivate(const QString& 
 
 QVersitOrganizerExporterPrivate::~QVersitOrganizerExporterPrivate()
 {
-    foreach (QVersitOrganizerHandler* pluginHandler, mPluginDetailHandlers) {
+    for (QVersitOrganizerHandler* pluginHandler : mPluginDetailHandlers) {
         delete pluginHandler;
     }
 }
@@ -71,12 +73,12 @@ bool QVersitOrganizerExporterPrivate::exportItem(
         *error = QVersitOrganizerExporter::EmptyOrganizerError;
         return false;
     }
-    foreach (const QOrganizerItemDetail& detail, allDetails) {
+    for (const QOrganizerItemDetail& detail : allDetails) {
         exportDetail(item, detail, document);
     }
 
     // run plugin handlers
-    foreach (QVersitOrganizerExporterDetailHandler* handler, mPluginDetailHandlers) {
+    for (QVersitOrganizerExporterDetailHandler* handler : mPluginDetailHandlers) {
         handler->itemProcessed(item, document);
     }
     // run the handler, if set
@@ -133,7 +135,7 @@ void QVersitOrganizerExporterPrivate::exportDetail(
     }
 
     // run the plugin handler
-    foreach (QVersitOrganizerExporterDetailHandler* handler, mPluginDetailHandlers) {
+    for (QVersitOrganizerExporterDetailHandler* handler : mPluginDetailHandlers) {
         handler->detailProcessed(item, detail, *document,
                                  &processedFields, &removedProperties, &generatedProperties);
     }
@@ -143,10 +145,10 @@ void QVersitOrganizerExporterPrivate::exportDetail(
                                         &processedFields, &removedProperties, &generatedProperties);
     }
 
-    foreach(const QVersitProperty& property, removedProperties) {
+    for (const QVersitProperty& property : removedProperties) {
         document->removeProperty(property);
     }
-    foreach(const QVersitProperty& property, generatedProperties) {
+    for (const QVersitProperty& property : generatedProperties) {
         if (property.valueType() == QVersitProperty::VersitDocumentType) {
             QVersitDocument subDocument(QVersitDocument::ICalendar20Type);
             subDocument = property.value<QVersitDocument>();
@@ -291,13 +293,13 @@ void QVersitOrganizerExporterPrivate::encodeRecurrence(
     QSet<QDate> rdates = recurrence.recurrenceDates();
     QSet<QDate> exdates = recurrence.exceptionDates();
     if (!rrules.isEmpty()) {
-        foreach (const QOrganizerRecurrenceRule& rrule, rrules) {
+        for (const QOrganizerRecurrenceRule& rrule : rrules) {
             encodeRecurRule(QStringLiteral("RRULE"), rrule, generatedProperties);
         }
         *processedFields << QOrganizerItemRecurrence::FieldRecurrenceRules;
     }
     if (!exrules.isEmpty()) {
-        foreach (const QOrganizerRecurrenceRule& exrule, exrules) {
+        for (const QOrganizerRecurrenceRule& exrule : exrules) {
             encodeRecurRule(QStringLiteral("EXRULE"), exrule, generatedProperties);
         }
         *processedFields << QOrganizerItemRecurrence::FieldExceptionRules;
@@ -352,13 +354,13 @@ void QVersitOrganizerExporterPrivate::encodeRecurRule(
     }
     if (!rule.daysOfWeek().isEmpty()) {
         value.append(QStringLiteral(";BYDAY="));
-        bool first = true;
-        QList<Qt::DayOfWeek> daysOfWeek(rule.daysOfWeek().values());
+        bool firstDay = true;
+        QList<Qt::DayOfWeek> daysOfWeek(rule.daysOfWeek().cbegin(), rule.daysOfWeek().cend());
         std::sort(daysOfWeek.begin(), daysOfWeek.end());
-        foreach (Qt::DayOfWeek day, daysOfWeek) {
-            if (!first)
+        for (Qt::DayOfWeek day : daysOfWeek) {
+            if (!firstDay)
                 value.append(QStringLiteral(","));
-            first = false;
+            firstDay = false;
             value.append(weekString(day));
         }
     }
@@ -376,13 +378,14 @@ void QVersitOrganizerExporterPrivate::encodeRecurRule(
     }
     if (!rule.monthsOfYear().isEmpty()) {
         value.append(QStringLiteral(";BYMONTH="));
-        bool first = true;
-        QList<QOrganizerRecurrenceRule::Month> months(rule.monthsOfYear().values());
+        bool firstMonth = true;
+        QList<QOrganizerRecurrenceRule::Month> months(
+                rule.monthsOfYear().cbegin(), rule.monthsOfYear().cend());
         std::sort(months.begin(), months.end());
-        foreach (QOrganizerRecurrenceRule::Month month, months) {
-            if (!first)
+        for (QOrganizerRecurrenceRule::Month month : months) {
+            if (!firstMonth)
                 value.append(QStringLiteral(","));
-            first = false;
+            firstMonth = false;
             value.append(QString::number(month));
         }
     }
@@ -403,9 +406,9 @@ void QVersitOrganizerExporterPrivate::encodeRecurRule(
  */
 void QVersitOrganizerExporterPrivate::appendInts(QString* str, const QSet<int>& ints) {
     bool first = true;
-    QList<int> intList(ints.values());
+    QList<int> intList(ints.cbegin(), ints.cend());
     std::sort(intList.begin(), intList.end());
-    foreach (int n, intList) {
+    for (int n : intList) {
         if (!first)
             str->append(QStringLiteral(","));
         first = false;
@@ -443,7 +446,7 @@ void QVersitOrganizerExporterPrivate::encodeRecurDates(
         QList<QVersitProperty>* removedProperties,
         QList<QVersitProperty>* generatedProperties)
 {
-    Q_UNUSED(item);
+    Q_UNUSED(item)
 
     QVersitProperty property;
     property = takeProperty(document, propertyName, removedProperties);
@@ -452,9 +455,9 @@ void QVersitOrganizerExporterPrivate::encodeRecurDates(
     QString value = property.value();
     bool valueIsEmpty = value.isEmpty();
 
-    QList<QDate> dateList(dates.values());
+    QList<QDate> dateList(dates.cbegin(), dates.cend());
     std::sort(dateList.begin(), dateList.end());
-    foreach (const QDate& dt, dateList) {
+    for (const QDate& dt : dateList) {
         QString str;
         if (dt.isValid()) {
             str = dt.toString(QStringLiteral("yyyyMMdd"));
@@ -595,7 +598,7 @@ void QVersitOrganizerExporterPrivate::encodeEmailReminder(
     QVersitProperty property;
     QVersitDocument valarmDocument = encodeItemReminderCommonFields(item, emailReminder, processedFields);
 
-    foreach (const QVariant &attachment, emailReminder.attachments()) {
+    for (const QVariant &attachment : emailReminder.attachments()) {
         property.setName(QStringLiteral("ATTACH"));
         property.setValue(attachment);
         valarmDocument.addProperty(property);
@@ -604,7 +607,7 @@ void QVersitOrganizerExporterPrivate::encodeEmailReminder(
 
     if (emailReminder.hasValue(QOrganizerItemEmailReminder::FieldRecipients)) {
         property.setName(QStringLiteral("ATTENDEE"));
-        foreach (const QString &recipient, emailReminder.recipients()) {
+        for (const QString &recipient : emailReminder.recipients()) {
             property.setValue(recipient);
             valarmDocument.addProperty(property);
         }
@@ -768,7 +771,7 @@ void QVersitOrganizerExporterPrivate::encodeSimpleProperty(
         QList<QVersitProperty>* generatedProperties,
         QSet<int>* processedFields)
 {
-    QPair<int, QString> fieldPropertyMap = mPropertyMappings[detail.type()];
+    std::pair<int, QString> fieldPropertyMap = mPropertyMappings[detail.type()];
     const int& fieldName = fieldPropertyMap.first;
     const QString& propertyName = fieldPropertyMap.second;
     QVersitProperty property =
@@ -795,7 +798,7 @@ bool QVersitOrganizerExporterPrivate::documentContainsUidAndRecurrenceId(const Q
 {
     bool hasUid = false;
     bool hasRecurId = false;
-    foreach (const QVersitProperty& property, document.properties()) {
+    for (const QVersitProperty& property : document.properties()) {
         const QString& name = property.name();
         if (name == QStringLiteral("UID")) {
             if (hasRecurId)
@@ -818,7 +821,7 @@ QVersitProperty QVersitOrganizerExporterPrivate::takeProperty(
         const QVersitDocument& document,
         const QString& propertyName,
         QList<QVersitProperty>* toBeRemoved) {
-    foreach (const QVersitProperty& currentProperty, document.properties()) {
+    for (const QVersitProperty& currentProperty : document.properties()) {
         if (currentProperty.name() == propertyName) {
             *toBeRemoved << currentProperty;
             return currentProperty;

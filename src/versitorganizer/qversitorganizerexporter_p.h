@@ -15,7 +15,7 @@
 // We mean it.
 //
 
-#include <QtCore/qpair.h>
+#include <utility>
 
 #include <QtOrganizer/qorganizeritemdetail.h>
 
@@ -168,7 +168,7 @@ private:
             QList<QVersitProperty>* toBeRemoved);
 
     // definition name -> <field name, versit property name>:
-    QMap<QOrganizerItemDetail::DetailType, QPair<int, QString> > mPropertyMappings;
+    QMap<QOrganizerItemDetail::DetailType, std::pair<int, QString> > mPropertyMappings;
 };
 
 QT_END_NAMESPACE_VERSITORGANIZER

@@ -9,6 +9,7 @@
 #include <QtCore/qpointer.h>
 #include <QtCore/qstringbuilder.h>
 #include <QtCore/quuid.h>
+#include <utility>
 
 #include <QtContacts/qcontactidfilter.h>
 #include <QtContacts/qcontactrequests.h>
@@ -148,7 +149,7 @@ bool QContactMemoryEngine::setSelfContactId(const QContactId &contactId, QContac
         d->m_selfContactId = contactId;
 
         QContactChangeSet changeSet;
-        changeSet.setOldAndNewSelfContactId(QPair<QContactId, QContactId>(oldId, contactId));
+        changeSet.setOldAndNewSelfContactId(std::make_pair(oldId, contactId));
         d->emitSharedSignals(&changeSet);
         return true;
     }
@@ -192,7 +193,7 @@ QList<QContactId> QContactMemoryEngine::contactIds(const QContactFilter &filter,
 
         /* Extract the ids */
         QList<QContactId> ids;
-        foreach (const QContact &c, clist)
+        for (const QContact &c : clist)
             ids.append(c.id());
 
         return ids;
@@ -209,11 +210,11 @@ QList<QContact> QContactMemoryEngine::contacts(const QContactFilter &filter, con
 
     /* First filter out contacts - check for default filter first */
     if (filter.type() == QContactFilter::DefaultFilter) {
-        foreach(const QContact&c, d->m_contacts) {
+        for (const QContact &c : d->m_contacts) {
             QContactManagerEngine::addSorted(&sorted,c, sortOrders);
         }
     } else {
-        foreach(const QContact&c, d->m_contacts) {
+        for (const QContact &c : d->m_contacts) {
             if (QContactManagerEngine::testFilter(filter, c))
                 QContactManagerEngine::addSorted(&sorted,c, sortOrders);
         }
@@ -270,7 +271,7 @@ bool QContactMemoryEngine::removeContact(const QContactId &contactId, QContactCh
     // and if it was the self contact, reset the self contact id
     if (contactId == d->m_selfContactId) {
         d->m_selfContactId = QContactId();
-        changeSet.setOldAndNewSelfContactId(QPair<QContactId, QContactId>(contactId, QContactId()));
+        changeSet.setOldAndNewSelfContactId(std::make_pair(contactId, QContactId()));
     }
 
     changeSet.insertRemovedContact(contactId);
@@ -659,7 +660,7 @@ void QContactMemoryEngine::performAsynchronousOperation(QContactAbstractRequest 
             QList<QContact> results;
             QMap<int, QContactManager::Error> errorMap;
             int index = 0;
-            foreach (const QContactId &id, r->contactIds()) {
+            for (const QContactId &id : r->contactIds()) {
                 if (!idMap.contains(id)) {
                     errorMap.insert(index, QContactManager::DoesNotExistError);
                     error = QContactManager::DoesNotExistError;
@@ -868,17 +869,17 @@ void QContactMemoryEngine::partiallySyncDetails(QContact *to, const QContact &fr
     // these details in new contact
     QList<QContactDetail> toDetails;
     // Collect details that match mask
-    foreach (QContactDetail::DetailType type, mask) {
+    for (QContactDetail::DetailType type : mask) {
         fromDetails.append(from.details(type));
         toDetails.append(to->details(type));
     }
     // check details to remove
-    foreach (QContactDetail detail, toDetails) {
+    for (QContactDetail detail : toDetails) {
         if (!fromDetails.contains(detail))
             to->removeDetail(&detail);
     }
     // check details to save
-    foreach (QContactDetail detail, fromDetails) {
+    for (QContactDetail detail : fromDetails) {
         if (!toDetails.contains(detail))
             to->saveDetail(&detail, QContact::IgnoreAccessConstraints);
     }

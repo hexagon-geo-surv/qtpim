@@ -39,11 +39,16 @@ Q_DECLARE_METATYPE(QContactDetail::DetailType)
  * Global variables:
  * These are the definition and field names used by the actions for their matching.
  */
-QMap<QString, QPair<QContactDetail::DetailType, int> > defAndFieldNamesForTypeForActions;
+QMap<QString, std::pair<QContactDetail::DetailType, int> > defAndFieldNamesForTypeForActions;
 
 namespace {
 
-bool validDetailField(const QPair<QContactDetail::DetailType, int> &pair)
+bool validDetailType(const std::pair<QContactDetail::DetailType, int> &pair)
+{
+    return pair.first != QContactDetail::TypeUndefined;
+}
+
+bool validDetailField(const std::pair<QContactDetail::DetailType, int> &pair)
 {
     return pair.first != QContactDetail::TypeUndefined && pair.second != -1;
 }
@@ -84,7 +89,7 @@ private:
     QString convertIds(QList<QContactId> allIds, QList<QContactId> ids, QChar minimumContact = 'a', QChar maximumContact = 'z'); // convert back to "abcd"
     QContact createContact(QContactManager* cm, QContactType::TypeValues type, const QString &name);
 
-    QMap<QContactManager*, QMap<QString, QPair<QContactDetail::DetailType, int> > > defAndFieldNamesForTypePerManager;
+    QMap<QContactManager*, QMap<QString, std::pair<QContactDetail::DetailType, int> > > defAndFieldNamesForTypePerManager;
     QMultiMap<QContactManager*, QContactId> contactsAddedToManagers;
     QList<QContactManager*> managers;
     QScopedPointer<QContactManagerDataHolder> managerDataHolder;
@@ -198,13 +203,14 @@ void tst_QContactManagerFiltering::initTestCase()
     managerNames.removeAll("testdummy");
     managerNames.removeAll("teststaticdummy");
     managerNames.removeAll("maliciousplugin");
+    managerNames.removeAll("dummytest");
 
     // Some internal engines on Maemo6
     managerNames.removeAll("social");
     managerNames.removeAll("simcard");
     managerNames.removeAll("com.nokia.messaging.contacts.engines.mail.contactslookup");
 
-    foreach(QString mgr, managerNames) {
+    for (QString mgr : managerNames) {
         QMap<QString, QString> params;
         QString mgrUri = QContactManager::buildUri(mgr, params);
         QContactManager* cm = QContactManager::fromUri(mgrUri);
@@ -221,7 +227,7 @@ void tst_QContactManagerFiltering::initTestCase()
     }
 
     // for each manager that we wish to test, prepare the model.
-    foreach (QContactManager* cm, managers) {
+    for (QContactManager* cm : managers) {
         QList<QContactId> addedContacts = prepareModel(cm);
         if (addedContacts != contactsAddedToManagers.values(cm)) {
             qDebug() << "prepareModel returned:" << addedContacts;
@@ -328,7 +334,7 @@ void tst_QContactManagerFiltering::initTestCase()
     qDebug() << "Finished preparing each manager for test!  About to load test actions:";
     QServiceManager sm;
     QStringList allServices = sm.findServices();
-    foreach(const QString& serv, allServices) {
+    for (const QString& serv : allServices) {
         if (serv.startsWith("tst_qcontactmanagerfiltering:")) {
             if (!sm.removeService(serv)) {
                 qDebug() << " tst_qca: ctor: cleaning up test service" << serv << "failed:" << sm.error();
@@ -337,7 +343,7 @@ void tst_QContactManagerFiltering::initTestCase()
     }
     QStringList myServices;
     myServices << "BooleanAction" << "DateAction" << "IntegerAction" << "NumberAction" << "PhoneNumberAction";
-    foreach (const QString& serv, myServices) {
+    for (const QString& serv : myServices) {
         QString builtPath = QCoreApplication::applicationDirPath() + "/plugins/contacts/xmldata/" + serv.toLower() + "service.xml";
         if (!sm.addService(builtPath)) {
             qDebug() << " tst_qca: ctor: unable to add" << serv << "service:" << sm.error();
@@ -350,7 +356,7 @@ void tst_QContactManagerFiltering::initTestCase()
 void tst_QContactManagerFiltering::cleanupTestCase()
 {
     // first, remove any contacts that we've added to any managers.
-    foreach (QContactManager* manager, managers) {
+    for (QContactManager* manager : managers) {
         QList<QContactId> contactIds = contactsAddedToManagers.values(manager);
         manager->removeContacts(contactIds, 0);
     }
@@ -368,7 +374,7 @@ void tst_QContactManagerFiltering::cleanupTestCase()
     // clean up any actions/services.
     QServiceManager sm;
     QStringList allServices = sm.findServices();
-    foreach(const QString& serv, allServices) {
+    for (const QString& serv : allServices) {
         if (serv.startsWith("tst_qcontactmanagerfiltering:")) {
             if (!sm.removeService(serv)) {
                 qDebug() << " tst_qca: ctor: cleaning up test service" << serv << "failed:" << sm.error();
@@ -384,7 +390,7 @@ QString tst_QContactManagerFiltering::convertIds(QList<QContactId> allIds, QList
     /* Expected is of the form "abcd".. it's possible that there are some extra contacts */
     for (int i = 0; i < ids.size(); i++) {
         if (allIds.indexOf(ids.at(i)) >= 0) {
-            QChar curr = (static_cast<ushort>('a' + allIds.indexOf(ids.at(i))));
+            QChar curr = QChar(static_cast<int>('a' + allIds.indexOf(ids.at(i))));
             if (curr >= minimumContact && curr <= maximumContact) {
                 ret += curr;
             }
@@ -493,7 +499,7 @@ void tst_QContactManagerFiltering::detailStringFiltering_data()
         newMRow("Phone number = 555, keypad collation", manager) << manager << phonenumber << number << QVariant("555") << (int) (QContactFilter::MatchKeypadCollation | QContactFilter::MatchStartsWith) << "ab";
 
         /* Converting other types to strings */
-        QPair<QContactDetail::DetailType, int> defAndFieldNames = defAndFieldNamesForTypePerManager.value(manager).value("Integer");
+        std::pair<QContactDetail::DetailType, int> defAndFieldNames = defAndFieldNamesForTypePerManager.value(manager).value("Integer");
         if (validDetailField(defAndFieldNames)) {
             QTest::newRow("integer == 20") << manager << defAndFieldNames.first << defAndFieldNames.second << QVariant("20") << 0 << es;
             QTest::newRow("integer == 20, as string") << manager << defAndFieldNames.first << defAndFieldNames.second << QVariant("20") << (int)(QContactFilter::MatchFixedString) << "b";
@@ -684,7 +690,7 @@ void tst_QContactManagerFiltering::detailVariantFiltering_data()
          * C has double(4.0)
          * D has double(-128.0)
          */
-        QPair<QContactDetail::DetailType, int> defAndFieldNames = defAndFieldNamesForTypePerManager.value(manager).value("Double");
+        std::pair<QContactDetail::DetailType, int> defAndFieldNames = defAndFieldNamesForTypePerManager.value(manager).value("Double");
         if (validDetailField(defAndFieldNames)) {
             newMRow("double presence", manager) << manager << defAndFieldNames.first << -1 << false << ev << "bcd";
             QTest::newRow("double presence (inc field)") << manager << defAndFieldNames.first << defAndFieldNames.second << false << ev << "bcd";
@@ -1016,7 +1022,7 @@ void tst_QContactManagerFiltering::rangeFiltering_data()
 
         /* A(10), B(20), C(-20) */
         // Now integer range testing
-        QPair<QContactDetail::DetailType, int> defAndFieldNames = defAndFieldNamesForTypePerManager.value(manager).value("Integer");
+        std::pair<QContactDetail::DetailType, int> defAndFieldNames = defAndFieldNamesForTypePerManager.value(manager).value("Integer");
         if (validDetailField(defAndFieldNames)) {
             QTest::newRow("int range - no rangeflags - 1") << manager << defAndFieldNames.first << defAndFieldNames.second << QVariant(9) << QVariant(9) << false << 0 << false << 0 << es;
             QTest::newRow("int range - no rangeflags - 2") << manager << defAndFieldNames.first << defAndFieldNames.second << QVariant(9) << QVariant(10) << false << 0 << false << 0 << es;
@@ -1114,8 +1120,8 @@ void tst_QContactManagerFiltering::intersectionFiltering_data()
         // WITH Y AND Z AS DETAIL FILTERS (with no overlap between Y and Z results)
         // For these tests, Y matches "bc" and Z matches "a"
         // X && Y - X empty so es
-        QPair<QContactDetail::DetailType, int> integerDefAndFieldNames = defAndFieldNamesForTypePerManager.value(manager).value("Integer");
-        QPair<QContactDetail::DetailType, int> booleanDefAndFieldNames = defAndFieldNamesForTypePerManager.value(manager).value("Bool");
+        std::pair<QContactDetail::DetailType, int> integerDefAndFieldNames = defAndFieldNamesForTypePerManager.value(manager).value("Integer");
+        std::pair<QContactDetail::DetailType, int> booleanDefAndFieldNames = defAndFieldNamesForTypePerManager.value(manager).value("Bool");
         if (validDetailField(integerDefAndFieldNames) && validDetailField(booleanDefAndFieldNames)) {
             QTest::newRow("A1") << manager
                                 << true << 1 << booleanDefAndFieldNames.first << booleanDefAndFieldNames.second << true << QVariant(false) << QVariant() << QVariant()
@@ -1557,8 +1563,8 @@ void tst_QContactManagerFiltering::unionFiltering_data()
         // WITH Y AND Z AS DETAIL FILTERS (with no overlap between Y and Z results)
         // For these tests, Y matches "bc" and Z matches "a"
         // X || Y - X empty, Y matches "bc" so union = "bc"
-        QPair<QContactDetail::DetailType, int> integerDefAndFieldNames = defAndFieldNamesForTypePerManager.value(manager).value("Integer");
-        QPair<QContactDetail::DetailType, int> booleanDefAndFieldNames = defAndFieldNamesForTypePerManager.value(manager).value("Bool");
+        std::pair<QContactDetail::DetailType, int> integerDefAndFieldNames = defAndFieldNamesForTypePerManager.value(manager).value("Integer");
+        std::pair<QContactDetail::DetailType, int> booleanDefAndFieldNames = defAndFieldNamesForTypePerManager.value(manager).value("Bool");
         if (validDetailField(integerDefAndFieldNames) && validDetailField(booleanDefAndFieldNames)) {
             QTest::newRow("A1") << manager
                                 << true << 1 << booleanDefAndFieldNames.first << booleanDefAndFieldNames.second << true << QVariant(false) << QVariant() << QVariant()
@@ -2121,7 +2127,7 @@ void tst_QContactManagerFiltering::relationshipFiltering()
         //TODO: what is the expected error code?
         //QCOMPARE(cm->error(), QContactManager::DoesNotExistError);
     }
-    foreach (const QContactId& cid, contacts) {
+    for (const QContactId& cid : contacts) {
         cm->removeContact(cid);
     }
 
@@ -2130,9 +2136,7 @@ void tst_QContactManagerFiltering::relationshipFiltering()
         QCOMPARE_UNSORTED(output, expected);
         QCOMPARE(ids2, QList<QContactId>());
     } else {
-        QString msg = "Manager does not support relationship type " + relationshipType
-                    + " between " + QString::number(contactA.type())
-                    + " and " + QString::number(contactB.type()) + " type contacts.";
+        QString msg = "Manager does not support relationship type " + relationshipType + " between " + QString::number(static_cast<int>(contactA.type())) + " and " + QString::number(static_cast<int>(contactB.type())) + " type contacts.";
         QSKIP(msg.toLatin1());
     }
 }
@@ -2165,8 +2169,8 @@ void tst_QContactManagerFiltering::sorting_data()
     for (int i = 0; i < managers.size(); i++) {
         QContactManager *manager = managers.at(i);
 
-        QPair<QContactDetail::DetailType, int> integerDefAndFieldNames = defAndFieldNamesForTypePerManager.value(manager).value("Integer");
-        QPair<QContactDetail::DetailType, int> stringDefAndFieldNames = defAndFieldNamesForTypePerManager.value(manager).value("String");
+        std::pair<QContactDetail::DetailType, int> integerDefAndFieldNames = defAndFieldNamesForTypePerManager.value(manager).value("Integer");
+        std::pair<QContactDetail::DetailType, int> stringDefAndFieldNames = defAndFieldNamesForTypePerManager.value(manager).value("String");
 
         newMRow("first ascending", manager) << manager << nameType << firstname << asc << false << 0 << cs << expectedSorting(manager, "abcdefgikhj", "hjabcdefgik", "abcdefgihkj", "abcdefghijk", "abcdefgihkj", "abcdefghijk") << "efg";  // efg have the same first name
         newMRow("first descending", manager) << manager << nameType << firstname << desc << false << 0 << cs << expectedSorting(manager, "jhkigfedcba", "kigfedcbajh", "jkhigfedcba", "kjihgfedcba", "jkhigfedcba", "kjihgfedcba") << "efg";// efg have the same first name
@@ -2341,7 +2345,7 @@ void tst_QContactManagerFiltering::multiSorting_data()
 
     for (int i = 0; i < managers.size(); i++) {
         QContactManager *manager = managers.at(i);
-        QPair<QContactDetail::DetailType, int> stringDefAndFieldNames = defAndFieldNamesForTypePerManager.value(manager).value("String");
+        std::pair<QContactDetail::DetailType, int> stringDefAndFieldNames = defAndFieldNamesForTypePerManager.value(manager).value("String");
 
         QTest::newRow("1") << manager
                            << true << nameType << firstname << asc
@@ -2505,9 +2509,9 @@ void tst_QContactManagerFiltering::actionFiltering_data()
 
     for (int i = 0; i < managers.size(); i++) {
         QContactManager *manager = managers.at(i);
-        QPair<QContactDetail::DetailType, int> booleanDefAndFieldNames = defAndFieldNamesForTypePerManager.value(manager).value("Bool");
-        QPair<QContactDetail::DetailType, int> integerDefAndFieldNames = defAndFieldNamesForTypePerManager.value(manager).value("Integer");
-        QPair<QContactDetail::DetailType, int> dateDefAndFieldNames = defAndFieldNamesForTypePerManager.value(manager).value("Date");
+        std::pair<QContactDetail::DetailType, int> booleanDefAndFieldNames = defAndFieldNamesForTypePerManager.value(manager).value("Bool");
+        std::pair<QContactDetail::DetailType, int> integerDefAndFieldNames = defAndFieldNamesForTypePerManager.value(manager).value("Integer");
+        std::pair<QContactDetail::DetailType, int> dateDefAndFieldNames = defAndFieldNamesForTypePerManager.value(manager).value("Date");
 
         newMRow("bad actionname", manager) << manager << "No such action"  << "";
 
@@ -2610,7 +2614,7 @@ void tst_QContactManagerFiltering::idListFiltering()
     QContactId e;
 
     /* Convert the input to a list of ids */
-    foreach(QChar c, input) {
+    for (QChar c : input) {
         if (c == 'a')
             ids << contacts.at(0);
         else if (c == 'b')
@@ -2653,7 +2657,7 @@ void tst_QContactManagerFiltering::convenienceFiltering_data()
 
     QString es; // empty string
 
-    foreach (QContactManager *manager, managers) {
+    for (QContactManager *manager : managers) {
         const QList<QContactDetail::DetailType> supportedTypes(manager->supportedContactDetailTypes());
         if (supportedTypes.contains(QContactAddress::Type)) {
             newMRow("address matching only", manager) << manager
@@ -3048,19 +3052,19 @@ QList<QContactId> tst_QContactManagerFiltering::prepareModel(QContactManager *cm
     // Assume 1-second resolution or better
     const int napTime = 1000;
 
-    QMap<QString, QPair<QContactDetail::DetailType, int> > definitionDetails;
-    definitionDetails.insert("String", qMakePair(QContactGuid::Type, static_cast<int>(QContactGuid::FieldGuid)));
-    definitionDetails.insert("Integer", qMakePair(QContactPresence::Type, static_cast<int>(QContactPresence::FieldPresenceState)));
-    definitionDetails.insert("DateTime", qMakePair(QContactAnniversary::Type, static_cast<int>(QContactAnniversary::FieldOriginalDate)));
-    definitionDetails.insert("Date", qMakePair(QContactBirthday::Type, static_cast<int>(QContactBirthday::FieldBirthday)));
-    definitionDetails.insert("Bool", qMakePair(QContactFavorite::Type, static_cast<int>(QContactFavorite::FieldFavorite)));
-    definitionDetails.insert("Double", qMakePair(QContactDetail::TypeGeoLocation, static_cast<int>(QContactGeoLocation::FieldLatitude)));
+    QMap<QString, std::pair<QContactDetail::DetailType, int> > definitionDetails;
+    definitionDetails.insert("String", std::make_pair(QContactGuid::Type, static_cast<int>(QContactGuid::FieldGuid)));
+    definitionDetails.insert("Integer", std::make_pair(QContactPresence::Type, static_cast<int>(QContactPresence::FieldPresenceState)));
+    definitionDetails.insert("DateTime", std::make_pair(QContactAnniversary::Type, static_cast<int>(QContactAnniversary::FieldOriginalDate)));
+    definitionDetails.insert("Date", std::make_pair(QContactBirthday::Type, static_cast<int>(QContactBirthday::FieldBirthday)));
+    definitionDetails.insert("Bool", std::make_pair(QContactFavorite::Type, static_cast<int>(QContactFavorite::FieldFavorite)));
+    definitionDetails.insert("Double", std::make_pair(QContactDetail::TypeGeoLocation, static_cast<int>(QContactGeoLocation::FieldLatitude)));
     // Currently unused:
-    definitionDetails.insert("LongLong", qMakePair(QContactDetail::TypeUndefined, -1));
-    definitionDetails.insert("ULongLong", qMakePair(QContactDetail::TypeUndefined, -1));
-    definitionDetails.insert("Time", qMakePair(QContactDetail::TypeUndefined, -1));
-    definitionDetails.insert("UInt", qMakePair(QContactDetail::TypeUndefined, -1));
-    definitionDetails.insert("Char", qMakePair(QContactDetail::TypeUndefined, -1));
+    definitionDetails.insert("LongLong", std::make_pair(QContactDetail::TypeUndefined, -1));
+    definitionDetails.insert("ULongLong", std::make_pair(QContactDetail::TypeUndefined, -1));
+    definitionDetails.insert("Time", std::make_pair(QContactDetail::TypeUndefined, -1));
+    definitionDetails.insert("UInt", std::make_pair(QContactDetail::TypeUndefined, -1));
+    definitionDetails.insert("Char", std::make_pair(QContactDetail::TypeUndefined, -1));
 
     defAndFieldNamesForTypePerManager.insert(cm, definitionDetails);
 
@@ -3529,7 +3533,7 @@ QList<QContactId> tst_QContactManagerFiltering::prepareModel(QContactManager *cm
     QList<QContactId> list;
 
     /* Add our newly saved contacts to our internal list of added contacts */
-    foreach (const QContactId &id, (QList<QContactId>() << contactR.id()
+    for (const QContactId &id : (QList<QContactId>() << contactR.id()
                                                         << contactQ.id()
                                                         << contactP.id()
                                                         << contactO.id()
@@ -3583,8 +3587,8 @@ void tst_QContactManagerFiltering::dumpContactDifferences(const QContact& ca, co
 
     // They can be in any order, so loop
     // First remove any matches
-    foreach(QContactDetail d, aDetails) {
-        foreach(QContactDetail d2, bDetails) {
+    for (QContactDetail d : aDetails) {
+        for (QContactDetail d2 : bDetails) {
             if(d == d2) {
                 a.removeDetail(&d);
                 b.removeDetail(&d2);
@@ -3596,12 +3600,12 @@ void tst_QContactManagerFiltering::dumpContactDifferences(const QContact& ca, co
     // Now dump the extra details that were unmatched in A
     aDetails = a.details();
     bDetails = b.details();
-    foreach(QContactDetail d, aDetails) {
+    for (QContactDetail d : aDetails) {
         if (d.type() != QContactDisplayLabel::Type)
             qDebug() << "A contact had extra detail:" << d.type() << d.values();
     }
     // and same for B
-    foreach(QContactDetail d, bDetails) {
+    for (QContactDetail d : bDetails) {
         if (d.type() != QContactDisplayLabel::Type)
             qDebug() << "B contact had extra detail:" << d.type() << d.values();
     }
@@ -3624,8 +3628,8 @@ bool tst_QContactManagerFiltering::isSuperset(const QContact& ca, const QContact
 
     // They can be in any order, so loop
     // First remove any matches
-    foreach(QContactDetail d, aDetails) {
-        foreach(QContactDetail d2, bDetails) {
+    for (QContactDetail d : aDetails) {
+        for (QContactDetail d2 : bDetails) {
             if(d == d2) {
                 a.removeDetail(&d);
                 b.removeDetail(&d2);
@@ -3652,7 +3656,7 @@ void tst_QContactManagerFiltering::dumpContact(const QContact& contact)
     QContactManager m;
     qDebug() << "Contact: " << contact.id() << "(" << contact.detail<QContactDisplayLabel>().label() << ")";
     QList<QContactDetail> details = contact.details();
-    foreach(QContactDetail d, details) {
+    for (QContactDetail d : details) {
         qDebug() << "  " << d.type() << ":";
         qDebug() << "    Vals:" << d.values();
     }
@@ -3663,7 +3667,7 @@ void tst_QContactManagerFiltering::dumpContacts()
     QContactManager m;
     QList<QContactId> ids = m.contactIds();
 
-    foreach(QContactId id, ids) {
+    for (QContactId id : ids) {
         QContact c = m.contact(id);
         dumpContact(c);
     }

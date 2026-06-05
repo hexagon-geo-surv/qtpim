@@ -102,12 +102,16 @@ QList<QOrganizerItemId> QOrganizerItemSkeletonEngine::itemIds(const QOrganizerIt
         If you do have to fetch, consider setting a fetch hint that restricts the information to that needed for filtering/sorting.
     */
 
+    (void)filter;
+    (void)startDateTime;
+    (void)endDateTime;
+    (void)sortOrders;
     *error = QOrganizerManager::NotSupportedError; // TODO <- remove this
 
     QList<QOrganizerItem> partiallyFilteredItems; // = ..., your code here.. [TODO]
     QList<QOrganizerItem> ret;
 
-    foreach(const QOrganizerItem& item, partiallyFilteredItems) {
+    for (const QOrganizerItem& item : partiallyFilteredItems) {
         if (QOrganizerManagerEngine::isItemBetweenDates(item, startDateTime, endDateTime) && QOrganizerManagerEngine::testFilter(filter, item)) {
             QOrganizerManagerEngine::addSorted(&ret, item, sortOrders);
         }
@@ -133,17 +137,19 @@ QList<QOrganizerItem> QOrganizerItemSkeletonEngine::items(const QOrganizerItemFi
         fetch at least what is mentioned in the fetch hint).
     */
 
-    Q_UNUSED(startDateTime);
-    Q_UNUSED(endDateTime);
-    Q_UNUSED(maxCount);
-    Q_UNUSED(fetchHint);
+    Q_UNUSED(startDateTime)
+    Q_UNUSED(endDateTime)
+    Q_UNUSED(maxCount)
+    Q_UNUSED(fetchHint)
+    (void)filter;
+    (void)sortOrders;
 
     *error = QOrganizerManager::NotSupportedError; // TODO <- remove this
 
     QList<QOrganizerItem> partiallyFilteredItems; // = ..., your code here.. [TODO]
     QList<QOrganizerItem> ret;
 
-    foreach(const QOrganizerItem& item, partiallyFilteredItems) {
+    for (const QOrganizerItem& item : partiallyFilteredItems) {
         if (QOrganizerManagerEngine::isItemBetweenDates(item, startDateTime, endDateTime) && QOrganizerManagerEngine::testFilter(filter, item)) {
             QOrganizerManagerEngine::addSorted(&ret, item, sortOrders);
         }
@@ -228,7 +234,7 @@ QOrganizerCollectionId QOrganizerItemSkeletonEngine::defaultCollectionId() const
     return QOrganizerManagerEngine::defaultCollectionId();
 }
 
-QOrganizerCollection QOrganizerItemSkeletonEngine::collection(const QOrganizerCollectionId& collectionId, QOrganizerManager::Error* error) const
+QOrganizerCollection QOrganizerItemSkeletonEngine::collection(const QOrganizerCollectionId& collectionId, QOrganizerManager::Error* error)
 {
     /*
         TODO
@@ -240,7 +246,7 @@ QOrganizerCollection QOrganizerItemSkeletonEngine::collection(const QOrganizerCo
     return QOrganizerManagerEngine::collection(collectionId, error);
 }
 
-QList<QOrganizerCollection> QOrganizerItemSkeletonEngine::collections(QOrganizerManager::Error* error) const
+QList<QOrganizerCollection> QOrganizerItemSkeletonEngine::collections(QOrganizerManager::Error* error)
 {
     /*
         TODO
@@ -383,7 +389,7 @@ QList<QOrganizerItemFilter::FilterType> QOrganizerItemSkeletonEngine::supportedF
 QList<QOrganizerItemDetail::DetailType> QOrganizerItemSkeletonEngine::supportedItemDetails(QOrganizerItemType::ItemType itemType) const
 {
     // TODO - return which [predefined] details this engine supports for this item type
-    Q_UNUSED(itemType);
+    Q_UNUSED(itemType)
 
     return QList<QOrganizerItemDetail::DetailType>();
 }
@@ -403,6 +409,6 @@ QList<QOrganizerItemType::ItemType> QOrganizerItemSkeletonEngine::supportedItemT
     return ret;
 }
 
-QT_END_NAMESPACE_ORGANIZER
-
 #include "moc_qorganizerskeleton_p.cpp"
+
+QT_END_NAMESPACE_ORGANIZER

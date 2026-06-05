@@ -39,8 +39,8 @@ class QOrganizerItemSkeletonFactory : public QOrganizerManagerEngineFactory
     Q_PLUGIN_METADATA(IID "org.qt-project.Qt.QOrganizerManagerEngineFactoryInterface" FILE "skeleton.json")
 
 public:
-    QOrganizerManagerEngine* engine(const QMap<QString, QString>& parameters, QOrganizerManager::Error*);
-    QString managerName() const;
+    QOrganizerManagerEngine* engine(const QMap<QString, QString>& parameters, QOrganizerManager::Error*) override;
+    QString managerName() const override;
 };
 
 
@@ -72,54 +72,54 @@ public:
     ~QOrganizerItemSkeletonEngine();
 
     /* URI reporting */
-    QString managerName() const;
-    QMap<QString, QString> managerParameters() const;
+    QString managerName() const override;
+    QMap<QString, QString> managerParameters() const override;
 
     // items
     QList<QOrganizerItem> items(const QList<QOrganizerItemId> &itemIds, const QOrganizerItemFetchHint &fetchHint,
-                                QMap<int, QOrganizerManager::Error> *errorMap, QOrganizerManager::Error* error);
+                                QMap<int, QOrganizerManager::Error> *errorMap, QOrganizerManager::Error* error) override;
 
     QList<QOrganizerItem> items(const QOrganizerItemFilter &filter, const QDateTime &startDateTime,
                                 const QDateTime &endDateTime, int maxCount,
                                 const QList<QOrganizerItemSortOrder> &sortOrders,
-                                const QOrganizerItemFetchHint &fetchHint, QOrganizerManager::Error *error);
+                                const QOrganizerItemFetchHint &fetchHint, QOrganizerManager::Error *error) override;
 
     QList<QOrganizerItemId> itemIds(const QOrganizerItemFilter &filter, const QDateTime &startDateTime,
                                     const QDateTime &endDateTime, const QList<QOrganizerItemSortOrder> &sortOrders,
-                                    QOrganizerManager::Error *error);
+                                    QOrganizerManager::Error *error) override;
 
     QList<QOrganizerItem> itemOccurrences(const QOrganizerItem &parentItem, const QDateTime &startDateTime,
                                           const QDateTime &endDateTime, int maxCount,
-                                          const QOrganizerItemFetchHint &fetchHint, QOrganizerManager::Error *error);
+                                          const QOrganizerItemFetchHint &fetchHint, QOrganizerManager::Error *error) override;
 
     QList<QOrganizerItem> itemsForExport(const QDateTime &startDateTime, const QDateTime &endDateTime,
                                          const QOrganizerItemFilter &filter,
                                          const QList<QOrganizerItemSortOrder> &sortOrders,
-                                         const QOrganizerItemFetchHint &fetchHint, QOrganizerManager::Error *error);
+                                         const QOrganizerItemFetchHint &fetchHint, QOrganizerManager::Error *error) override;
 
     bool saveItems(QList<QOrganizerItem> *items, const QList<QOrganizerItemDetail::DetailType> &detailMask,
-                   QMap<int, QOrganizerManager::Error> *errorMap, QOrganizerManager::Error *error);
+                   QMap<int, QOrganizerManager::Error> *errorMap, QOrganizerManager::Error *error) override;
 
     bool removeItems(const QList<QOrganizerItemId> &itemIds, QMap<int, QOrganizerManager::Error> *errorMap,
-                     QOrganizerManager::Error *error);
+                     QOrganizerManager::Error *error) override;
 
     // collections
-    QOrganizerCollectionId defaultCollectionId() const;
-    QOrganizerCollection collection(const QOrganizerCollectionId& collectionId, QOrganizerManager::Error* error) const;
-    QList<QOrganizerCollection> collections(QOrganizerManager::Error* error) const;
-    bool saveCollection(QOrganizerCollection* collection, QOrganizerManager::Error* error);
-    bool removeCollection(const QOrganizerCollectionId& collectionId, QOrganizerManager::Error* error);
+    QOrganizerCollectionId defaultCollectionId() const override;
+    QOrganizerCollection collection(const QOrganizerCollectionId& collectionId, QOrganizerManager::Error* error) const override;
+    QList<QOrganizerCollection> collections(QOrganizerManager::Error* error) const override;
+    bool saveCollection(QOrganizerCollection* collection, QOrganizerManager::Error* error) override;
+    bool removeCollection(const QOrganizerCollectionId& collectionId, QOrganizerManager::Error* error) override;
 
     /* Capabilities reporting */
-    QList<QOrganizerItemFilter::FilterType> supportedFilters() const;
-    QList<QOrganizerItemDetail::DetailType> supportedItemDetails(QOrganizerItemType::ItemType itemType) const;
-    QList<QOrganizerItemType::ItemType> supportedItemTypes() const;
+    QList<QOrganizerItemFilter::FilterType> supportedFilters() const override;
+    QList<QOrganizerItemDetail::DetailType> supportedItemDetails(QOrganizerItemType::ItemType itemType) const override;
+    QList<QOrganizerItemType::ItemType> supportedItemTypes() const override;
 
     /* Asynchronous Request Support */
-    void requestDestroyed(QOrganizerAbstractRequest* req);
-    bool startRequest(QOrganizerAbstractRequest* req);
-    bool cancelRequest(QOrganizerAbstractRequest* req);
-    bool waitForRequestFinished(QOrganizerAbstractRequest* req, int msecs);
+    void requestDestroyed(QOrganizerAbstractRequest* req) override;
+    bool startRequest(QOrganizerAbstractRequest* req) override;
+    bool cancelRequest(QOrganizerAbstractRequest* req) override;
+    bool waitForRequestFinished(QOrganizerAbstractRequest* req, int msecs) override;
 
 private:
     QOrganizerItemSkeletonEngineData* d;

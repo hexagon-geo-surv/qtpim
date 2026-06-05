@@ -235,10 +235,11 @@ bool QVersitContactExporter::exportContacts(
     d->mDocuments.clear();
     d->mErrors.clear();
     bool ok = true;
-    foreach (const QTCONTACTS_PREPEND_NAMESPACE(QContact)& contact, contacts) {
+    for (const QTCONTACTS_PREPEND_NAMESPACE(QContact)& contact : contacts) {
         if (contact.isEmpty()) {
             d->mErrors[contactIndex] = EmptyContactError;
             ok = false;
+            contactIndex++;
             continue;
         }
 

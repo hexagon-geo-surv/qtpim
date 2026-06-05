@@ -13,7 +13,7 @@ public:
                            const QVersitProperty& property,
                            const QContact& contact,
                            bool* alreadyProcessed,
-                           QList<QContactDetail>* updatedDetails)
+                           QList<QContactDetail>* updatedDetails) override
     {
         Q_UNUSED(document);
         Q_UNUSED(property);
@@ -22,7 +22,7 @@ public:
         Q_UNUSED(updatedDetails);
     }
     void documentProcessed(const QVersitDocument& document,
-                           QContact* contact)
+                           QContact* contact) override
     {
         Q_UNUSED(document);
         QContactDetail detail(QContactDetail::TypeExtendedDetail);
@@ -34,7 +34,7 @@ public:
                          const QVersitDocument& document,
                          QSet<int>* processedFields,
                          QList<QVersitProperty>* toBeRemoved,
-                         QList<QVersitProperty>* toBeAdded)
+                         QList<QVersitProperty>* toBeAdded) override
     {
         Q_UNUSED(contact);
         Q_UNUSED(detail);
@@ -44,7 +44,7 @@ public:
         Q_UNUSED(toBeAdded);
     }
     void contactProcessed(const QContact& contact,
-                          QVersitDocument* document)
+                          QVersitDocument* document) override
     {
         Q_UNUSED(contact);
         QVersitProperty property;

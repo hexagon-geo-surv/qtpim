@@ -176,7 +176,7 @@ QDataStream &operator>>(QDataStream &in, QOrganizerItemFetchHint &hint)
         in >> detailTypesHint >> optimizations;
 
         QList<QOrganizerItemDetail::DetailType> types;
-        foreach (quint32 detailType, detailTypesHint)
+        for (quint32 detailType : detailTypesHint)
             types.append(static_cast<QOrganizerItemDetail::DetailType>(detailType));
         hint.setDetailTypesHint(types);
 

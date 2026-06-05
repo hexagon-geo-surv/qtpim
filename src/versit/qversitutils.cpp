@@ -4,76 +4,76 @@
 #include "qversitutils_p.h"
 
 #include <QtCore/qstring.h>
+#include <QtCore/qstringconverter.h>
 #include <QtCore/qvariant.h>
 
 #include <QtCore/QJsonArray>
 #include <QtCore/QJsonDocument>
 #include <QtCore/QJsonValue>
 
-#include <QTextCodec>
-
 #include "qversitdocument.h"
 
 QT_BEGIN_NAMESPACE_VERSIT
 
-QTextCodec* VersitUtils::m_previousCodec = 0;
+QStringConverter::Encoding VersitUtils::m_previousEncoding = QStringConverter::Utf8;
 QList<QByteArrayMatcher>* VersitUtils::m_newlineList = 0;
 QByteArray VersitUtils::m_encodingMap[256];
 QBasicMutex VersitUtils::m_staticLock;
+bool VersitUtils::m_initialized = false;
 
 /*!
- * Encode \a ch with \a codec, without adding an byte-order mark
+ * Encode \a ch with \a encoding, without adding a byte-order mark
  */
-QByteArray VersitUtils::encode(char ch, QTextCodec* codec)
+QByteArray VersitUtils::encode(char ch, QStringConverter::Encoding encoding)
 {
-    changeCodec(codec);
-    return m_encodingMap[(int)ch];
+    changeCodec(encoding);
+    return m_encodingMap[(unsigned char)ch];
 }
 
 /*!
- * Encode \a ba with \a codec, without adding an byte-order mark.  \a ba is interpreted as ASCII
+ * Encode \a ba with \a encoding, without adding a byte-order mark.  \a ba is interpreted as ASCII
  */
-QByteArray VersitUtils::encode(const QByteArray& ba, QTextCodec* codec)
+QByteArray VersitUtils::encode(const QByteArray& ba, QStringConverter::Encoding encoding)
 {
-    QTextCodec::ConverterState state(QTextCodec::IgnoreHeader);
-    return codec->fromUnicode(QString::fromLatin1(ba.data()).data(), ba.length(), &state);
+    QStringEncoder enc(encoding);
+    return enc.encode(QString::fromLatin1(ba.constData(), ba.size()));
 }
 
 /*!
- * Returns the list of DOS, UNIX and Mac newline characters for \a codec.
+ * Returns the list of DOS, UNIX and Mac newline characters for \a encoding.
  */
-QList<QByteArrayMatcher>* VersitUtils::newlineList(QTextCodec* codec)
+QList<QByteArrayMatcher>* VersitUtils::newlineList(QStringConverter::Encoding encoding)
 {
-    changeCodec(codec);
+    changeCodec(encoding);
     return m_newlineList;
 }
 
 /*!
- * Update the cached tables of pregenerated encoded text with \a codec.
+ * Update the cached tables of pregenerated encoded text with \a encoding.
  */
-void VersitUtils::changeCodec(QTextCodec* codec) {
+void VersitUtils::changeCodec(QStringConverter::Encoding encoding) {
     QMutexLocker readWriterLocker(&VersitUtils::m_staticLock);
 
-    if (VersitUtils::m_newlineList != 0 && codec == VersitUtils::m_previousCodec)
+    if (m_initialized && encoding == m_previousEncoding)
         return;
 
     // Build m_encodingMap
-    QChar qch;
-    QTextCodec::ConverterState state(QTextCodec::IgnoreHeader);
+    QStringEncoder enc(encoding);
     for (int c = 0; c < 256; c++) {
-        qch = QLatin1Char(c);
-        m_encodingMap[c] = codec->fromUnicode(&qch, 1, &state);
+        QString qch = QString(QLatin1Char(c));
+        m_encodingMap[c] = enc.encode(qch);
     }
 
     // Build m_newlineList
     if (m_newlineList != 0)
         delete m_newlineList;
     m_newlineList = new QList<QByteArrayMatcher>;
-    m_newlineList->append(QByteArrayMatcher(encode("\r\n", codec)));
-    m_newlineList->append(QByteArrayMatcher(encode("\n", codec)));
-    m_newlineList->append(QByteArrayMatcher(encode("\r", codec)));
+    m_newlineList->append(QByteArrayMatcher(encode("\r\n", encoding)));
+    m_newlineList->append(QByteArrayMatcher(encode("\n", encoding)));
+    m_newlineList->append(QByteArrayMatcher(encode("\r", encoding)));
 
-    m_previousCodec = codec;
+    m_previousEncoding = encoding;
+    m_initialized = true;
 }
 
 /*!
@@ -83,7 +83,7 @@ void VersitUtils::changeCodec(QTextCodec* codec) {
 QVersitProperty VersitUtils::takeProperty(const QVersitDocument& document,
                                           const QString& propertyName,
                                           QList<QVersitProperty>* toBeRemoved) {
-    foreach (const QVersitProperty& currentProperty, document.properties()) {
+    for (const QVersitProperty& currentProperty : document.properties()) {
         if (currentProperty.name() == propertyName) {
             *toBeRemoved << currentProperty;
             return currentProperty;
@@ -181,7 +181,9 @@ bool VersitUtils::isValidUtf8(const QByteArray& bytes) {
 bool VersitUtils::convertToJson(const QVariant &data, QString *json)
 {
     const QJsonValue dataAsJsonValue = QJsonValue::fromVariant(data);
-    if (data.isValid() && dataAsJsonValue.isNull())
+    // In Qt 6, QVariant(nullptr_t) converts to a JSON null — preserve that for round-trip.
+    if (data.isValid() && dataAsJsonValue.isNull()
+            && data.userType() != QMetaType::Nullptr)
         return false;
     QJsonArray jsonArray;
     jsonArray.append(dataAsJsonValue);

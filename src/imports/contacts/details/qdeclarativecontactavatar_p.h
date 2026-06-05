@@ -58,7 +58,7 @@ public:
     }
     QUrl videoUrl() const {return detail().value<QUrl>(QContactAvatar::FieldVideoUrl);}
 
-    DetailType detailType() const
+    DetailType detailType() const override
     {
         return QDeclarativeContactDetail::Avatar;
     }

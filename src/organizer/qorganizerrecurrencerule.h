@@ -95,15 +95,15 @@ private:
 };
 
 //hash functions
-Q_ORGANIZER_EXPORT size_t qHash(const QOrganizerRecurrenceRule &rule);
+Q_ORGANIZER_EXPORT size_t qHash(const QOrganizerRecurrenceRule &rule, size_t seed = 0) noexcept;
 
 #ifndef QT_NO_DEBUG_STREAM
 Q_ORGANIZER_EXPORT QDebug operator<<(QDebug dbg, const QOrganizerRecurrenceRule &rule);
 #endif // QT_NO_DEBUG_STREAM
 
-inline size_t qHash(QOrganizerRecurrenceRule::Month month)
+inline size_t qHash(QOrganizerRecurrenceRule::Month month, size_t seed = 0) noexcept
 {
-    return static_cast<uint>(month);
+    return ::qHash(static_cast<int>(month), seed);
 }
 
 QT_END_NAMESPACE_ORGANIZER

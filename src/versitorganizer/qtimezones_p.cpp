@@ -22,7 +22,7 @@ QDateTime TimeZone::convert(const QDateTime& dateTime) const
     QOrganizerManager* manager = getManager();
     int offset = 100000; // impossible value
     QDateTime latestPhase;
-    foreach(const TimeZonePhase& phase, mPhases) {
+    for (const TimeZonePhase& phase : mPhases) {
         QOrganizerEvent event;
         event.setStartDateTime(phase.startDateTime());
         event.setRecurrenceRules(QSet<QOrganizerRecurrenceRule>() << phase.recurrenceRule());

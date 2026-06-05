@@ -51,7 +51,7 @@ void QOrganizerManagerData::createEngine(const QString &managerName, const QMap<
     m_lastError = QOrganizerManager::NoError;
 
     while (!found) {
-        foreach (QOrganizerManagerEngineFactory *f, factories) {
+        for (QOrganizerManagerEngineFactory *f : std::as_const(factories)) {
             m_engine = f->engine(parameters, &m_lastError);
             if (m_engine) {
                 found = true;
@@ -172,18 +172,18 @@ void QOrganizerManagerData::unregisterObserver(QOrganizerItemObserver *observer)
 
 void QOrganizerManagerData::_q_itemsUpdated(const QList<QOrganizerItemId> &ids, const QList<QOrganizerItemDetail::DetailType> &typesChanged)
 {
-    foreach (QOrganizerItemId id, ids) {
-        QList<QOrganizerItemObserver *> observers = m_observerForItem.values(id);
-        foreach (QOrganizerItemObserver *observer, observers)
+    for (const QOrganizerItemId &id : ids) {
+        const QList<QOrganizerItemObserver *> observers = m_observerForItem.values(id);
+        for (QOrganizerItemObserver *observer : observers)
             QMetaObject::invokeMethod(observer, "itemChanged", Q_ARG(QList<QOrganizerItemDetail::DetailType>, typesChanged));
     }
 }
 
 void QOrganizerManagerData::_q_itemsDeleted(const QList<QOrganizerItemId> &ids)
 {
-    foreach (QOrganizerItemId id, ids) {
-        QList<QOrganizerItemObserver *> observers = m_observerForItem.values(id);
-        foreach (QOrganizerItemObserver *observer, observers)
+    for (const QOrganizerItemId &id : ids) {
+        const QList<QOrganizerItemObserver *> observers = m_observerForItem.values(id);
+        for (QOrganizerItemObserver *observer : observers)
             QMetaObject::invokeMethod(observer, "itemRemoved");
     }
 }

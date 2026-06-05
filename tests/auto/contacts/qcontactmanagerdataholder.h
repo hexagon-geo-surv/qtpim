@@ -35,7 +35,7 @@ public:
     {
         QStringList managerNames = QContactManager::availableManagers();
 
-        foreach(const QString& mgr, managerNames) {
+        for (const QString& mgr : managerNames) {
             // Don't bother with these
             if (mgr == "memory" || mgr == "invalid" || mgr == "testdummy" || mgr == "maliciousplugin" || mgr == "testlazy")
                 continue;
@@ -47,7 +47,7 @@ public:
                 QList<QContact> contacts = cm->contacts();
                 savedContacts.insert(cm->managerName(),contacts);
                 QList<QContactId> ids;
-                foreach(const QContact& contact, contacts)
+                for (const QContact& contact : contacts)
                     ids.append(contact.id());
                 cm->removeContacts(ids, 0);
                 delete cm;
@@ -57,7 +57,7 @@ public:
 
     ~QContactManagerDataHolder()
     {
-        foreach(const QString& mgrUri, savedContacts.keys()) {
+        for (const QString& mgrUri : savedContacts.keys()) {
             QContactManager* cm = QContactManager::fromUri(mgrUri);
             if (cm) {
                 qDebug() << "Restoring contacts for" << mgrUri;

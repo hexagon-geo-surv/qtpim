@@ -1,5 +1,6 @@
 // Copyright (C) 2026 The Qt Company Ltd.
 // SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// Qt-Security score:critical reason:data-parser
 
 #ifndef QVERSITORGANIZERIMPORTER_P_H
 #define QVERSITORGANIZERIMPORTER_P_H
@@ -15,8 +16,9 @@
 // We mean it.
 //
 
-#include <QtCore/qpair.h>
 #include <QtCore/qset.h>
+
+#include <utility>
 
 #include <QtOrganizer/qorganizeritem.h>
 #include <QtOrganizer/qorganizeritemdetail.h>
@@ -199,7 +201,7 @@ private:
     QString takeFirst(QList<QString>& list) const;
 
     // versit property name -> <definition name, field name>:
-    QMap<QString, QPair<QOrganizerItemDetail::DetailType, int> > mPropertyMappings;
+    QMap<QString, std::pair<QOrganizerItemDetail::DetailType, int> > mPropertyMappings;
     TimeZones mTimeZones;
 };
 

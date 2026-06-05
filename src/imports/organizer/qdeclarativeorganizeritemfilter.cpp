@@ -121,7 +121,7 @@ QDeclarativeOrganizerItemCompoundFilter::~QDeclarativeOrganizerItemCompoundFilte
  */
 QQmlListProperty<QDeclarativeOrganizerItemFilter> QDeclarativeOrganizerItemCompoundFilter::filters()
 {
-    return { this, nullptr, filters_append, filters_count, filters_at, filters_clear };
+    return QQmlListProperty<QDeclarativeOrganizerItemFilter>(this, 0, filters_append, filters_count, filters_at, filters_clear);
 }
 
 /*!
@@ -200,7 +200,7 @@ QDeclarativeOrganizerItemIntersectionFilter::QDeclarativeOrganizerItemIntersecti
 QOrganizerItemFilter QDeclarativeOrganizerItemIntersectionFilter::filter() const
 {
     QList<QOrganizerItemFilter> filters;
-    foreach (const QDeclarativeOrganizerItemFilter *filter, m_filters)
+    for (const QDeclarativeOrganizerItemFilter *filter : m_filters)
         filters << filter->filter();
     QOrganizerItemIntersectionFilter f;
     f.setFilters(filters);
@@ -243,7 +243,7 @@ QDeclarativeOrganizerItemUnionFilter::QDeclarativeOrganizerItemUnionFilter(QObje
 QOrganizerItemFilter QDeclarativeOrganizerItemUnionFilter::filter() const
 {
     QList<QOrganizerItemFilter> filters;
-    foreach (const QDeclarativeOrganizerItemFilter *filter, m_filters)
+    for (const QDeclarativeOrganizerItemFilter *filter : m_filters)
         filters << filter->filter();
     QOrganizerItemUnionFilter f;
     f.setFilters(filters);
@@ -288,7 +288,7 @@ QStringList QDeclarativeOrganizerItemCollectionFilter::ids() const
 
 void QDeclarativeOrganizerItemCollectionFilter::setIds(const QStringList &ids)
 {
-    foreach (const QString &id, ids) {
+    for (const QString &id : ids) {
         if (!m_ids.contains(id)) {
             m_ids = ids;
             emit valueChanged();
@@ -296,7 +296,7 @@ void QDeclarativeOrganizerItemCollectionFilter::setIds(const QStringList &ids)
         }
     }
 
-    foreach (const QString &id, m_ids) {
+    for (const QString &id : m_ids) {
         if (!ids.contains(id)) {
             m_ids = ids;
             emit valueChanged();
@@ -313,8 +313,8 @@ QOrganizerItemFilter QDeclarativeOrganizerItemCollectionFilter::filter() const
     QOrganizerItemCollectionFilter f;
     QSet<QOrganizerCollectionId> ids;
 
-    foreach (const QVariant &id, m_ids) {
-        QOrganizerCollectionId cId = QOrganizerCollectionId::fromString(id.toString());
+    for (const QString &id : m_ids) {
+        QOrganizerCollectionId cId = QOrganizerCollectionId::fromString(id);
         if (!cId.isNull())
             ids << cId;
     }
@@ -470,14 +470,14 @@ QDeclarativeOrganizerItemDetailFieldFilter::QDeclarativeOrganizerItemDetailField
     This property holds the detail type of which the detail filter will be matched to. The value
     shuold be the enumeration value of Detail::type.
   */
-QDeclarativeOrganizerItemDetail::DetailType QDeclarativeOrganizerItemDetailFieldFilter::detail() const
+int QDeclarativeOrganizerItemDetailFieldFilter::detail() const
 {
-    return static_cast<QDeclarativeOrganizerItemDetail::DetailType>(d.detailType());
+    return static_cast<int>(d.detailType());
 }
 
-void QDeclarativeOrganizerItemDetailFieldFilter::setDetail(QDeclarativeOrganizerItemDetail::DetailType detail)
+void QDeclarativeOrganizerItemDetailFieldFilter::setDetail(int detail)
 {
-    if (detail != static_cast<QDeclarativeOrganizerItemDetail::DetailType>(d.detailType())) {
+    if (detail != static_cast<int>(d.detailType())) {
         d.setDetail(static_cast<QOrganizerItemDetail::DetailType>(detail), d.detailField());
         emit valueChanged();
     }
@@ -519,7 +519,7 @@ QVariant QDeclarativeOrganizerItemDetailFieldFilter::value() const
 void QDeclarativeOrganizerItemDetailFieldFilter::setValue(const QVariant &newValue)
 {
     if (newValue != value()) {
-        if (newValue.metaType().id() == QMetaType::QDateTime) {
+        if (newValue.typeId() == QMetaType::QDateTime) {
             // handling dates and datetimes internally as UTC
             d.setValue(newValue.toDateTime().toUTC());
         } else {
@@ -766,7 +766,7 @@ QStringList QDeclarativeOrganizerItemIdFilter::ids() const
 
 void QDeclarativeOrganizerItemIdFilter::setIds(const QStringList &ids)
 {
-    foreach (const QString& id, ids) {
+    for (const QString& id : ids) {
         if (!m_ids.contains(id)) {
             m_ids = ids;
             emit valueChanged();
@@ -774,7 +774,7 @@ void QDeclarativeOrganizerItemIdFilter::setIds(const QStringList &ids)
         }
     }
 
-    foreach (const QString& id, m_ids) {
+    for (const QString& id : m_ids) {
         if (!ids.contains(id)) {
             m_ids = ids;
             emit valueChanged();
@@ -789,7 +789,7 @@ QOrganizerItemFilter QDeclarativeOrganizerItemIdFilter::filter() const
 {
     QOrganizerItemIdFilter f;
     QList<QOrganizerItemId> ids;
-    foreach (const QString& id, m_ids) {
+    for (const QString& id : m_ids) {
         QOrganizerItemId itemId = QOrganizerItemId::fromString(id);
         if (!itemId.isNull())
             ids << itemId;
@@ -799,6 +799,6 @@ QOrganizerItemFilter QDeclarativeOrganizerItemIdFilter::filter() const
     return f;
 }
 
-QT_END_NAMESPACE
-
 #include "moc_qdeclarativeorganizeritemfilter_p.cpp"
+
+QT_END_NAMESPACE

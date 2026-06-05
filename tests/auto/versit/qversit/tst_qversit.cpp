@@ -18,6 +18,7 @@
 #include <QtVersitOrganizer/qversitorganizerimporter.h>
 
 #include <QtTest/QtTest>
+#include <QtCore/qstringconverter.h>
 #include <QDebug>
 #include <QDir>
 #include <QList>
@@ -37,7 +38,7 @@ public:
     bool saveResource(const QByteArray& contents, const QVersitProperty& property,
                       QString* location)
     {
-        Q_UNUSED(property);
+        Q_UNUSED(property)
         *location = QString::number(mIndex++);
         mObjects.insert(*location, contents);
         return true;
@@ -45,9 +46,9 @@ public:
 
     bool loadResource(const QString &location, QByteArray *contents, QString *mimeType)
     {
-        Q_UNUSED(location);
-        Q_UNUSED(contents);
-        Q_UNUSED(mimeType);
+        Q_UNUSED(location)
+        Q_UNUSED(contents)
+        Q_UNUSED(mimeType)
         return false;
     }
 
@@ -95,7 +96,9 @@ void tst_QVersit::testImportVCardFiles()
     QVERIFY2(file.open(QIODevice::ReadOnly), filename.toLatin1());
     reader.setDevice(&file);
     if (charset != "") {
-        reader.setDefaultCodec(QTextCodec::codecForName(charset));
+        auto encoding = QStringConverter::encodingForName(charset.constData());
+        if (encoding)
+            reader.setDefaultCodec(*encoding);
     }
     QVERIFY(reader.startReading());
     QVERIFY(reader.waitForFinished());
@@ -112,10 +115,10 @@ void tst_QVersit::testImportVCardFiles()
     if (expectedContacts.size() > 0) {
         QCOMPARE(contacts.size(), expectedContacts.size());
         auto i = expectedContacts.cbegin();
-        foreach (QContact parsed, contacts) {
+        for (QContact parsed : contacts) {
             QContact expected = *i++;
             QList<QContactDetail> expectedDetails = expected.details();
-            foreach(QContactDetail expectedDetail, expectedDetails) {
+            for (QContactDetail expectedDetail : expectedDetails) {
                 QContactDetail::DetailType type = expectedDetail.type();
                 QContactDetail parsedDetail = parsed.detail(type);
                 if (parsedDetail != expectedDetail) {
@@ -167,7 +170,7 @@ void tst_QVersit::testImportVCardFiles_data()
         QContactNote note;
         note.setNote(QLatin1String("This is a note field.  Pretty boring."));
         contact.saveDetail(&note);
-        QContactManagerEngine::setContactDisplayLabel(&contact, QLatin1String("Firstname Lastname"));
+        { QContactDisplayLabel dl; dl.setLabel(QLatin1String("Firstname Lastname")); contact.saveDetail(&dl); }
         list.append(contact);
         QContactUrl homeUrl;
         homeUrl.setUrl(QLatin1String("http://mywebpage.com"));
@@ -199,7 +202,7 @@ void tst_QVersit::testImportVCardFiles_data()
         org.setName(QLatin1String("Nokia"));
         org.setDepartment(QStringList(QLatin1String("Qt DF")));
         contact.saveDetail(&org);
-        QContactManagerEngine::setContactDisplayLabel(&contact, QLatin1String("first last"));
+        { QContactDisplayLabel dl; dl.setLabel(QLatin1String("first last")); contact.saveDetail(&dl); }
         list.append(contact);
         QTest::newRow("Entourage12-basic.vcf") << QString::fromLatin1("Entourage12-basic.vcf")
             << QByteArray("") << list;
@@ -243,7 +246,7 @@ void tst_QVersit::testImportVCardFiles_data()
         geo.setLatitude(32.0);
         geo.setLongitude(-64);
         contact.saveDetail(&geo);
-        QContactManagerEngine::setContactDisplayLabel(&contact, QLatin1String("name"));
+        { QContactDisplayLabel dl; dl.setLabel(QLatin1String("name")); contact.saveDetail(&dl); }
         QTest::newRow("test1.vcf") << QString::fromLatin1("test1.vcf")
             << QByteArray("UTF-8") << (QList<QContact>() << contact);
     }
@@ -257,7 +260,7 @@ void tst_QVersit::testBackupVCard()
 {
     // Test that using the backup profile, a contact, when exported and imported again, is unaltered.
     QFETCH(QContact, contact);
-    QVersitContactExporter exporter(QVersitContactHandlerFactory::ProfileBackup);
+    QVersitContactExporter exporter(QVersitContactHandlerFactory::ProfileBackup());
     QVERIFY(exporter.exportContacts(QList<QContact>() << contact, QVersitDocument::VCard30Type));
     QList<QVersitDocument> documents = exporter.documents();
     QCOMPARE(documents.size(), 1);
@@ -273,7 +276,7 @@ void tst_QVersit::testBackupVCard()
     QList<QVersitDocument> parsedDocuments = reader.results();
     QCOMPARE(parsedDocuments.size(), 1);
 
-    QVersitContactImporter importer(QVersitContactHandlerFactory::ProfileBackup);
+    QVersitContactImporter importer(QVersitContactHandlerFactory::ProfileBackup());
     QVERIFY(importer.importDocuments(parsedDocuments));
     QList<QContact> contacts = importer.contacts();
     QCOMPARE(contacts.size(), 1);
@@ -298,7 +301,7 @@ void tst_QVersit::testBackupVCard_data()
         QContactName name;
         name.setCustomLabel(QLatin1String("name"));
         contact.saveDetail(&name);
-        QContactManagerEngine::setContactDisplayLabel(&contact, QLatin1String("name"));
+        { QContactDisplayLabel dl; dl.setLabel(QLatin1String("name")); contact.saveDetail(&dl); }
         QTest::newRow("just a name") << contact;
     }
 
@@ -308,21 +311,23 @@ void tst_QVersit::testBackupVCard_data()
         name.setFirstName(QLatin1String("first"));
         name.setLastName(QLatin1String("last"));
         name.setCustomLabel(QLatin1String("custom"));
-        name.setValue(123456, QLatin1String("RandomValue1"));
-        name.setValue(123457, QLatin1String("RandomValue1"));
+        // Fields 6+ are extra for QContactName (standard fields are 0-5: Prefix,First,Middle,Last,Suffix,CustomLabel)
+        name.setValue(6, QLatin1String("RandomValue1"));
+        name.setValue(7, QLatin1String("RandomValue1"));
         contact.saveDetail(&name);
         QContactDetail customDetail1(QContactDetail::TypeExtendedDetail);
         customDetail1.setValue(QContactExtendedDetail::FieldName, QLatin1String("CustomDetail1"));
-        customDetail1.setValue(123456, QLatin1String("Value11"));
-        customDetail1.setValue(123457, QLatin1String("Value12"));
+        // Fields 2+ are extra for QContactExtendedDetail (standard fields are 0=FieldName, 1=FieldData)
+        customDetail1.setValue(2, QLatin1String("Value11"));
+        customDetail1.setValue(3, QLatin1String("Value12"));
         contact.saveDetail(&customDetail1);
         QContactDetail customDetail2(QContactDetail::TypeExtendedDetail);
         customDetail2.setValue(QContactExtendedDetail::FieldName, QLatin1String("CustomDetail2"));
-        customDetail2.setValue(123456, QLatin1String("Value21"));
-        customDetail2.setValue(123457, QLatin1String("Value22"));
+        customDetail2.setValue(2, QLatin1String("Value21"));
+        customDetail2.setValue(3, QLatin1String("Value22"));
         contact.saveDetail(&customDetail2);
         contact.setType(QContactType::TypeContact);
-        QContactManagerEngine::setContactDisplayLabel(&contact, QLatin1String("custom"));
+        { QContactDisplayLabel dl; dl.setLabel(QLatin1String("custom")); contact.saveDetail(&dl); }
         QTest::newRow("custom detail grouping") << contact;
     }
 
@@ -331,7 +336,7 @@ void tst_QVersit::testBackupVCard_data()
     QContactName name;
     name.setCustomLabel(QLatin1String("name"));
     contact.saveDetail(&name);
-    QContactManagerEngine::setContactDisplayLabel(&contact, QLatin1String("name"));
+    { QContactDisplayLabel dl; dl.setLabel(QLatin1String("name")); contact.saveDetail(&dl); }
     QContactDetail customDetail(QContactDetail::TypeExtendedDetail);
     customDetail.setValue(QContactExtendedDetail::FieldName, QLatin1String("CustomDetailBlob"));
     customDetail.setValue(QContactExtendedDetail::FieldData, QByteArray("blob"));
@@ -388,7 +393,7 @@ QList<QVersitProperty> findPropertiesByName(
         const QVersitDocument &document, const QString &propertyName)
 {
     QList<QVersitProperty> result;
-    foreach (const QVersitProperty& property, document.properties()) {
+    for (const QVersitProperty& property : document.properties()) {
         if (property.name() == propertyName)
             result << property;
     }
@@ -410,10 +415,10 @@ bool areSuperdocuments(const QList<QVersitDocument>& supers, const QList<QVersit
         if (sub.componentType() != super.componentType())
             return false;
 
-        foreach (const QVersitProperty& property, sub.properties()) {
+        for (const QVersitProperty& property : sub.properties()) {
             QList<QVersitProperty> matches(findPropertiesByName(super, property.name()));
             bool foundMatch = false;
-            foreach (const QVersitProperty& candidate, matches) {
+            for (const QVersitProperty& candidate : matches) {
                 if (candidate.valueType() == property.valueType()
                         && candidate.variantValue() == property.variantValue()) {
                     foundMatch = true;
@@ -492,7 +497,7 @@ void tst_QVersit::testPreserveVCardWithBackup()
     QVersitDocument::VersitType versitType = parsedDocuments.first().type();
     QVersitContactImporter importer(QStringList()
             << "Preserve"
-            << QVersitContactHandlerFactory::ProfileBackup);
+            << QVersitContactHandlerFactory::ProfileBackup());
     QVERIFY(importer.importDocuments(parsedDocuments));
     QList<QContact> contacts = importer.contacts();
 
@@ -505,7 +510,7 @@ void tst_QVersit::testPreserveVCardWithBackup()
 
     // Export them
     QVersitContactExporter exporter(QStringList()
-            << QVersitContactHandlerFactory::ProfileBackup
+            << QVersitContactHandlerFactory::ProfileBackup()
             << "Preserve");
     QVERIFY(exporter.exportContacts(contacts, versitType));
     QList<QVersitDocument> documents = exporter.documents();
@@ -550,7 +555,9 @@ void tst_QVersit::testImportICalFiles()
     QVERIFY2(file.open(QIODevice::ReadOnly), filename.toLatin1());
     reader.setDevice(&file);
     if (charset != "") {
-        reader.setDefaultCodec(QTextCodec::codecForName(charset));
+        auto encoding = QStringConverter::encodingForName(charset.constData());
+        if (encoding)
+            reader.setDefaultCodec(*encoding);
     }
     QVERIFY(reader.startReading());
     QVERIFY(reader.waitForFinished());
@@ -564,10 +571,10 @@ void tst_QVersit::testImportICalFiles()
     if (expectedItems.size() > 0) {
         QCOMPARE(items.size(), expectedItems.size());
         auto i = expectedItems.cbegin();
-        foreach (QOrganizerItem parsed, items) {
+        for (QOrganizerItem parsed : items) {
             QOrganizerItem expected = *i++;
             QList<QOrganizerItemDetail> expectedDetails = expected.details();
-            foreach(QOrganizerItemDetail expectedDetail, expectedDetails) {
+            for (QOrganizerItemDetail expectedDetail : expectedDetails) {
                 QOrganizerItemDetail::DetailType name = expectedDetail.type();
                 QOrganizerItemDetail parsedDetail = parsed.detail(name);
                 if (parsedDetail != expectedDetail) {

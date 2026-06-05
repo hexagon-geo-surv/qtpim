@@ -1,10 +1,10 @@
 // Copyright (C) 2026 The Qt Company Ltd.
 // SPDX-License-Identifier: LicenseRef-Qt-Commercial OR BSD-3-Clause
 
-#include <QLocale>
 #include <QtWidgets>
 #include <QtOrganizer/qorganizer.h>
 #include <QtOrganizer/qorganizerabstractrequest.h>
+#include <QtCore/qlocale.h>
 
 #include "monthpage.h"
 #include "calendardemo.h"
@@ -239,11 +239,12 @@ void MonthPage::refreshDayItems()
         m_itemList->addItem("(no entries)");
 }
 
+
 void MonthPage::currentMonthChanged()
 {
     int month = m_calendarWidget->monthShown();
     int year = m_calendarWidget->yearShown();
-    m_dateLabel->setText(QString("%1 %2").arg(QLocale().standaloneMonthName(month)).arg(year));
+    m_dateLabel->setText(QString("%1 %2").arg(QLocale().monthName(month, QLocale::LongFormat)).arg(year));
     refresh();
     m_ignoreShowDayPageOnceFlag = true;
 }

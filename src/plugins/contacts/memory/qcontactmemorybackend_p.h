@@ -31,8 +31,8 @@ class QContactMemoryEngineFactory : public QContactManagerEngineFactory
     Q_OBJECT
     Q_PLUGIN_METADATA(IID "org.qt-project.Qt.QContactManagerEngineFactoryInterface" FILE "memory.json")
 public:
-    QContactManagerEngine* engine(const QMap<QString, QString> &parameters, QContactManager::Error*);
-    QString managerName() const;
+    QContactManagerEngine* engine(const QMap<QString, QString> &parameters, QContactManager::Error*) override;
+    QString managerName() const override;
 };
 
 class QContactMemoryEngineData : public QSharedData
@@ -67,7 +67,7 @@ public:
 
     QContactId m_selfContactId;               // the "MyCard" contact id
     QList<QContact> m_contacts;               // list of contacts
-    QMultiHash<QContactCollectionId, QContactId> m_contactsInCollections; // hash of contacts for each collection
+    QMultiHash<QContactCollectionId, QContactId> m_contactsInCollections;   // hash of contacts for each collection
     QHash<QContactCollectionId, QContactCollection> m_idToCollectionHash; // hash of id to the collection identified by that id
     QList<QContactId> m_contactIds;           // list of contact Id's
     QList<QContactRelationship> m_relationships;   // list of contact relationships
@@ -80,13 +80,13 @@ public:
 
     void emitSharedSignals(QContactChangeSet *cs)
     {
-        foreach(QContactManagerEngine* engine, m_sharedEngines)
+        for (QContactManagerEngine *engine : m_sharedEngines)
             cs->emitSignals(engine);
     }
 
     void emitSharedSignals(QContactCollectionChangeSet *cs)
     {
-        foreach (QContactManagerEngine *engine, m_sharedEngines)
+        for (QContactManagerEngine *engine : m_sharedEngines)
             cs->emitSignals(engine);
     }
 
@@ -104,58 +104,58 @@ public:
     ~QContactMemoryEngine();
 
     /* URI reporting */
-    QString managerName() const;
-    QMap<QString, QString> managerParameters() const;
-    QMap<QString, QString> idInterpretationParameters() const;
+    QString managerName() const override;
+    QMap<QString, QString> managerParameters() const override;
+    QMap<QString, QString> idInterpretationParameters() const override;
 
     /*! \reimp */
-    int managerVersion() const {return 1;}
+    int managerVersion() const override {return 1;}
 
-    virtual QList<QContactId> contactIds(const QContactFilter &filter, const QList<QContactSortOrder> &sortOrders, QContactManager::Error *error) const;
-    virtual QList<QContact> contacts(const QContactFilter &filter, const QList<QContactSortOrder> &sortOrders, const QContactFetchHint &fetchHint, QContactManager::Error *error) const;
-    virtual QContact contact(const QContactId &contactId, const QContactFetchHint &fetchHint, QContactManager::Error *error) const;
+    virtual QList<QContactId> contactIds(const QContactFilter &filter, const QList<QContactSortOrder> &sortOrders, QContactManager::Error *error) const override;
+    virtual QList<QContact> contacts(const QContactFilter &filter, const QList<QContactSortOrder> &sortOrders, const QContactFetchHint &fetchHint, QContactManager::Error *error) const override;
+    virtual QContact contact(const QContactId &contactId, const QContactFetchHint &fetchHint, QContactManager::Error *error) const override;
 
-    virtual bool saveContacts(QList<QContact> *contacts, QMap<int, QContactManager::Error> *errorMap, QContactManager::Error *error);
-    virtual bool removeContacts(const QList<QContactId> &contactIds, QMap<int, QContactManager::Error> *errorMap, QContactManager::Error *error);
+    virtual bool saveContacts(QList<QContact> *contacts, QMap<int, QContactManager::Error> *errorMap, QContactManager::Error *error) override;
+    virtual bool removeContacts(const QList<QContactId> &contactIds, QMap<int, QContactManager::Error> *errorMap, QContactManager::Error *error) override;
 
     /* "Self" contact id (MyCard) */
-    virtual bool setSelfContactId(const QContactId &contactId, QContactManager::Error *error);
-    virtual QContactId selfContactId(QContactManager::Error *error) const;
+    virtual bool setSelfContactId(const QContactId &contactId, QContactManager::Error *error) override;
+    virtual QContactId selfContactId(QContactManager::Error *error) const override;
 
     /* Relationships between contacts */
-    virtual QList<QContactRelationship> relationships(const QString &relationshipType, const QContactId &participantId, QContactRelationship::Role role, QContactManager::Error *error) const;
-    virtual bool saveRelationships(QList<QContactRelationship> *relationships, QMap<int, QContactManager::Error> *errorMap, QContactManager::Error *error);
-    virtual bool removeRelationships(const QList<QContactRelationship> &relationships, QMap<int, QContactManager::Error> *errorMap, QContactManager::Error *error);
+    virtual QList<QContactRelationship> relationships(const QString &relationshipType, const QContactId &participantId, QContactRelationship::Role role, QContactManager::Error *error) const override;
+    virtual bool saveRelationships(QList<QContactRelationship> *relationships, QMap<int, QContactManager::Error> *errorMap, QContactManager::Error *error) override;
+    virtual bool removeRelationships(const QList<QContactRelationship> &relationships, QMap<int, QContactManager::Error> *errorMap, QContactManager::Error *error) override;
 
     // collections
-    QContactCollectionId defaultCollectionId() const;
-    QContactCollection collection(const QContactCollectionId &collectionId, QContactManager::Error *error) const;
-    QList<QContactCollection> collections(QContactManager::Error* error) const;
-    bool saveCollection(QContactCollection* collection, QContactManager::Error* error);
-    bool removeCollection(const QContactCollectionId& collectionId, QContactManager::Error* error);
+    QContactCollectionId defaultCollectionId() const override;
+    QContactCollection collection(const QContactCollectionId &collectionId, QContactManager::Error *error) override;
+    QList<QContactCollection> collections(QContactManager::Error* error) override;
+    bool saveCollection(QContactCollection* collection, QContactManager::Error* error) override;
+    bool removeCollection(const QContactCollectionId& collectionId, QContactManager::Error* error) override;
 
     /*! \reimp */
-    virtual bool validateContact(const QContact &contact, QContactManager::Error *error) const
+    virtual bool validateContact(const QContact &contact, QContactManager::Error *error) const override
     {
         return QContactManagerEngine::validateContact(contact, error);
     }
 
     /* Asynchronous Request Support */
-    virtual void requestDestroyed(QContactAbstractRequest *req);
-    virtual bool startRequest(QContactAbstractRequest *req);
-    virtual bool cancelRequest(QContactAbstractRequest *req);
-    virtual bool waitForRequestFinished(QContactAbstractRequest *req, int msecs);
+    virtual void requestDestroyed(QContactAbstractRequest *req) override;
+    virtual bool startRequest(QContactAbstractRequest *req) override;
+    virtual bool cancelRequest(QContactAbstractRequest *req) override;
+    virtual bool waitForRequestFinished(QContactAbstractRequest *req, int msecs) override;
 
     /* Capabilities reporting */
-    virtual bool isRelationshipTypeSupported(const QString &relationshipType, QContactType::TypeValues contactType) const;
-    virtual bool isFilterSupported(const QContactFilter &filter) const;
-    virtual QList<QMetaType::Type> supportedDataTypes() const;
+    virtual bool isRelationshipTypeSupported(const QString &relationshipType, QContactType::TypeValues contactType) const override;
+    virtual bool isFilterSupported(const QContactFilter &filter) const override;
+    virtual QList<QVariant::Type> supportedDataTypes() const override;
     /*! \reimp */
-    virtual QList<QContactType::TypeValues> supportedContactTypes() const
+    virtual QList<QContactType::TypeValues> supportedContactTypes() const override
     {
         return QContactManagerEngine::supportedContactTypes();
     }
-    virtual QList<QContactDetail::DetailType> supportedContactDetailTypes() const
+    virtual QList<QContactDetail::DetailType> supportedContactDetailTypes() const override
     {
         return QContactManagerEngine::supportedContactDetailTypes();
     }

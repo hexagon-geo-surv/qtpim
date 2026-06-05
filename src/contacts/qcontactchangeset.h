@@ -5,9 +5,10 @@
 #define QCONTACTCHANGESET_H
 
 #include <QtCore/qlist.h>
-#include <QtCore/qpair.h>
 #include <QtCore/qset.h>
 #include <QtCore/qshareddata.h>
+
+#include <utility>
 
 #include <QtContacts/qcontactid.h>
 #include <QtContacts/qcontactdetail.h>
@@ -20,7 +21,7 @@ class QContactChangeSetData;
 class Q_CONTACTS_EXPORT QContactChangeSet
 {
 public:
-    typedef QPair<QList<QContactDetail::DetailType>, QList<QContactId> > ContactChangeList;
+    typedef std::pair<QList<QContactDetail::DetailType>, QList<QContactId> > ContactChangeList;
 
     QContactChangeSet();
     QContactChangeSet(const QContactChangeSet& other);
@@ -56,8 +57,8 @@ public:
     void insertRemovedRelationshipsContacts(const QList<QContactId>& affectedContactIds);
     void clearRemovedRelationshipsContacts();
 
-    void setOldAndNewSelfContactId(const QPair<QContactId, QContactId>& oldAndNewContactId);
-    QPair<QContactId, QContactId> oldAndNewSelfContactId() const;
+    void setOldAndNewSelfContactId(const std::pair<QContactId, QContactId>& oldAndNewContactId);
+    std::pair<QContactId, QContactId> oldAndNewSelfContactId() const;
 
     void clearAll();
 

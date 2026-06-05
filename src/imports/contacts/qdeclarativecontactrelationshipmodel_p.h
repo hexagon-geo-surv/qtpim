@@ -38,15 +38,12 @@ class QDeclarativeContactRelationshipModel : public QAbstractListModel
     Q_PROPERTY(QString error READ error)
 
 public:
-    QDeclarativeContactRelationshipModel(QObject *parent = nullptr);
+    QDeclarativeContactRelationshipModel(QObject *parent = Q_NULLPTR);
     ~QDeclarativeContactRelationshipModel();
-
     enum {
         RelationshipRole = Qt::UserRole + 500
+
     };
-    QHash<int, QByteArray> roleNames() const override;
-    int rowCount(const QModelIndex &parent) const override;
-    QVariant data(const QModelIndex &index, int role) const override;
 
     QString manager() const;
     void setManager(const QString& manager);
@@ -63,6 +60,9 @@ public:
     void setRole(QDeclarativeContactRelationship::RelationshipRole role);
 
     QQmlListProperty<QDeclarativeContactRelationship> relationships();
+    int rowCount(const QModelIndex &parent) const override;
+    QVariant data(const QModelIndex &index, int role) const override;
+    QHash<int, QByteArray> roleNames() const override;
 
     Q_INVOKABLE void removeRelationship(QDeclarativeContactRelationship* dcr);
     Q_INVOKABLE void addRelationship(QDeclarativeContactRelationship* dcr);

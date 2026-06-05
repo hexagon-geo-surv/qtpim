@@ -10,6 +10,8 @@
 #include <QtCore/qstringlist.h>
 #include <QtCore/qvariant.h>
 
+#include <utility>
+
 #include <QtContacts/qcontact.h>
 #include <QtContacts/qcontactabstractrequest.h>
 #include <QtContacts/qcontactfetchhint.h>
@@ -103,7 +105,7 @@ Q_SIGNALS:
     void collectionsAdded(const QList<QContactCollectionId> &collectionIds);
     void collectionsChanged(const QList<QContactCollectionId> &collectionIds);
     void collectionsRemoved(const QList<QContactCollectionId> &collectionIds);
-    void collectionsModified(const QList<QPair<QContactCollectionId, QContactManager::Operation> > &collectionIds);
+    void collectionsModified(const QList<std::pair<QContactCollectionId, QContactManager::Operation> > &collectionIds);
 
 public:
     // Async update functions

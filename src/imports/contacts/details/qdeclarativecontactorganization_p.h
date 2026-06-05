@@ -47,13 +47,13 @@ public:
         AssistantName = QContactOrganization::FieldAssistantName
     };
 
-    QDeclarativeContactOrganization(QObject* parent = nullptr)
+    QDeclarativeContactOrganization(QObject* parent = Q_NULLPTR)
         :QDeclarativeContactDetail(parent)
     {
         setDetail(QContactOrganization());
         connect(this, SIGNAL(valueChanged()), SIGNAL(detailChanged()));
     }
-    DetailType detailType() const
+    DetailType detailType() const override
     {
         return QDeclarativeContactDetail::Organization;
     }
@@ -73,10 +73,10 @@ public:
             emit valueChanged();
         }
     }
-    QUrl logoUrl() const {return detail().value(QContactOrganization::FieldLogoUrl).toString();}
+    QUrl logoUrl() const {return QUrl(detail().value(QContactOrganization::FieldLogoUrl).toString());}
     void setDepartment(const QStringList& v)
     {
-        if (!readOnly() && QSet<QString>(v.constBegin(), v.constEnd()) != QSet<QString>(department().constBegin(), department().constEnd())) {
+        if (!readOnly() && QSet<QString>(v.cbegin(), v.cend()) != QSet<QString>(department().cbegin(), department().cend())) {
             detail().setValue(QContactOrganization::FieldDepartment, v);
             emit valueChanged();
         }

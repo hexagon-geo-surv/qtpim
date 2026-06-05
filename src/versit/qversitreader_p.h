@@ -1,5 +1,6 @@
 // Copyright (C) 2026 The Qt Company Ltd.
 // SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// Qt-Security score:critical reason:data-parser
 
 #ifndef QVERSITREADER_P_H
 #define QVERSITREADER_P_H
@@ -20,10 +21,12 @@
 #include <QtCore/qhash.h>
 #include <QtCore/qlist.h>
 #include <QtCore/qmutex.h>
-#include <QtCore/qpair.h>
 #include <QtCore/qpointer.h>
+
+#include <utility>
 #include <QtCore/qscopedpointer.h>
 #include <QtCore/qstack.h>
+#include <QtCore/qstringconverter.h>
 #include <QtCore/qthread.h>
 
 #include <QtVersit/qversitreader.h>
@@ -32,7 +35,6 @@
 
 QT_FORWARD_DECLARE_CLASS(QBuffer)
 QT_FORWARD_DECLARE_CLASS(QIODevice)
-QT_FORWARD_DECLARE_CLASS(QTextCodec)
 
 QT_BEGIN_NAMESPACE_VERSIT
 
@@ -126,14 +128,14 @@ private:
 class Q_VERSIT_EXPORT LineReader
 {
 public:
-    LineReader(QIODevice* device, QTextCodec* codec);
+    LineReader(QIODevice* device, QStringConverter::Encoding encoding);
     LineReader(QIODevice* device);
-    LineReader(QIODevice* device, QTextCodec* codec, int chunkSize);
+    LineReader(QIODevice* device, QStringConverter::Encoding encoding, int chunkSize);
     void init();
     void pushLine(const QByteArray& line);
     int odometer() const;
     bool atEnd() const;
-    QTextCodec* codec() const;
+    QStringConverter::Encoding encoding() const;
     bool isCodecCertain() const;
     bool isCodecUtf8Compatible() const;
     void setCodecUtf8Incompatible();
@@ -144,10 +146,11 @@ private:
     bool tryReadLine(LByteArray* cursor, bool atEnd);
 
     QIODevice* const mDevice;
-    QTextCodec* mCodec;
+    QStringConverter::Encoding mEncoding;
     bool mIsCodecCertain;
     bool mIsCodecUtf8Compatible;
     int mChunkSize; // How many bytes to read in one go.
+    QList<QByteArrayMatcher> mCrlfList;
     QStack<QByteArray> mPushedLines; // Stores a lines that has been "pushed" in front by pushLine
     LByteArray mBuffer;
     int mOdometer;
@@ -162,7 +165,7 @@ public: // Constructors and destructor
     QVersitReaderPrivate();
     ~QVersitReaderPrivate();
 
-    static QHash<QPair<QVersitDocument::VersitType,QString>, QVersitProperty::ValueType>*
+    static QHash<std::pair<QVersitDocument::VersitType,QString>, QVersitProperty::ValueType>*
         valueTypeMap();
     void init(QVersitReader* reader);
 
@@ -215,32 +218,32 @@ public: // New functions
         const QByteArray& value,
         QVersitProperty* property,
         LineReader* lineReader,
-        QTextCodec** codec) const;
+        QStringConverter::Encoding* encoding) const;
 
     void decodeQuotedPrintable(QByteArray* text) const;
 
 
     /* These functions operate on a cursor describing a single line */
-    QPair<QStringList,QString> extractPropertyGroupsAndName(LByteArray* line, QTextCodec* codec)
+    std::pair<QStringList,QString> extractPropertyGroupsAndName(LByteArray* line, QStringConverter::Encoding encoding)
             const;
-    QMultiHash<QString,QString> extractVCard21PropertyParams(LByteArray* line, QTextCodec* codec)
+    QMultiHash<QString,QString> extractVCard21PropertyParams(LByteArray* line, QStringConverter::Encoding encoding)
             const;
-    QMultiHash<QString,QString> extractVCard30PropertyParams(LByteArray* line, QTextCodec* codec)
+    QMultiHash<QString,QString> extractVCard30PropertyParams(LByteArray* line, QStringConverter::Encoding encoding)
             const;
 
     // "Private" functions
-    QList<QByteArray> extractParams(LByteArray* line, QTextCodec *codec) const;
+    QList<QByteArray> extractParams(LByteArray* line, QStringConverter::Encoding encoding) const;
     QList<QByteArray> extractParts(const QByteArray& text, const QByteArray& separator,
-                                   QTextCodec *codec) const;
+                                   QStringConverter::Encoding encoding) const;
     QByteArray extractPart(const QByteArray& text, int startPosition, int length=-1) const;
-    QString paramName(const QByteArray& parameter, QTextCodec* codec) const;
-    QString paramValue(const QByteArray& parameter, QTextCodec* codec) const;
+    QString paramName(const QByteArray& parameter, QStringConverter::Encoding encoding) const;
+    QString paramValue(const QByteArray& parameter, QStringConverter::Encoding encoding) const;
     template <class T> static bool containsAt(const T& text, const QByteArray& ba, int index);
     bool splitStructuredValue(QVersitProperty* property,
                               bool hasEscapedBackslashes) const;
     static QStringList splitValue(const QString& string,
                                   const QChar& sep,
-                                  Qt::SplitBehavior behavior,
+                                  Qt::SplitBehavior behaviour,
                                   bool hasEscapedBackslashes);
     static void removeBackSlashEscaping(QString* text);
 
@@ -250,7 +253,8 @@ public:
     QScopedPointer<QBuffer> mInputBytes; // Holds the data set by setData()
     QList<QVersitDocument> mVersitDocuments;
     int mDocumentNestingLevel; // Depth in parsing nested Versit documents
-    QTextCodec* mDefaultCodec;
+    QStringConverter::Encoding mDefaultEncoding;
+    bool mHasDefaultEncoding;
     QVersitReader::State mState;
     QVersitReader::Error mError;
     bool mIsCanceling;
@@ -259,7 +263,7 @@ public:
 private:
     /* key is the document type and property name, value is the type of property it is.
        If there is no entry, assume it is a PlainType */
-    static QHash<QPair<QVersitDocument::VersitType,QString>, QVersitProperty::ValueType>* mValueTypeMap;
+    static QHash<std::pair<QVersitDocument::VersitType,QString>, QVersitProperty::ValueType>* mValueTypeMap;
 };
 
 QT_END_NAMESPACE_VERSIT

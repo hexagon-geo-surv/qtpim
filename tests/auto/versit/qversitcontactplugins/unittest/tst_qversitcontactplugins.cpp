@@ -79,7 +79,7 @@ void tst_QVersitContactPlugins::testExporterPlugins() {
     // The plugins have had their index set such that they should be executed in reverse order
     // Check that they are all loaded, and run in the correct order
     int n = 0;
-    foreach (QVersitProperty property, properties) {
+    for (QVersitProperty property : properties) {
         if (property.name() == "TEST-PROPERTY") {
             switch (n) {
                 case 0: QCOMPARE(property.value(), QStringLiteral("5")); break;

@@ -4,6 +4,7 @@
 #include "backupvcardhandler.h"
 
 #include <QtCore/qdatastream.h>
+#include <QtCore/qiodevice.h>
 #include <QtCore/qdatetime.h>
 #include <QtCore/qvariant.h>
 #include <QtCore/qurl.h>
@@ -43,17 +44,17 @@ public:
                            const QVersitProperty& property,
                            const QContact& contact,
                            bool* alreadyProcessed,
-                           QList<QContactDetail>* updatedDetails);
+                           QList<QContactDetail>* updatedDetails) override;
     void documentProcessed(const QVersitDocument& document,
-                           QContact* contact);
+                           QContact* contact) override;
     void detailProcessed(const QContact& contact,
                          const QContactDetail& detail,
                          const QVersitDocument& document,
                          QSet<int>* processedFields,
                          QList<QVersitProperty>* toBeRemoved,
-                         QList<QVersitProperty>* toBeAdded);
+                         QList<QVersitProperty>* toBeAdded) override;
     void contactProcessed(const QContact& contact,
-                          QVersitDocument* document);
+                          QVersitDocument* document) override;
 
 private:
     static void serializeValue(QVersitProperty* property, const QVariant& value);
@@ -150,7 +151,11 @@ void BackupVCardHandler::detailProcessed(
     int toBeAddedCount = toBeAdded->count();
     bool propertiesSynthesized = false;
     for (QMap<int, QVariant>::const_iterator it = fields.constBegin(); it != fields.constEnd(); it++) {
-        if (!processedFields->contains(it.key()) && !it.value().toString().isEmpty()) {
+        // QByteArray::toString() returns "" in Qt 6, so check toByteArray() separately
+        const bool hasValue = it.value().userType() == QMetaType::QByteArray
+                ? !it.value().toByteArray().isEmpty()
+                : !it.value().toString().isEmpty();
+        if (!processedFields->contains(it.key()) && hasValue) {
             // Generate a property for the unknown field
             QVersitProperty property;
             property.setGroups(QStringList(detailGroup));

@@ -106,7 +106,7 @@ public:
 
     QDeclarativeOrganizerEventTime(QObject *parent = nullptr);
 
-    virtual DetailType type() const;
+    DetailType type() const override;
 
     void setAllDay(bool isAllDay);
     bool isAllDay();
@@ -137,7 +137,7 @@ public:
 
     QDeclarativeOrganizerItemComment(QObject *parent = nullptr);
 
-    virtual DetailType type() const;
+    DetailType type() const override;
 
     void setComment(const QString &newComment);
     QString comment() const;
@@ -162,7 +162,7 @@ public:
 
     QDeclarativeOrganizerItemDescription(QObject *parent = nullptr);
 
-    virtual DetailType type() const;
+    DetailType type() const override;
 
     void setDescription(const QString &desc);
     QString description() const;
@@ -187,7 +187,7 @@ public:
 
     QDeclarativeOrganizerItemDisplayLabel(QObject *parent = nullptr);
 
-    virtual DetailType type() const;
+    DetailType type() const override;
 
     void setLabel(const QString &newLabel);
     QString label() const;
@@ -212,7 +212,7 @@ public:
 
     QDeclarativeOrganizerItemGuid(QObject *parent = nullptr);
 
-    virtual DetailType type() const;
+    DetailType type() const override;
 
     void setGuid(const QString &newGuid);
     QString guid() const;
@@ -241,7 +241,7 @@ public:
 
     QDeclarativeOrganizerItemLocation(QObject *parent = nullptr);
 
-    virtual DetailType type() const;
+    DetailType type() const override;
 
     void setLatitude(double newLatitude);
     double latitude() const;
@@ -274,9 +274,9 @@ public:
 
     QDeclarativeOrganizerItemParent(QObject *parent = nullptr);
 
-    virtual DetailType type() const;
-    virtual QVariant value(int field) const;
-    virtual bool setValue(int key, const QVariant& value);
+    DetailType type() const override;
+    QVariant value(int field) const override;
+    bool setValue(int key, const QVariant& value) override;
 
     void setOriginalDate(const QDateTime &date);
     QDateTime originalDate() const;
@@ -318,7 +318,7 @@ public:
 
     QDeclarativeOrganizerItemPriority(QObject *parent = nullptr);
 
-    virtual DetailType type() const;
+    DetailType type() const override;
 
     void setPriority(Priority newPriority);
     Priority priority() const;
@@ -349,9 +349,9 @@ public:
 
     QDeclarativeOrganizerItemRecurrence(QObject *parent = nullptr);
 
-    virtual DetailType type() const;
-    virtual QVariant value(int field) const;
-    virtual bool setValue(int key, const QVariant& value);
+    DetailType type() const override;
+    QVariant value(int field) const override;
+    bool setValue(int key, const QVariant& value) override;
 
     QQmlListProperty<QDeclarativeOrganizerRecurrenceRule> recurrenceRules();
     QQmlListProperty<QDeclarativeOrganizerRecurrenceRule> exceptionRules();
@@ -399,7 +399,7 @@ public:
 
     QDeclarativeOrganizerItemTag(QObject *parent = nullptr);
 
-    virtual DetailType type() const;
+    DetailType type() const override;
 
     void setTag(const QString &newTag);
     QString tag() const;
@@ -426,7 +426,7 @@ public:
 
     QDeclarativeOrganizerItemTimestamp(QObject *parent = nullptr);
 
-    virtual DetailType type() const;
+    DetailType type() const override;
 
     void setCreated(const QDateTime &timestamp);
     QDateTime created() const;
@@ -465,7 +465,7 @@ public:
 
     QDeclarativeOrganizerItemType(QObject *parent = nullptr);
 
-    virtual DetailType type() const;
+    DetailType type() const override;
 
     void setItemType(ItemType newType);
     ItemType itemType() const;
@@ -490,7 +490,7 @@ public:
 
     QDeclarativeOrganizerJournalTime(QObject *parent = nullptr);
 
-    virtual DetailType type() const;
+    DetailType type() const override;
 
     void setEntryDateTime(const QDateTime &datetime);
     QDateTime entryDateTime() const;
@@ -526,7 +526,7 @@ public:
 
     QDeclarativeOrganizerTodoProgress(QObject *parent = nullptr);
 
-    virtual DetailType type() const;
+    DetailType type() const override;
 
     void setPercentageComplete(int percentageComplete);
     int percentageComplete() const;
@@ -560,7 +560,7 @@ public:
 
     QDeclarativeOrganizerTodoTime(QObject *parent = nullptr);
 
-    virtual DetailType type() const;
+    DetailType type() const override;
 
     void setAllDay(bool isAllDay);
     bool isAllDay();
@@ -604,7 +604,7 @@ public:
 
     QDeclarativeOrganizerItemReminder(QObject *parent = nullptr);
 
-    virtual DetailType type() const;
+    DetailType type() const override;
 
     ReminderType reminderType() const;
 
@@ -637,7 +637,7 @@ public:
 
     QDeclarativeOrganizerItemAudibleReminder(QObject *parent = nullptr);
 
-    virtual DetailType type() const;
+    DetailType type() const override;
 
     void setDataUrl(const QUrl &url);
     QUrl dataUrl() const;
@@ -668,7 +668,7 @@ public:
 
     QDeclarativeOrganizerItemEmailReminder(QObject *parent = nullptr);
 
-    virtual DetailType type() const;
+    DetailType type() const override;
 
     void setBody(const QString &newBody);
     QString body() const;
@@ -704,7 +704,7 @@ public:
 
     QDeclarativeOrganizerItemVisualReminder(QObject *parent = nullptr);
 
-    virtual DetailType type() const;
+    DetailType type() const override;
 
     void setMessage(const QString &msg);
     QString message() const;
@@ -734,7 +734,7 @@ public:
 
     QDeclarativeOrganizerItemExtendedDetail(QObject *parent = nullptr);
 
-    virtual DetailType type() const;
+    DetailType type() const override;
 
     void setName(const QString &newDetailName);
     QString name() const;
@@ -792,7 +792,7 @@ public:
 
     QDeclarativeOrganizerEventAttendee(QObject *parent = nullptr);
 
-    virtual DetailType type() const;
+    DetailType type() const override;
 
     void setName(const QString &newName);
     QString name() const;
@@ -845,9 +845,9 @@ public:
 
     QDeclarativeOrganizerEventRsvp(QObject *parent = nullptr);
 
-    virtual DetailType type() const;
-    virtual QVariant value(int field) const;
-    virtual bool setValue(int key, const QVariant& value);
+    DetailType type() const override;
+    QVariant value(int field) const override;
+    bool setValue(int key, const QVariant& value) override;
 
     void setParticipationStatus(QDeclarativeOrganizerEventAttendee::ParticipationStatus status);
     QDeclarativeOrganizerEventAttendee::ParticipationStatus participationStatus() const;
@@ -895,7 +895,7 @@ public:
 
     QDeclarativeOrganizerItemClassification(QObject *parent = nullptr);
 
-    virtual DetailType type() const;
+    DetailType type() const override;
 
     void setClassification(AccessClassification newClassification);
     AccessClassification classification() const;
@@ -920,7 +920,7 @@ public:
 
     QDeclarativeOrganizerItemVersion(QObject *parent = nullptr);
 
-    virtual DetailType type() const;
+    DetailType type() const override;
 
     void setVersion(int newVersion);
     int version() const;

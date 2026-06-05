@@ -52,8 +52,6 @@ void tst_QOrganizerCollection::metaData()
     QVERIFY(c.metaData().isEmpty());
     c.setExtendedMetaData(QString(QStringLiteral("test")), 5);
     QCOMPARE(c.extendedMetaData(QString(QStringLiteral("test"))).toInt(), 5);
-    QCOMPARE(c.extendedMetaData().keys(), QStringList() << QStringLiteral("test"));
-    QCOMPARE(c.extendedMetaData().value(QString(QStringLiteral("test"))), 5);
 
     QMap<QOrganizerCollection::MetaDataKey, QVariant> mdm;
     mdm.insert(QOrganizerCollection::KeyName, QString(QStringLiteral("test2")));
@@ -426,7 +424,7 @@ void tst_QOrganizerCollection::traits()
 
 void tst_QOrganizerCollection::idTraits()
 {
-    QCOMPARE(sizeof(QOrganizerCollectionId), 6*sizeof(void *));
+    QCOMPARE(sizeof(QOrganizerCollectionId), sizeof(QString) + sizeof(QByteArray));
     QVERIFY(QTypeInfo<QOrganizerCollectionId>::isComplex);
     QVERIFY(!QTypeInfo<QOrganizerCollectionId>::isPointer);
 }

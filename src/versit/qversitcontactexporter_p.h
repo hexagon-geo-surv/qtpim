@@ -19,6 +19,8 @@
 #include <QtCore/qlist.h>
 #include <QtCore/qmap.h>
 
+#include <utility>
+
 #include <QtVersit/qversitdocument.h>
 #include <QtVersit/qversitproperty.h>
 
@@ -141,8 +143,8 @@ public: // Data
     QVersitResourceHandler* mResourceHandler;
 
     // detail type -> <field type, versit property name>:
-    QMap<QContactDetail::DetailType, QPair<int, QString> > mPropertyMappings;
-    QMap< QPair<QContactDetail::DetailType, int>, QString> mSubTypeMappings;
+    QMap<QContactDetail::DetailType, std::pair<int, QString> > mPropertyMappings;
+    QMap<std::pair<QContactDetail::DetailType, int>, QString> mSubTypeMappings;
     QHash< int ,QString> mContextMappings;
 };
 

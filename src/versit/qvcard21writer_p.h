@@ -33,8 +33,6 @@ public:
     static bool quotedPrintableEncode(QString& text);
     static bool shouldBeQuotedPrintableEncoded(QChar chr);
 
-private:
-    static QTextEncoder* utf8Encoder();
 };
 
 QT_END_NAMESPACE_VERSIT

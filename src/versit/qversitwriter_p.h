@@ -17,6 +17,7 @@
 
 #include <QtCore/qmutex.h>
 #include <QtCore/qscopedpointer.h>
+#include <QtCore/qstringconverter.h>
 #include <QtCore/qthread.h>
 
 #include <QtVersit/qversitwriter.h>
@@ -62,7 +63,8 @@ public:
     QVersitWriter::Error mError;
     bool mIsCanceling;
     mutable QMutex mMutex;
-    QTextCodec* mDefaultCodec;
+    QStringConverter::Encoding mDefaultEncoding;
+    bool mHasDefaultEncoding;
     QVersitDocument::VersitType mType;
 };
 

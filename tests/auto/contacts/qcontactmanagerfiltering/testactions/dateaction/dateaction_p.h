@@ -100,7 +100,7 @@ public:
         Q_UNUSED(which);
         QSet<QContactActionTarget> retn;
         QList<QContactDetail> dateDets = contact.details("DateDefinition");
-        foreach (const QContactDetail& det, dateDets) {
+        for (const QContactDetail& det : dateDets) {
             if (det.variantValue("DateField").isValid()) {
                 QContactActionTarget curr(contact, det);
                 retn << curr;

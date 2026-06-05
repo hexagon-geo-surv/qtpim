@@ -16,14 +16,13 @@
 //
 
 #include <QtCore/qhash.h>
+#include <QtCore/qstringconverter.h>
 #include <QtCore/qstringlist.h>
 
 #include <QtVersit/qversitdocument.h>
 
 QT_FORWARD_DECLARE_CLASS(QByteArray)
 QT_FORWARD_DECLARE_CLASS(QIODevice)
-QT_FORWARD_DECLARE_CLASS(QTextCodec)
-QT_FORWARD_DECLARE_CLASS(QTextEncoder)
 
 QT_BEGIN_NAMESPACE_VERSIT
 
@@ -35,7 +34,7 @@ public:
     QVersitDocumentWriter(QVersitDocument::VersitType type);
     virtual ~QVersitDocumentWriter();
 
-    void setCodec(QTextCodec* codec);
+    void setEncoding(QStringConverter::Encoding encoding);
     void setAsciiCodec();
     void setDevice(QIODevice* device);
 
@@ -52,10 +51,10 @@ public:
 protected:
     QVersitDocument::VersitType mType;
     QIODevice* mDevice;
-    QTextCodec* mCodec;
+    QStringConverter::Encoding mEncoding;
     bool mCodecIsAscii;
     bool mCodecIsAsciiCompatible;
-    QTextEncoder* mEncoder;
+    QStringEncoder mEncoder;
     bool mSuccessful;
     int mCurrentLineLength;
 };

@@ -3,7 +3,7 @@
 
 #include "qdeclarativecontactdetail_p.h"
 
-#include "qdeclarativecontactdetails_p.h"
+#include "details/qdeclarativecontactdetails_p.h"
 #include "qdeclarativecontact_p.h"
 
 #include <QtQml/QJSValue>

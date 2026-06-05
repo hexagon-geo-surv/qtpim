@@ -42,7 +42,7 @@ void tst_QOrganizerManagerDetails::addManagers()
     managers.removeAll("skeleton");
     managers.removeAll("maliciousplugin");
 
-    foreach(QString mgr, managers) {
+    for (QString mgr : managers) {
         QMap<QString, QString> params;
         QTest::newRow(QString("mgr='%1'").arg(mgr).toLatin1().constData()) << QOrganizerManager::buildUri(mgr, params);
     }

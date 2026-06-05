@@ -282,7 +282,7 @@ void tst_QContactDetail::values()
     dt.setTime(t);
     QDate d = dt.date();
 
-    QDateTime ddt = d.startOfDay(); // DateTime version of a Date (QTime())
+    QDateTime ddt(d.startOfDay()); // DateTime version of a Date (QTime())
 
     QVERIFY(p.setValue(QContactAddress::FieldStreet, "This is a string"));
     QVERIFY(p.setValue(QContactAddress::FieldLocality, d));
@@ -354,7 +354,7 @@ void tst_QContactDetail::values()
     /* Now set everything again */
     QMap<int, QVariant> values = p.values();
     QList<int> keys = values.keys();
-    foreach (int key, keys)
+    for (int key : keys)
         QVERIFY(p.setValue(key, QVariant()));
 
     QCOMPARE(p.values(), emptyValues);
@@ -380,7 +380,7 @@ void tst_QContactDetail::values()
 
     /* Set values */
     keys = values.keys();
-    foreach (int key, keys)
+    for (int key : keys)
         QVERIFY(p.setValue(key, values.value(key)));
 
     /* Now repeat the tests with our bulk set map */
@@ -434,7 +434,7 @@ void tst_QContactDetail::values()
     /* Reset again */
     values = p.values();
     keys = values.keys();
-    foreach (int key, keys)
+    for (int key : keys)
         QVERIFY(p.setValue(key, QVariant()));
     QCOMPARE(p.values(), emptyValues);
 

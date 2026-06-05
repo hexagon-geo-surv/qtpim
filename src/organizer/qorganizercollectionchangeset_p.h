@@ -19,6 +19,8 @@
 #include <QtCore/qset.h>
 #include <QtCore/qshareddata.h>
 
+#include <utility>
+
 #include <QtOrganizer/qorganizercollectionid.h>
 
 QT_BEGIN_NAMESPACE_ORGANIZER
@@ -49,7 +51,7 @@ public:
     QSet<QOrganizerCollectionId> m_addedCollections;
     QSet<QOrganizerCollectionId> m_changedCollections;
     QSet<QOrganizerCollectionId> m_removedCollections;
-    QList<QPair<QOrganizerCollectionId, QOrganizerManager::Operation> > m_modifiedCollections;
+    QList<std::pair<QOrganizerCollectionId, QOrganizerManager::Operation>> m_modifiedCollections;
 };
 
 QT_END_NAMESPACE_ORGANIZER

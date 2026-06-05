@@ -84,7 +84,7 @@ QT_BEGIN_NAMESPACE_ORGANIZER
  */
 
 /*!
-    \fn QOrganizerManagerEngine::itemsModified(const QList<QPair<QOrganizerItemId, QOrganizerManager::Operation> > &itemIds)
+    \fn QOrganizerManagerEngine::itemsModified(const QList<std::pair<QOrganizerItemId, QOrganizerManager::Operation>> &itemIds)
 
     This signal should be emitted at some point once the items identified by \a itemIds have been
     modified in the backend.
@@ -135,7 +135,7 @@ QT_BEGIN_NAMESPACE_ORGANIZER
  */
 
 /*!
-    \fn QOrganizerManagerEngine::collectionsModified(const QList<QPair<QOrganizerCollectionId, QOrganizerManager::Operation> > &collectionIds)
+    \fn QOrganizerManagerEngine::collectionsModified(const QList<std::pair<QOrganizerCollectionId, QOrganizerManager::Operation>> &collectionIds)
 
     This signal should be emitted at some point once the collections identified by \a collectionIds
     have been modified in the backend.
@@ -274,10 +274,10 @@ QList<QOrganizerItemId> QOrganizerManagerEngine::itemIds(const QOrganizerItemFil
                                                          const QList<QOrganizerItemSortOrder> &sortOrders,
                                                          QOrganizerManager::Error *error)
 {
-    Q_UNUSED(startDateTime);
-    Q_UNUSED(endDateTime);
-    Q_UNUSED(filter);
-    Q_UNUSED(sortOrders);
+    Q_UNUSED(startDateTime)
+    Q_UNUSED(endDateTime)
+    Q_UNUSED(filter)
+    Q_UNUSED(sortOrders)
 
     *error = QOrganizerManager::NotSupportedError;
     return QList<QOrganizerItemId>();
@@ -308,12 +308,12 @@ QList<QOrganizerItem> QOrganizerManagerEngine::items(const QOrganizerItemFilter 
                                                      const QList<QOrganizerItemSortOrder> &sortOrders,
                                                      const QOrganizerItemFetchHint &fetchHint, QOrganizerManager::Error *error)
 {
-    Q_UNUSED(filter);
-    Q_UNUSED(startDateTime);
-    Q_UNUSED(endDateTime);
-    Q_UNUSED(maxCount);
-    Q_UNUSED(sortOrders);
-    Q_UNUSED(fetchHint);
+    Q_UNUSED(filter)
+    Q_UNUSED(startDateTime)
+    Q_UNUSED(endDateTime)
+    Q_UNUSED(maxCount)
+    Q_UNUSED(sortOrders)
+    Q_UNUSED(fetchHint)
 
     *error = QOrganizerManager::NotSupportedError;
     return QList<QOrganizerItem>();
@@ -347,11 +347,11 @@ QList<QOrganizerItem> QOrganizerManagerEngine::itemsForExport(const QDateTime &s
                                                               const QOrganizerItemFetchHint &fetchHint,
                                                               QOrganizerManager::Error *error)
 {
-    Q_UNUSED(startDateTime);
-    Q_UNUSED(endDateTime);
-    Q_UNUSED(filter);
-    Q_UNUSED(sortOrders);
-    Q_UNUSED(fetchHint);
+    Q_UNUSED(startDateTime)
+    Q_UNUSED(endDateTime)
+    Q_UNUSED(filter)
+    Q_UNUSED(sortOrders)
+    Q_UNUSED(fetchHint)
 
     *error = QOrganizerManager::NotSupportedError;
     return QList<QOrganizerItem>();
@@ -375,9 +375,9 @@ QList<QOrganizerItem> QOrganizerManagerEngine::itemsForExport(const QDateTime &s
 QList<QOrganizerItem> QOrganizerManagerEngine::items(const QList<QOrganizerItemId> &itemIds, const QOrganizerItemFetchHint &fetchHint,
                                                      QMap<int, QOrganizerManager::Error> *errorMap, QOrganizerManager::Error *error)
 {
-    Q_UNUSED(itemIds);
-    Q_UNUSED(fetchHint);
-    Q_UNUSED(errorMap);
+    Q_UNUSED(itemIds)
+    Q_UNUSED(fetchHint)
+    Q_UNUSED(errorMap)
 
     *error = QOrganizerManager::NotSupportedError;
     return QList<QOrganizerItem>();
@@ -398,7 +398,7 @@ QList<QOrganizerItemFilter::FilterType> QOrganizerManagerEngine::supportedFilter
  */
 QList<QOrganizerItemDetail::DetailType> QOrganizerManagerEngine::supportedItemDetails(QOrganizerItemType::ItemType itemType) const
 {
-    Q_UNUSED(itemType);
+    Q_UNUSED(itemType)
     return QList<QOrganizerItemDetail::DetailType>();
 }
 
@@ -437,9 +437,9 @@ QList<QOrganizerItemType::ItemType> QOrganizerManagerEngine::supportedItemTypes(
 bool QOrganizerManagerEngine::saveItems(QList<QOrganizerItem> *items, const QList<QOrganizerItemDetail::DetailType> &detailMask,
                                         QMap<int, QOrganizerManager::Error> *errorMap, QOrganizerManager::Error *error)
 {
-    Q_UNUSED(items);
-    Q_UNUSED(detailMask);
-    Q_UNUSED(errorMap);
+    Q_UNUSED(items)
+    Q_UNUSED(detailMask)
+    Q_UNUSED(errorMap)
 
     *error = QOrganizerManager::NotSupportedError;
     return false;
@@ -459,8 +459,8 @@ bool QOrganizerManagerEngine::saveItems(QList<QOrganizerItem> *items, const QLis
 bool QOrganizerManagerEngine::removeItems(const QList<QOrganizerItemId> &itemIds, QMap<int, QOrganizerManager::Error> *errorMap,
                                           QOrganizerManager::Error *error)
 {
-    Q_UNUSED(itemIds);
-    Q_UNUSED(errorMap);
+    Q_UNUSED(itemIds)
+    Q_UNUSED(errorMap)
 
     *error = QOrganizerManager::NotSupportedError;
     return false;
@@ -481,8 +481,8 @@ bool QOrganizerManagerEngine::removeItems(const QList<QOrganizerItemId> &itemIds
 bool QOrganizerManagerEngine::removeItems(const QList<QOrganizerItem> *items, QMap<int, QOrganizerManager::Error> *errorMap,
                                           QOrganizerManager::Error *error)
 {
-    Q_UNUSED(items);
-    Q_UNUSED(errorMap);
+    Q_UNUSED(items)
+    Q_UNUSED(errorMap)
 
     *error = QOrganizerManager::NotSupportedError;
     return false;
@@ -504,7 +504,7 @@ QOrganizerCollectionId QOrganizerManagerEngine::defaultCollectionId() const
     \c QOrganizerManager::DoesNotExistError.
 
 */
-QOrganizerCollection QOrganizerManagerEngine::collection(const QOrganizerCollectionId& collectionId, QOrganizerManager::Error* error) const
+QOrganizerCollection QOrganizerManagerEngine::collection(const QOrganizerCollectionId& collectionId, QOrganizerManager::Error* error)
 {
     Q_UNUSED(collectionId);
     *error = QOrganizerManager::NotSupportedError;
@@ -515,7 +515,7 @@ QOrganizerCollection QOrganizerManagerEngine::collection(const QOrganizerCollect
     This function should be reimplemented to support synchronous calls to fetch all the collections
     managed by this backend. Any errors encountered during this operation should be stored to \a error.
  */
-QList<QOrganizerCollection> QOrganizerManagerEngine::collections(QOrganizerManager::Error* error) const
+QList<QOrganizerCollection> QOrganizerManagerEngine::collections(QOrganizerManager::Error* error)
 {
     *error = QOrganizerManager::NotSupportedError;
     return QList<QOrganizerCollection>();
@@ -696,42 +696,42 @@ QOrganizerItemFilter QOrganizerManagerEngine::canonicalizedFilter(const QOrganiz
  */
 int QOrganizerManagerEngine::compareVariant(const QVariant& first, const QVariant& second, Qt::CaseSensitivity sensitivity)
 {
-    switch (first.metaType().id()) {
-        case QMetaType::Int:
+    switch(first.type()) {
+        case QVariant::Int:
             return first.toInt() - second.toInt();
 
-        case QMetaType::LongLong:
+        case QVariant::LongLong:
             return first.toLongLong() - second.toLongLong();
 
-        case QMetaType::Bool:
-        case QMetaType::Char:
-        case QMetaType::UInt:
+        case QVariant::Bool:
+        case QVariant::Char:
+        case QVariant::UInt:
             return first.toUInt() - second.toUInt();
 
-        case QMetaType::ULongLong:
+        case QVariant::ULongLong:
             return first.toULongLong() - second.toULongLong();
 
-        case QMetaType::QString:
+       case QVariant::String:
             return first.toString().compare(second.toString(), sensitivity);
 
-        case QMetaType::Double:
+        case QVariant::Double:
             {
                 const double a = first.toDouble();
                 const double b = second.toDouble();
                 return (a < b) ? -1 : ((a == b) ? 0 : 1);
             }
 
-        case QMetaType::QDateTime:
+        case QVariant::DateTime:
             {
                 const QDateTime a = first.toDateTime();
                 const QDateTime b = second.toDateTime();
                 return (a < b) ? -1 : ((a == b) ? 0 : 1);
             }
 
-        case QMetaType::QDate:
+        case QVariant::Date:
             return first.toDate().toJulianDay() - second.toDate().toJulianDay();
 
-        case QMetaType::QTime:
+        case QVariant::Time:
             {
                 const QTime a = first.toTime();
                 const QTime b = second.toTime();
@@ -923,9 +923,9 @@ bool QOrganizerManagerEngine::testFilter(const QOrganizerItemFilter &filter, con
                         } else {
                             /* Have to test the length of min & max */
                             // using refs means the parameter order is backwards, so negate the result of compare
-                            if (testMin && -QString::compare(minVal, var.right(minVal.length()), cs) < minComp)
+                            if (testMin && -QString::compare(minVal, QStringView(var).right(minVal.length()), cs) < minComp)
                                 continue;
-                            if (testMax && -QString::compare(maxVal, var.right(maxVal.length()), cs) >= maxComp)
+                            if (testMax && -QString::compare(maxVal, QStringView(var).right(maxVal.length()), cs) >= maxComp)
                                 continue;
                             return true;
                         }
@@ -1121,7 +1121,7 @@ bool QOrganizerManagerEngine::itemLessThan(const QOrganizerItem& a, const QOrgan
  */
 int QOrganizerManagerEngine::compareItem(const QOrganizerItem& a, const QOrganizerItem& b, const QList<QOrganizerItemSortOrder>& sortOrders)
 {
-    foreach (const QOrganizerItemSortOrder &sortOrder, sortOrders) {
+    for (const QOrganizerItemSortOrder &sortOrder : sortOrders) {
         if (!sortOrder.isValid())
             break;
 
@@ -1153,10 +1153,10 @@ int QOrganizerManagerEngine::compareItem(const QOrganizerItem& a, const QOrganiz
         bool bIsNull = false;
 
         // treat empty strings as null qvariants.
-        if ((aVal.metaType().id() == QMetaType::QString && aVal.toString().isEmpty()) || aVal.isNull()) {
+        if ((aVal.type() == QVariant::String && aVal.toString().isEmpty()) || aVal.isNull()) {
             aIsNull = true;
         }
-        if ((bVal.metaType().id() == QMetaType::QString && bVal.toString().isEmpty()) || bVal.isNull()) {
+        if ((bVal.type() == QVariant::String && bVal.toString().isEmpty()) || bVal.isNull()) {
             bIsNull = true;
         }
 
@@ -1278,7 +1278,7 @@ QOrganizerItem QOrganizerManagerEngine::generateOccurrence(const QOrganizerItem 
     // Grab all details from the parent item except the recurrence information, and event/todo time range
     QList<QOrganizerItemDetail> allDetails = parentItem.details();
     QList<QOrganizerItemDetail> occDetails;
-    foreach (const QOrganizerItemDetail &detail, allDetails) {
+    for (const QOrganizerItemDetail &detail : std::as_const(allDetails)) {
         if (detail.type() != QOrganizerItemDetail::TypeRecurrence
                 && detail.type() != QOrganizerItemDetail::TypeEventTime
                 && detail.type() != QOrganizerItemDetail::TypeTodoTime) {
@@ -1295,7 +1295,7 @@ QOrganizerItem QOrganizerManagerEngine::generateOccurrence(const QOrganizerItem 
     occDetails.append(parentDetail);
 
     // save those details in the instance.
-    foreach (const QOrganizerItemDetail &detail, occDetails) {
+    for (const QOrganizerItemDetail &detail : std::as_const(occDetails)) {
         // copy every detail except the type
         if (detail.type() != QOrganizerItemDetail::TypeItemType) {
             QOrganizerItemDetail modifiable = detail;
@@ -1388,7 +1388,7 @@ QList<QDateTime> QOrganizerManagerEngine::generateDateTimes(const QDateTime &ini
                     matchingDates(subPeriodStart, subPeriodEnd, rrule),
                     rrule.positions()));
             // A final filter over the dates list before adding it to the returned list
-            foreach (const QDate &match, matchesInPeriod) {
+            for (const QDate &match : std::as_const(matchesInPeriod)) {
                 nextDate = match;
                 if (match < localInitialDateTime.date())
                     continue;
@@ -1625,7 +1625,7 @@ QList<QDate> QOrganizerManagerEngine::filterByPosition(const QList<QDate> &dates
     }
 
     QList<QDate> retn;
-    foreach (int i, positions) {
+    for (int i : positions) {
         if (i >= 1 && i <= dates.size()) {
             // positions is 1-indexed, but the QList is 0-indexed
             retn.append(dates[i-1]);
@@ -2143,6 +2143,6 @@ void QOrganizerManagerEngine::updateCollectionSaveRequest(QOrganizerCollectionSa
 #endif
 }
 
-QT_END_NAMESPACE_ORGANIZER
-
 #include "moc_qorganizermanagerengine.cpp"
+
+QT_END_NAMESPACE_ORGANIZER

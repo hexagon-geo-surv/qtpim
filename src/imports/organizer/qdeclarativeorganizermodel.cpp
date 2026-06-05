@@ -162,6 +162,8 @@ QDeclarativeOrganizerModel::QDeclarativeOrganizerModel(QObject *parent) :
     QAbstractListModel(parent),
     d_ptr(new QDeclarativeOrganizerModelPrivate)
 {
+    // Role names are registered via roleNames() override; no setRoleNames() needed in Qt6.
+
     d_ptr->m_updateTimer.setSingleShot(true);
     d_ptr->m_updateItemsTimer.setSingleShot(true);
     d_ptr->m_fetchCollectionsTimer.setSingleShot(true);
@@ -188,9 +190,9 @@ QDeclarativeOrganizerModel::~QDeclarativeOrganizerModel()
 
 QHash<int, QByteArray> QDeclarativeOrganizerModel::roleNames() const
 {
-    QHash<int, QByteArray> roleNames = QAbstractItemModel::roleNames();
-    roleNames.insert(OrganizerItemRole, "item");
-    return roleNames;
+    QHash<int, QByteArray> roles = QAbstractListModel::roleNames();
+    roles.insert(OrganizerItemRole, "item");
+    return roles;
 }
 
 /*!
@@ -496,7 +498,7 @@ void QDeclarativeOrganizerModel::exportItems(const QUrl &url, const QStringList 
 
         QVersitOrganizerExporter exporter(profile);
         QList<QOrganizerItem> items;
-        foreach (QDeclarativeOrganizerItem *di, d->m_items)
+        for (QDeclarativeOrganizerItem *di : d->m_items)
             items.append(di->item());
 
         exporter.exportItems(items, QVersitDocument::ICalendar20Type);
@@ -559,7 +561,7 @@ void QDeclarativeOrganizerModel::setManager(const QString& managerName)
     connect(d->m_manager, &QOrganizerManager::collectionsChanged, &d->m_fetchCollectionsTimer, static_cast<void (QTimer::*)(void)>(&QTimer::start));
     connect(d->m_manager, &QOrganizerManager::collectionsRemoved, &d->m_fetchCollectionsTimer, static_cast<void (QTimer::*)(void)>(&QTimer::start));
     connect(d->m_manager, &QOrganizerManager::dataChanged, &d->m_updateTimer, static_cast<void (QTimer::*)(void)>(&QTimer::start));
-    connect(d->m_manager, SIGNAL(itemsModified(QList<QPair<QOrganizerItemId,QOrganizerManager::Operation> >)), this, SLOT(onItemsModified(QList<QPair<QOrganizerItemId,QOrganizerManager::Operation> >)));
+    connect(d->m_manager, SIGNAL(itemsModified(QList<std::pair<QOrganizerItemId,QOrganizerManager::Operation> >)), this, SLOT(onItemsModified(QList<std::pair<QOrganizerItemId,QOrganizerManager::Operation> >)));
 
     const QOrganizerManager::Error managerError = d->m_manager->error();
     if (QOrganizerManager::NoError != managerError && d->m_error != managerError) {
@@ -708,12 +710,12 @@ QString QDeclarativeOrganizerModel::error() const
   */
 QQmlListProperty<QDeclarativeOrganizerItemSortOrder> QDeclarativeOrganizerModel::sortOrders()
 {
-    return { this,
-             nullptr,
-             &sortOrder_append,
-             &sortOrder_count,
-             &sortOrder_at,
-             &sortOrder_clear };
+    return QQmlListProperty<QDeclarativeOrganizerItemSortOrder>(this,
+                                                                        0,
+                                                                        sortOrder_append,
+                                                                        sortOrder_count,
+                                                                        sortOrder_at,
+                                                                        sortOrder_clear);
 }
 
 void QDeclarativeOrganizerModel::startImport(QVersitReader::State state)
@@ -735,7 +737,7 @@ void QDeclarativeOrganizerModel::startImport(QVersitReader::State state)
                     emit errorChanged();
                 }
             } else {
-                foreach (const QOrganizerItem i, items) {
+                for (const QOrganizerItem &i : items) {
                     ids << i.id().toString();
                 }
             }
@@ -883,7 +885,7 @@ int QDeclarativeOrganizerModel::fetchItems(const QStringList &itemIds)
     fetchRequest->setManager(d->m_manager);
 
     QList<QOrganizerItemId> ids;
-    foreach (const QString &itemId, itemIds)
+    for (const QString &itemId : itemIds)
         ids.append(QOrganizerItemId::fromString(itemId));
     fetchRequest->setIds(ids);
     int requestId = d->m_lastRequestId.fetchAndAddOrdered(1);
@@ -925,7 +927,7 @@ void QDeclarativeOrganizerModel::onFetchItemsRequestStateChanged(QOrganizerAbstr
     if (request->error() == QOrganizerManager::NoError) {
             const QList<QOrganizerItem> &items((!itemFetchRequest) ? itemByIdFetchRequest->items():itemFetchRequest->items());
         QDeclarativeOrganizerItem *declarativeItem(0);
-        foreach (const QOrganizerItem &item, items) {
+        for (const QOrganizerItem &item : items) {
             switch (item.type()) {
             case QOrganizerItemType::TypeEvent:
                 declarativeItem = new QDeclarativeOrganizerEvent(this);
@@ -982,7 +984,7 @@ QList<bool> QDeclarativeOrganizerModel::containsItems(const QDateTime &start, co
     QDateTime endTime;
     bool itemStartFound;
 
-    foreach (QDeclarativeOrganizerItem *item, d->m_items) {
+    for (QDeclarativeOrganizerItem *item : d->m_items) {
         startTime = item->itemStartTime();
         endTime = item->itemEndTime();
 
@@ -1014,7 +1016,7 @@ QList<bool> QDeclarativeOrganizerModel::containsItems(const QDateTime &start, co
             }
         }
     }
-    return occupiedTimeSlots.toList();
+    return QList<bool>(occupiedTimeSlots.begin(), occupiedTimeSlots.end());
 }
 
 /*!
@@ -1045,7 +1047,7 @@ QVariantList QDeclarativeOrganizerModel::itemsByTimePeriod(const QDateTime &star
     if (start.isValid() && end.isValid()) {
         QDateTime startTime;
         QDateTime endTime;
-        foreach (QDeclarativeOrganizerItem *item, d->m_items) {
+        for (QDeclarativeOrganizerItem *item : d->m_items) {
             startTime = item->itemStartTime();
             endTime = item->itemEndTime();
             if ((startTime.isValid() && startTime <= start && endTime >= end)
@@ -1055,17 +1057,17 @@ QVariantList QDeclarativeOrganizerModel::itemsByTimePeriod(const QDateTime &star
             }
         }
     } else if (start.isValid()) {
-        foreach (QDeclarativeOrganizerItem *item, d->m_items) {
+        for (QDeclarativeOrganizerItem *item : d->m_items) {
             if (item->itemEndTime() >= start)
                 list.append(QVariant::fromValue((QObject *)item));
         }
     } else if (end.isValid()) {
-        foreach (QDeclarativeOrganizerItem *item, d->m_items) {
+        for (QDeclarativeOrganizerItem *item : d->m_items) {
             if (item->itemStartTime() <= end)
                 list.append(QVariant::fromValue((QObject *)item));
         }
     } else {
-        foreach (QDeclarativeOrganizerItem *item, d->m_items)
+        for (QDeclarativeOrganizerItem *item : d->m_items)
             list.append(QVariant::fromValue((QObject *)item));
     }
 
@@ -1103,7 +1105,7 @@ QStringList QDeclarativeOrganizerModel::itemIds(const QDateTime &start, const QD
     QStringList ids;
     if (!end.isNull()) {
         // both start date and end date are valid
-        foreach (QDeclarativeOrganizerItem* item, d->m_items) {
+        for (QDeclarativeOrganizerItem *item : d->m_items) {
             if (item->generatedOccurrence())
                 continue;
             if ( (item->itemStartTime() >= start && item->itemStartTime() <= end)
@@ -1113,13 +1115,13 @@ QStringList QDeclarativeOrganizerModel::itemIds(const QDateTime &start, const QD
         }
     } else if (!start.isNull()) {
         // only a valid start date is valid
-        foreach (QDeclarativeOrganizerItem* item, d->m_items) {
+        for (QDeclarativeOrganizerItem *item : d->m_items) {
             if (!item->generatedOccurrence() && item->itemStartTime() >= start)
                 ids << item->itemId();
         }
     } else {
         // neither start nor end date is valid
-        foreach (QDeclarativeOrganizerItem* item, d->m_items) {
+        for (QDeclarativeOrganizerItem *item : d->m_items) {
             if (!item->generatedOccurrence())
                 ids << item->itemId();
         }
@@ -1296,9 +1298,9 @@ void QDeclarativeOrganizerModel::removeItems(const QStringList& ids)
     QList<QOrganizerItemId> oids;
 
     // FIXME: no special format for occurrence ids
-    foreach (const QString& id, ids) {
+    for (const QString &id : ids) {
         if (id.startsWith(QString("qtorganizer:occurrence"))) {
-            qmlWarning(this) << tr("Can't remove an occurrence item, please modify the parent item's recurrence rule instead!");
+            qmlInfo(this) << tr("Can't remove an occurrence item, please modify the parent item's recurrence rule instead!");
             continue;
         }
         QOrganizerItemId itemId = QOrganizerItemId::fromString(id);
@@ -1311,6 +1313,26 @@ void QDeclarativeOrganizerModel::removeItems(const QStringList& ids)
 
     connect(req, SIGNAL(stateChanged(QOrganizerAbstractRequest::State)), this, SLOT(onRequestStateChanged(QOrganizerAbstractRequest::State)));
 
+    req->start();
+}
+
+/*!
+  \qmlmethod OrganizerModel::removeItems(list<OrganizerItem> items)
+  Removes asynchronously the organizer items in the given \a items list from the backend.
+  */
+void QDeclarativeOrganizerModel::removeItems(const QList<QDeclarativeOrganizerItem> &items)
+{
+    Q_D(QDeclarativeOrganizerModel);
+    QOrganizerItemRemoveRequest* req = new QOrganizerItemRemoveRequest(this);
+    req->setManager(d->m_manager);
+    QList<QOrganizerItem> ois;
+
+    for (int i = 0; i < items.size(); i++) {
+        ois.append(items[i].item());
+    }
+
+    req->setItems(ois);
+    connect(req, SIGNAL(stateChanged(QOrganizerAbstractRequest::State)), this, SLOT(onRequestStateChanged(QOrganizerAbstractRequest::State)));
     req->start();
 }
 
@@ -1347,7 +1369,7 @@ void QDeclarativeOrganizerModel::removeItemsFromModel(const QList<QString> &item
     bool emitSignal = false;
     bool itemIdFound = false;
 
-    foreach (const QString &itemId, itemIds) {
+    for (const QString &itemId : itemIds) {
         itemIdFound = false;
         // generated occurrences are not in m_itemIdHash
         if (d->m_itemIdHash.remove(itemId) > 0)
@@ -1382,7 +1404,7 @@ void QDeclarativeOrganizerModel::removeItemsFromModel(const QList<QString> &item
 
     It's invoked upon the QOrganizerManager::itemsModified() signal.
  */
-void QDeclarativeOrganizerModel::onItemsModified(const QList<QPair<QOrganizerItemId, QOrganizerManager::Operation> > &itemIds)
+void QDeclarativeOrganizerModel::onItemsModified(const QList<std::pair<QOrganizerItemId, QOrganizerManager::Operation> > &itemIds)
 {
     Q_D(QDeclarativeOrganizerModel);
     if (!d->m_autoUpdate)
@@ -1563,7 +1585,7 @@ void QDeclarativeOrganizerModel::onItemsModifiedFetchRequestStateChanged(QOrgani
         // and deleted
 
         removedIds.subtract(addedIds);
-        foreach (const QOrganizerItemId &id, removedIds) {
+        for (const QOrganizerItemId &id : removedIds) {
             QDeclarativeOrganizerItem *changedItem = d->m_itemIdHash.take(id.toString());
             if (changedItem) {
                 changedItem->deleteLater();
@@ -1612,29 +1634,30 @@ void QDeclarativeOrganizerModel::collectionsFetched()
         d->m_updatePendingFlag &= ~QDeclarativeOrganizerModelPrivate::UpdatingCollectionsPending;
         // prepare tables
         QHash<QString, const QOrganizerCollection*> collections;
-        foreach (const QOrganizerCollection& collection, req->collections()) {
+        const QList<QOrganizerCollection> reqCollections = req->collections();
+        for (const QOrganizerCollection &collection : reqCollections) {
             collections.insert(collection.id().toString(), &collection);
         }
         QHash<QString, QDeclarativeOrganizerCollection*> declCollections;
-        foreach(QDeclarativeOrganizerCollection* declCollection, d->m_collections) {
+        for (QDeclarativeOrganizerCollection *declCollection : d->m_collections) {
             declCollections.insert(declCollection->collection().id().toString(), declCollection);
         }
         // go tables through
-        for (auto it = collections.cbegin(), end = collections.cend(); it != end; ++it) {
-            if (declCollections.contains(it.key())) {
+        for (auto collIt = collections.cbegin(); collIt != collections.cend(); ++collIt) {
+            if (declCollections.contains(collIt.key())) {
                 // collection on both sides, update the declarative collection
-                declCollections.value(it.key())->setCollection(*it.value());
+                declCollections.value(collIt.key())->setCollection(*collections.value(collIt.key()));
             } else {
                 // new collection, add it to declarative collection list
                 QDeclarativeOrganizerCollection* declCollection = new QDeclarativeOrganizerCollection(this);
-                declCollection->setCollection(*it.value());
+                declCollection->setCollection(*collections.value(collIt.key()));
                 d->m_collections.append(declCollection);
             }
         }
-        for (auto it = declCollections.cbegin(), end = declCollections.cend(); it != end; ++it) {
-            if (!collections.contains(it.key())) {
+        for (auto declIt = declCollections.cbegin(); declIt != declCollections.cend(); ++declIt) {
+            if (!collections.contains(declIt.key())) {
                 // collection deleted on the backend side, delete from declarative collection list
-                QDeclarativeOrganizerCollection* toBeDeletedColl = it.value();
+                QDeclarativeOrganizerCollection* toBeDeletedColl = declCollections.value(declIt.key());
                 d->m_collections.removeOne(toBeDeletedColl);
                 toBeDeletedColl->deleteLater();
             }
@@ -1701,7 +1724,7 @@ QString QDeclarativeOrganizerModel::defaultCollectionId() const
 QDeclarativeOrganizerCollection* QDeclarativeOrganizerModel::collection(const QString &collectionId)
 {
     Q_D(QDeclarativeOrganizerModel);
-    foreach (QDeclarativeOrganizerCollection* collection, d->m_collections) {
+    for (QDeclarativeOrganizerCollection *collection : d->m_collections) {
         if (collection->id() == collectionId)
             return collection;
     }
@@ -1739,7 +1762,7 @@ QVariant QDeclarativeOrganizerModel::data(const QModelIndex &index, int role) co
   */
 QQmlListProperty<QDeclarativeOrganizerItem> QDeclarativeOrganizerModel::items()
 {
-    return { this, nullptr, item_count, item_at };
+    return QQmlListProperty<QDeclarativeOrganizerItem>(this, 0, item_count, item_at);
 }
 
 /*!
@@ -1751,10 +1774,10 @@ QQmlListProperty<QDeclarativeOrganizerItem> QDeclarativeOrganizerModel::items()
   */
 QQmlListProperty<QDeclarativeOrganizerCollection> QDeclarativeOrganizerModel::collections()
 {
-    return { this, nullptr, collection_count, collection_at };
+    return QQmlListProperty<QDeclarativeOrganizerCollection>(this, 0, collection_count, collection_at);
 }
 
-qsizetype QDeclarativeOrganizerModel::item_count(QQmlListProperty<QDeclarativeOrganizerItem> *p)
+qsizetype  QDeclarativeOrganizerModel::item_count(QQmlListProperty<QDeclarativeOrganizerItem> *p)
 {
     QDeclarativeOrganizerModel* model = qobject_cast<QDeclarativeOrganizerModel*>(p->object);
     if (model)
@@ -1781,14 +1804,13 @@ void QDeclarativeOrganizerModel::sortOrder_append(QQmlListProperty<QDeclarativeO
     }
 }
 
-qsizetype QDeclarativeOrganizerModel::sortOrder_count(QQmlListProperty<QDeclarativeOrganizerItemSortOrder> *p)
+qsizetype  QDeclarativeOrganizerModel::sortOrder_count(QQmlListProperty<QDeclarativeOrganizerItemSortOrder> *p)
 {
     QDeclarativeOrganizerModel* model = qobject_cast<QDeclarativeOrganizerModel*>(p->object);
     if (model)
         return model->d_ptr->m_declarativeSortOrders.size();
     return 0;
 }
-
 QDeclarativeOrganizerItemSortOrder * QDeclarativeOrganizerModel::sortOrder_at(QQmlListProperty<QDeclarativeOrganizerItemSortOrder> *p, qsizetype idx)
 {
     QDeclarativeOrganizerModel* model = qobject_cast<QDeclarativeOrganizerModel*>(p->object);
@@ -1796,7 +1818,7 @@ QDeclarativeOrganizerItemSortOrder * QDeclarativeOrganizerModel::sortOrder_at(QQ
     QDeclarativeOrganizerItemSortOrder* sortOrder = 0;
     if (model) {
         qsizetype i = 0;
-        foreach (QDeclarativeOrganizerItemSortOrder* s, model->d_ptr->m_declarativeSortOrders) {
+        for (QDeclarativeOrganizerItemSortOrder *s : model->d_ptr->m_declarativeSortOrders) {
             if (i == idx) {
                 sortOrder = s;
                 break;
@@ -1807,7 +1829,6 @@ QDeclarativeOrganizerItemSortOrder * QDeclarativeOrganizerModel::sortOrder_at(QQ
     }
     return sortOrder;
 }
-
 void  QDeclarativeOrganizerModel::sortOrder_clear(QQmlListProperty<QDeclarativeOrganizerItemSortOrder> *p)
 {
     QDeclarativeOrganizerModel* model = qobject_cast<QDeclarativeOrganizerModel*>(p->object);
@@ -1819,7 +1840,7 @@ void  QDeclarativeOrganizerModel::sortOrder_clear(QQmlListProperty<QDeclarativeO
     }
 }
 
-qsizetype QDeclarativeOrganizerModel::collection_count(QQmlListProperty<QDeclarativeOrganizerCollection> *p)
+qsizetype  QDeclarativeOrganizerModel::collection_count(QQmlListProperty<QDeclarativeOrganizerCollection> *p)
 {
     QDeclarativeOrganizerModel* model = qobject_cast<QDeclarativeOrganizerModel*>(p->object);
     return model ? model->d_ptr->m_collections.count() : 0;
@@ -1836,6 +1857,6 @@ QDeclarativeOrganizerCollection* QDeclarativeOrganizerModel::collection_at(QQmlL
     return collection;
 }
 
-QT_END_NAMESPACE
-
 #include "moc_qdeclarativeorganizermodel_p.cpp"
+
+QT_END_NAMESPACE

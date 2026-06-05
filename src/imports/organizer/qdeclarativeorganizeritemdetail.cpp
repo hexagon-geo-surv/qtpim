@@ -846,7 +846,7 @@ QQmlListProperty<QDeclarativeOrganizerRecurrenceRule> QDeclarativeOrganizerItemR
 {
     QSet<QOrganizerRecurrenceRule> ruleSet = m_detail.value(QOrganizerItemRecurrence::FieldRecurrenceRules).value< QSet<QOrganizerRecurrenceRule> >();
     if (m_recurrenceRules.isEmpty() && !ruleSet.isEmpty()) {
-        foreach (QOrganizerRecurrenceRule rule, ruleSet) {
+        for (QOrganizerRecurrenceRule rule : ruleSet) {
             QDeclarativeOrganizerRecurrenceRule* drule = new QDeclarativeOrganizerRecurrenceRule(this);
             drule->setRule(rule);
             connect(drule, SIGNAL(recurrenceRuleChanged()), this, SLOT(_saveRecurrenceRules()));
@@ -867,7 +867,7 @@ QQmlListProperty<QDeclarativeOrganizerRecurrenceRule> QDeclarativeOrganizerItemR
 {
     QSet<QOrganizerRecurrenceRule> ruleSet = m_detail.value(QOrganizerItemRecurrence::FieldExceptionRules).value< QSet<QOrganizerRecurrenceRule> >();
     if (m_exceptionRules.isEmpty() && !ruleSet.isEmpty()) {
-        foreach (QOrganizerRecurrenceRule rule, ruleSet) {
+        for (QOrganizerRecurrenceRule rule : ruleSet) {
             QDeclarativeOrganizerRecurrenceRule* drule = new QDeclarativeOrganizerRecurrenceRule(this);
             drule->setRule(rule);
             connect(drule, SIGNAL(recurrenceRuleChanged()), this, SLOT(_saveExceptionRules()));
@@ -887,8 +887,8 @@ void QDeclarativeOrganizerItemRecurrence::setRecurrenceDates(const QVariantList 
     if (dates != recurrenceDates()) {
         QSet<QDate> dateSet;
         QVariant dateSetVariant;
-        Q_FOREACH (const QVariant &date, dates) {
-            if (date.canConvert(QVariant::DateTime)) {
+        for (const QVariant &date : dates) {
+            if (date.canConvert<QDateTime>()) {
                 QDateTime dt = date.toDateTime();
                 // If the value was likely set as a QDate, then assume that the time info can be ignored.
                 // This is to ensure that dates like "2002-01-01" don't get interpretted as being
@@ -913,7 +913,7 @@ QVariantList QDeclarativeOrganizerItemRecurrence::recurrenceDates() const
     QVariant dateSetVariant = m_detail.value(QOrganizerItemRecurrence::FieldRecurrenceDates);
     QSet<QDate> dateSet = dateSetVariant.value<QSet <QDate> >();
     QVariantList dates;
-    foreach (QDate date, dateSet) {
+    for (QDate date : dateSet) {
         QDateTime dateTime(date, QTime(0, 0, 0, 0), Qt::UTC);
         dates.append(QVariant(dateTime));
     }
@@ -930,8 +930,8 @@ void QDeclarativeOrganizerItemRecurrence::setExceptionDates(const QVariantList& 
     if (dates != exceptionDates()) {
         QSet<QDate> dateSet;
         QVariant dateSetVariant;
-        Q_FOREACH (const QVariant &date, dates) {
-            if (date.canConvert(QVariant::DateTime)) {
+        for (const QVariant &date : dates) {
+            if (date.canConvert<QDateTime>()) {
                 QDateTime dt = date.toDateTime();
                 // If the value was likely set as a QDate, then assume that the time info can be ignored.
                 // This is to ensure that dates like "2002-01-01" don't get interpretted as being
@@ -956,7 +956,7 @@ QVariantList QDeclarativeOrganizerItemRecurrence::exceptionDates() const
     QVariant dateSetVariant = m_detail.value(QOrganizerItemRecurrence::FieldExceptionDates);
     QSet<QDate> dateSet = dateSetVariant.value<QSet <QDate> >();
     QVariantList dates;
-    foreach (QDate date, dateSet) {
+    for (QDate date : dateSet) {
         QDateTime dateTime(date, QTime(0, 0, 0, 0), Qt::UTC);
         dates.append(QVariant(dateTime));
     }
@@ -966,7 +966,7 @@ QVariantList QDeclarativeOrganizerItemRecurrence::exceptionDates() const
 void QDeclarativeOrganizerItemRecurrence::_saveRecurrenceRules()
 {
     QSet<QOrganizerRecurrenceRule> rules;
-    foreach (const QDeclarativeOrganizerRecurrenceRule *r, m_recurrenceRules)
+    for (const QDeclarativeOrganizerRecurrenceRule *r : m_recurrenceRules)
         rules << r->rule();
     m_detail.setValue(QOrganizerItemRecurrence::FieldRecurrenceRules, QVariant::fromValue(rules));
     emit valueChanged();
@@ -975,7 +975,7 @@ void QDeclarativeOrganizerItemRecurrence::_saveRecurrenceRules()
 void QDeclarativeOrganizerItemRecurrence::_saveExceptionRules()
 {
     QSet<QOrganizerRecurrenceRule> rules;
-    foreach (const QDeclarativeOrganizerRecurrenceRule *r, m_exceptionRules)
+    for (const QDeclarativeOrganizerRecurrenceRule *r : m_exceptionRules)
         rules << r->rule();
     m_detail.setValue(QOrganizerItemRecurrence::FieldExceptionRules, QVariant::fromValue(rules));
     emit valueChanged();
@@ -999,7 +999,7 @@ void QDeclarativeOrganizerItemRecurrence::xrule_append(QQmlListProperty<QDeclara
     emit recurrence->exceptionRulesChanged();
 }
 
-qsizetype QDeclarativeOrganizerItemRecurrence::rule_count(QQmlListProperty<QDeclarativeOrganizerRecurrenceRule> *p)
+qsizetype  QDeclarativeOrganizerItemRecurrence::rule_count(QQmlListProperty<QDeclarativeOrganizerRecurrenceRule> *p)
 {
     return static_cast<QList<QDeclarativeOrganizerRecurrenceRule*>*>(p->data)->count();
 }
@@ -2453,6 +2453,6 @@ QDeclarativeOrganizerItemDetail *QDeclarativeOrganizerItemDetailFactory::createI
     return itemDetail;
 }
 
-QT_END_NAMESPACE
-
 #include "moc_qdeclarativeorganizeritemdetail_p.cpp"
+
+QT_END_NAMESPACE

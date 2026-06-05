@@ -135,9 +135,9 @@ public:
 
     QQmlListProperty<QDeclarativeOrganizerEventAttendee> attendees();
 
-    Q_INVOKABLE virtual void setDetail(QDeclarativeOrganizerItemDetail *detail);
-    Q_INVOKABLE virtual void removeDetail(QDeclarativeOrganizerItemDetail *detail);
-    Q_INVOKABLE virtual void clearDetails();
+    Q_INVOKABLE virtual void setDetail(QDeclarativeOrganizerItemDetail *detail) override;
+    Q_INVOKABLE virtual void removeDetail(QDeclarativeOrganizerItemDetail *detail) override;
+    Q_INVOKABLE virtual void clearDetails() override;
 
     void setAllDay(bool isAllDay);
     bool isAllDay() const;

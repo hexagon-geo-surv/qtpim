@@ -19,6 +19,8 @@
 #include <QtCore/qset.h>
 #include <QtCore/qshareddata.h>
 
+#include <utility>
+
 #include <QtOrganizer/qorganizeritemchangeset.h>
 #include <QtOrganizer/qorganizeritemid.h>
 
@@ -50,7 +52,7 @@ public:
     QSet<QOrganizerItemId> m_addedItems;
     QList<QOrganizerItemChangeSet::ItemChangeList> m_changedItems;
     QSet<QOrganizerItemId> m_removedItems;
-    QList<QPair<QOrganizerItemId, QOrganizerManager::Operation> > m_modifiedItems;
+    QList<std::pair<QOrganizerItemId, QOrganizerManager::Operation>> m_modifiedItems;
 };
 
 QT_END_NAMESPACE_ORGANIZER

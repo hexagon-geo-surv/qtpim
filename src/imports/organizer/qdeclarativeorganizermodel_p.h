@@ -80,8 +80,8 @@ public:
         ImportParseError       = QVersitReader::ParseError
     };
 
-    explicit QDeclarativeOrganizerModel(QObject *parent = nullptr);
-    explicit QDeclarativeOrganizerModel(QOrganizerManager* manager, const QDateTime& start, const QDateTime& end, QObject *parent = nullptr);
+    explicit QDeclarativeOrganizerModel(QObject *parent = Q_NULLPTR);
+    explicit QDeclarativeOrganizerModel(QOrganizerManager* manager, const QDateTime& start, const QDateTime& end, QObject *parent = Q_NULLPTR);
     ~QDeclarativeOrganizerModel();
 
     QString error() const;
@@ -98,12 +98,12 @@ public:
     void setEndPeriod(const QDateTime& end);
 
     // From QQmlParserStatus
-    void classBegin() override {}
-    void componentComplete() override;
+    virtual void classBegin() override {}
+    virtual void componentComplete() override;
 
-    QHash<int, QByteArray> roleNames() const override;
     int rowCount(const QModelIndex &parent) const override;
     QVariant data(const QModelIndex &index, int role) const override;
+    QHash<int, QByteArray> roleNames() const override;
 
     QDeclarativeOrganizerItemFilter* filter() const;
 
@@ -117,6 +117,7 @@ public:
     Q_INVOKABLE void removeItem(const QString& id);
     Q_INVOKABLE void removeItem(QDeclarativeOrganizerItem *item);
     Q_INVOKABLE void removeItems(const QStringList& ids);
+    Q_INVOKABLE void removeItems(const QList<QDeclarativeOrganizerItem> &items);
     Q_INVOKABLE void saveItem(QDeclarativeOrganizerItem* item);
     Q_INVOKABLE int fetchItems(const QStringList &itemIds);
     Q_INVOKABLE int fetchItems(const QDateTime &start, const QDateTime &end,
@@ -182,7 +183,7 @@ private slots:
     void onFetchItemsRequestStateChanged(QOrganizerAbstractRequest::State state);
 
     // handle signals from organizer manager
-    void onItemsModified(const QList<QPair<QOrganizerItemId, QOrganizerManager::Operation> > &itemIds);
+    void onItemsModified(const QList<std::pair<QOrganizerItemId, QOrganizerManager::Operation> > &itemIds);
 
     // handle fetch request from onItemsModified()
     void onItemsModifiedFetchRequestStateChanged(QOrganizerAbstractRequest::State state);
@@ -199,13 +200,13 @@ private:
     QDeclarativeOrganizerItem* createItem(const QOrganizerItem& item);
     void checkError(const QOrganizerAbstractRequest *request);
 
-    static qsizetype item_count(QQmlListProperty<QDeclarativeOrganizerItem> *p);
+    static qsizetype  item_count(QQmlListProperty<QDeclarativeOrganizerItem> *p);
     static QDeclarativeOrganizerItem * item_at(QQmlListProperty<QDeclarativeOrganizerItem> *p, qsizetype idx);
 
     static void sortOrder_append(QQmlListProperty<QDeclarativeOrganizerItemSortOrder> *p, QDeclarativeOrganizerItemSortOrder *sortOrder);
-    static qsizetype sortOrder_count(QQmlListProperty<QDeclarativeOrganizerItemSortOrder> *p);
+    static qsizetype  sortOrder_count(QQmlListProperty<QDeclarativeOrganizerItemSortOrder> *p);
     static QDeclarativeOrganizerItemSortOrder * sortOrder_at(QQmlListProperty<QDeclarativeOrganizerItemSortOrder> *p, qsizetype idx);
-    static void sortOrder_clear(QQmlListProperty<QDeclarativeOrganizerItemSortOrder> *p);
+    static void  sortOrder_clear(QQmlListProperty<QDeclarativeOrganizerItemSortOrder> *p);
 
     static qsizetype collection_count(QQmlListProperty<QDeclarativeOrganizerCollection> *p);
     static QDeclarativeOrganizerCollection* collection_at(QQmlListProperty<QDeclarativeOrganizerCollection> *p, qsizetype idx);

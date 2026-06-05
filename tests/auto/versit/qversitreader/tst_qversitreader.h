@@ -7,6 +7,7 @@
 #include <QObject>
 #include <QBuffer>
 #include <QtVersit/qversitreader.h>
+#include <QtCore/qstringconverter.h>
 
 QT_BEGIN_NAMESPACE_VERSIT
 class QVersitReaderPrivate;
@@ -76,7 +77,7 @@ private: // Data
     QVersitReaderPrivate* mReaderPrivate;
 #endif
     QBuffer* mInputDevice;
-    QTextCodec* mAsciiCodec;
+    QStringConverter::Encoding mAsciiCodec;
     SignalCatcher* mSignalCatcher;
 };
 

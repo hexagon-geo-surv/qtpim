@@ -7,6 +7,8 @@
 #include <QtCore/qdatetime.h>
 #include <QtCore/qurl.h>
 
+#include <utility>
+
 #include "qversitproperty.h"
 
 /*
@@ -46,7 +48,7 @@ QList<QContactDetail> DetailGroupMap::detailsInGroup(const QString& groupName) c
 {
     QList<int> detailIds = mDetailGroupName.keys(groupName);
     QList<QContactDetail> details;
-    foreach (int detailId, detailIds) {
+    for (int detailId : std::as_const(detailIds)) {
         details << mDetailById[detailId];
     }
     return details;
@@ -103,7 +105,8 @@ bool QVCardRestoreHandler::propertyProcessed(
         // Find a detail previously seen with the same definitionName, which was generated from
         // a property from the same group
         QContactDetail detail(detailType);
-        foreach (const QContactDetail& previousDetail, mDetailGroupMap.detailsInGroup(group)) {
+        const QList<QContactDetail> groupDetails = mDetailGroupMap.detailsInGroup(group);
+        for (const QContactDetail& previousDetail : groupDetails) {
             if (previousDetail.type() == detailType) {
                 detail = previousDetail;
             }
@@ -113,7 +116,7 @@ bool QVCardRestoreHandler::propertyProcessed(
         detail.setValue(fieldName.toInt(), deserializeValue(property));
 
         // Replace the equivalent detail in updatedDetails with the new one
-        for (auto it = updatedDetails->begin(), end = updatedDetails->end(); it != end; ++it) {
+        for (auto it = updatedDetails->begin(); it != updatedDetails->end(); ++it) {
             if (it->key() == detail.key()) {
                 updatedDetails->erase(it);
                 break;
@@ -124,7 +127,7 @@ bool QVCardRestoreHandler::propertyProcessed(
     }
     if (!group.isEmpty()) {
         // Keep track of which details were generated from which Versit groups
-        foreach (const QContactDetail& detail, *updatedDetails) {
+        for (const QContactDetail& detail : std::as_const(*updatedDetails)) {
             mDetailGroupMap.insert(group, detail);
         }
     }

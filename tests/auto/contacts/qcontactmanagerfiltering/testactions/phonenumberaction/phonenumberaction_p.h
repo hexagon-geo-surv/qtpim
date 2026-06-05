@@ -99,7 +99,7 @@ public:
         Q_UNUSED(which);
         QSet<QContactActionTarget> retn;
         QList<QContactDetail> pnDets = contact.details(QContactPhoneNumber::DefinitionName);
-        foreach (const QContactDetail& det, pnDets) {
+        for (const QContactDetail& det : pnDets) {
             if (!det.value(QContactPhoneNumber::FieldNumber).isEmpty()) {
                 QContactActionTarget curr(contact, det);
                 retn << curr;

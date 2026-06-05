@@ -373,7 +373,7 @@ void QDeclarativeContactCompoundFilter::filters_clear(QQmlListProperty<QDeclarat
 {
     QDeclarativeContactCompoundFilter* compoundFilter = static_cast<QDeclarativeContactCompoundFilter*>(prop->object);
     if (!compoundFilter->m_filters.isEmpty()) {
-        foreach (QDeclarativeContactFilter* filter, compoundFilter->m_filters) {
+        for (QDeclarativeContactFilter *filter : std::as_const(compoundFilter->m_filters)) {
             QObject::disconnect(filter, SIGNAL(filterChanged()), compoundFilter, SIGNAL(filterChanged()));
         }
         compoundFilter->m_filters.clear();

@@ -19,6 +19,8 @@
 #include <QtCore/qset.h>
 #include <QtCore/qshareddata.h>
 
+#include <utility>
+
 #include <QtContacts/qcontactcollectionid.h>
 
 QT_BEGIN_NAMESPACE_CONTACTS
@@ -49,7 +51,7 @@ public:
     QSet<QContactCollectionId> m_addedCollections;
     QSet<QContactCollectionId> m_changedCollections;
     QSet<QContactCollectionId> m_removedCollections;
-    QList<QPair<QContactCollectionId, QContactManager::Operation> > m_modifiedCollections;
+    QList<std::pair<QContactCollectionId, QContactManager::Operation> > m_modifiedCollections;
 };
 
 QT_END_NAMESPACE_CONTACTS

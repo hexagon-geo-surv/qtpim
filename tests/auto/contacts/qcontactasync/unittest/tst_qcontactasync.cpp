@@ -258,8 +258,8 @@ bool tst_QContactAsync::compareContactLists(QList<QContact> lista, QList<QContac
     // NOTE: This compare is contact order insensitive.
 
     // Remove matching contacts
-    foreach (QContact a, lista) {
-        foreach (QContact b, listb) {
+    for (QContact a : lista) {
+        for (QContact b : listb) {
             if (compareContacts(a, b)) {
                 lista.removeOne(a);
                 listb.removeOne(b);
@@ -281,8 +281,8 @@ bool tst_QContactAsync::compareContacts(QContact ca, QContact cb)
     QList<QContactDetail> bDetails = cb.details();
 
     // Remove matching details
-    foreach (QContactDetail ad, aDetails) {
-        foreach (QContactDetail bd, bDetails) {
+    for (QContactDetail ad : aDetails) {
+        for (QContactDetail bd : bDetails) {
             if (ad == bd) {
                 ca.removeDetail(&ad);
                 cb.removeDetail(&bd);
@@ -330,8 +330,8 @@ bool tst_QContactAsync::compareIgnoringTimestamps(const QContact& ca, const QCon
 
     // They can be in any order, so loop
     // First remove any matches, and any timestamps
-    foreach (QContactDetail d, aDetails) {
-        foreach (QContactDetail d2, bDetails) {
+    for (QContactDetail d : aDetails) {
+        for (QContactDetail d2 : bDetails) {
             if (d == d2) {
                 a.removeDetail(&d);
                 b.removeDetail(&d2);
@@ -356,7 +356,7 @@ bool tst_QContactAsync::compareIgnoringTimestamps(const QContact& ca, const QCon
 bool tst_QContactAsync::containsAllCollectionIds(const QList<QContactCollectionId> &target, const QList<QContactCollectionId> &ids)
 {
     bool containsAllIds = true;
-    foreach (QContactCollectionId id, ids) {
+    for (QContactCollectionId id : ids) {
         if (!target.contains(id)) {
             containsAllIds = false;
             break;
@@ -509,7 +509,7 @@ void tst_QContactAsync::contactFetch()
         QContact currRestricted;
         currRestricted.setId(currFull.id());
         QList<QContactName> names = currFull.details<QContactName>();
-        foreach (const QContactName& name, names) {
+        for (const QContactName& name : names) {
             QContactName fullName = name;
             if (!fullName.isEmpty()) {
                 currRestricted.saveDetail(&fullName);
@@ -519,7 +519,7 @@ void tst_QContactAsync::contactFetch()
         // now find the contact in the retrieved list which our restricted contact mimics
         QContact retrievedRestricted;
         bool found = false;
-        foreach (const QContact& retrieved, contacts) {
+        for (const QContact& retrieved : contacts) {
             if (retrieved.id() == currRestricted.id()) {
                 retrievedRestricted = retrieved;
                 found = true;
@@ -531,7 +531,7 @@ void tst_QContactAsync::contactFetch()
         // ensure that the contact is the same (except synth fields)
         QList<QContactDetail> retrievedDetails = retrievedRestricted.details();
         QList<QContactDetail> expectedDetails = currRestricted.details();
-        foreach (const QContactDetail& det, expectedDetails) {
+        for (const QContactDetail& det : expectedDetails) {
             // ignore backend synthesised details
             // again, this requires a "default contact details" function to work properly.
             if (det.type() == QContactTimestamp::Type) {
@@ -698,7 +698,7 @@ void tst_QContactAsync::contactFetchByIdWithEmptyIds()
     QList<QContact> contacts = cfr.contacts();
     QCOMPARE(contacts.size(), expectedCount);
     int contactIndex = 0;
-    foreach (const QContactId id, contactIds) {
+    for (const QContactId id : contactIds) {
             QCOMPARE(contacts.at(contactIndex), QContact());
             QCOMPARE(cfr.errorMap().value(contactIndex),QContactManager::DoesNotExistError);
         contactIndex++;
@@ -716,7 +716,7 @@ void tst_QContactAsync::contactFetchByIdMixingEmptyIds()
     // List of ids contains few empty ones among good ones.
     int expectedCount = cm->contactIds().size();
     QList<QContactId> contactIds;
-    foreach (const QContactId id, cm->contactIds()) {
+    for (const QContactId id : cm->contactIds()) {
         contactIds.append(QContactId());
         expectedCount ++;
         contactIds.append(id);
@@ -747,7 +747,7 @@ void tst_QContactAsync::contactFetchByIdMixingEmptyIds()
     QList<QContact> contacts = cfr.contacts();
     QCOMPARE(contacts.size(), expectedCount);
     int contactIndex = 0;
-    foreach (const QContactId id, contactIds) {
+    for (const QContactId id : contactIds) {
         if (id == QContactId()) {
             QCOMPARE(contacts.at(contactIndex), QContact());
             QCOMPARE(cfr.errorMap().value(contactIndex),QContactManager::DoesNotExistError);
@@ -769,7 +769,7 @@ void tst_QContactAsync::contactFetchByIdWithNonExistingButValidIds()
     // List of ids contains few empty ones among good ones.
     int expectedCount = 0;
     QList<QContactId> contactIds;
-    foreach (const QContactId id, cm->contactIds()) {
+    for (const QContactId id : cm->contactIds()) {
         QVERIFY(cm->removeContact(id));
         contactIds.append(id);
         expectedCount ++;
@@ -798,7 +798,7 @@ void tst_QContactAsync::contactFetchByIdWithNonExistingButValidIds()
     QList<QContact> contacts = cfr.contacts();
     QCOMPARE(contacts.size(), expectedCount);
     int contactIndex = 0;
-    foreach (const QContactId id, contactIds) {
+    for (const QContactId id : contactIds) {
         QCOMPARE(contacts.at(contactIndex), QContact());
         QCOMPARE(cfr.errorMap().value(contactIndex),QContactManager::DoesNotExistError);
         contactIndex++;
@@ -1940,7 +1940,7 @@ void tst_QContactAsync::relationshipFetch()
     rfr.setRelationshipType(QString());
     QList<QContactId> contacts = cm->contactIds();
     QContact aContact;
-    foreach (const QContactId& currId, contacts) {
+    for (const QContactId& currId : contacts) {
         QContact curr = cm->contact(currId);
         if (curr.detail(QContactName::Type).value(QContactName::FieldFirstName) == QString("Aaron")) {
             aContact = curr;
@@ -1966,7 +1966,7 @@ void tst_QContactAsync::relationshipFetch()
     rfr.setFirst(QContactId());
     contacts = cm->contactIds();
     QContact bContact;
-    foreach (const QContactId& currId, contacts) {
+    for (const QContactId& currId : contacts) {
         QContact curr = cm->contact(currId);
         if (curr.detail(QContactName::Type).value(QContactName::FieldFirstName) == QString("Bob")) {
             bContact = curr;
@@ -1994,7 +1994,7 @@ void tst_QContactAsync::relationshipFetch()
     rfr.setFirst(QContactId());
     contacts = cm->contactIds();
     QContact cContact;
-    foreach (const QContactId& currId, contacts) {
+    for (const QContactId& currId : contacts) {
         QContact curr = cm->contact(currId);
         if (curr.detail(QContactName::Type).value(QContactName::FieldFirstName) == QString("Borris")) {
             cContact = curr;
@@ -2097,7 +2097,7 @@ void tst_QContactAsync::relationshipRemove()
 
     QList<QContactId> contacts = cm->contactIds();
     QContact aContact, bContact, cContact;
-    foreach (const QContactId& currId, contacts) {
+    for (const QContactId& currId : contacts) {
         QContact curr = cm->contact(currId);
         if (curr.detail(QContactName::Type).value(QContactName::FieldFirstName) == QString("Aaron")) {
             aContact = curr;
@@ -2246,7 +2246,7 @@ void tst_QContactAsync::relationshipSave()
 
     QList<QContactId> contacts = cm->contactIds();
     QContact cContact, aContact, bContact;
-    foreach (const QContactId& currId, contacts) {
+    for (const QContactId& currId : contacts) {
         QContact curr = cm->contact(currId);
         if (curr.detail(QContactName::Type).value(QContactName::FieldFirstName) == QString("Borris")) {
             cContact = curr;
@@ -2698,7 +2698,7 @@ void tst_QContactAsync::collectionSave()
     result << cm->collection(csr.collections().at(0).id());
 
     // find the saved one, compare.
-    foreach (const QContactCollection &col, result)
+    for (const QContactCollection &col : result)
         QVERIFY(col.id() == expected.at(0).id());
 
     // update a previously saved collection
@@ -2724,7 +2724,7 @@ void tst_QContactAsync::collectionSave()
     result.clear();
     result = cm->collections();
     // find the saved one, compare.
-    foreach (const QContactCollection& col, result) {
+    for (const QContactCollection& col : result) {
         if (col.id() == expected.at(0).id()) {
             QVERIFY(col == expected.at(0)); // XXX TODO: if we change the semantic so that save merely updates the id...?
         }
@@ -2980,6 +2980,7 @@ void tst_QContactAsync::addManagers(QStringList stringlist)
         managers.removeAll("maliciousplugin");
     if (!stringlist.contains("testdummy"))
         managers.removeAll("testdummy");
+    managers.removeAll("dummytest");
     if (!stringlist.contains("social"))
         managers.removeAll("social");
     if (!stringlist.contains("simcard"))
@@ -2987,7 +2988,7 @@ void tst_QContactAsync::addManagers(QStringList stringlist)
     if (!stringlist.contains("com.nokia.messaging.contacts.engines.mail.contactslookup"))
         managers.removeAll("com.nokia.messaging.contacts.engines.mail.contactslookup");
 
-    foreach(QString mgr, managers) {
+    for (QString mgr : managers) {
         QMap<QString, QString> params;
         QTest::newRow(QString("mgr='%1'").arg(mgr).toLatin1().constData()) << QContactManager::buildUri(mgr, params);
         if (mgr == "memory") {
@@ -3004,7 +3005,7 @@ QContactManager* tst_QContactAsync::prepareModel(const QString& managerUri)
     // XXX TODO: ensure that this is the case:
     // there should be no contacts in the database.
     QList<QContactId> toRemove = cm->contactIds();
-    foreach (const QContactId& removeId, toRemove)
+    for (const QContactId& removeId : toRemove)
         cm->removeContact(removeId);
 
     QContact a, b, c;

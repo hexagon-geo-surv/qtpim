@@ -130,7 +130,7 @@ bool QVersitOrganizerImporter::importDocument(const QVersitDocument& document)
     }
 
     int documentIndex = 0;
-    foreach (const QVersitDocument& subDocument, subDocuments) {
+    for (const QVersitDocument& subDocument : subDocuments) {
         QOrganizerItem item;
         QVersitOrganizerImporter::Error error;
         if (d->importDocument(document, subDocument, &item, &error)) {

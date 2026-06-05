@@ -14,13 +14,11 @@ Q_DECLARE_METATYPE(QContactFilter)
 
 static inline QContactId makeId(const QString &managerName, uint id)
 {
-    id = qToLittleEndian(id);
     return QContactId(QStringLiteral("qtcontacts:basic%1:").arg(managerName), QByteArray(reinterpret_cast<const char *>(&id), sizeof(uint)));
 }
 
 static inline QContactCollectionId makeCollectionId(uint id)
 {
-    id = qToLittleEndian(id);
     return QContactCollectionId(QStringLiteral("qtcontacts:basic:"), QByteArray(reinterpret_cast<const char *>(&id), sizeof(uint)));
 }
 
@@ -1143,7 +1141,7 @@ void tst_QContactFilter::testFilter_data()
                 << false;
 
         // Now case insensitive
-        df.setMatchFlags(QContactFilter::MatchExactly);
+        df.setMatchFlags(QContactFilter::MatchFlags());
         df.setValue("one"); // this is a string
         QTest::newRow("QContactOrganization::match positive insensitive against string")
                 << contact

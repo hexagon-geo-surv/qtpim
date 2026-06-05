@@ -3,6 +3,8 @@
 
 #include "vcardpreserver.h"
 
+#include <algorithm>
+
 #include <QtCore/qdatetime.h>
 #include <QtCore/qvariant.h>
 #include <QtCore/qurl.h>
@@ -39,17 +41,17 @@ public:
                            const QVersitProperty& property,
                            const QContact& contact,
                            bool* alreadyProcessed,
-                           QList<QContactDetail>* updatedDetails);
+                           QList<QContactDetail>* updatedDetails) override;
     void documentProcessed(const QVersitDocument& document,
-                           QContact* contact);
+                           QContact* contact) override;
     void detailProcessed(const QContact& contact,
                          const QContactDetail& detail,
                          const QVersitDocument& document,
                          QSet<int>* processedFields,
                          QList<QVersitProperty>* toBeRemoved,
-                         QList<QVersitProperty>* toBeAdded);
+                         QList<QVersitProperty>* toBeAdded) override;
     void contactProcessed(const QContact& contact,
-                          QVersitDocument* document);
+                          QVersitDocument* document) override;
 };
 
 const QContactDetail::DetailType DetailType(QContactDetail::TypeExtendedDetail);
@@ -97,8 +99,8 @@ void VCardPreserver::propertyProcessed(const QVersitDocument& document,
                                        bool* alreadyProcessed,
                                        QList<QContactDetail>* updatedDetails)
 {
-    Q_UNUSED(contact);
-    Q_UNUSED(document);
+    Q_UNUSED(contact)
+    Q_UNUSED(document)
     if (!updatedDetails->isEmpty() || *alreadyProcessed) {
         return;
     }
@@ -112,8 +114,8 @@ void VCardPreserver::propertyProcessed(const QVersitDocument& document,
 void VCardPreserver::documentProcessed(const QVersitDocument& document,
                                        QContact* contact)
 {
-    Q_UNUSED(document);
-    Q_UNUSED(contact);
+    Q_UNUSED(document)
+    Q_UNUSED(contact)
 }
 
 void VCardPreserver::detailProcessed(const QContact& contact,
@@ -123,31 +125,44 @@ void VCardPreserver::detailProcessed(const QContact& contact,
                                      QList<QVersitProperty>* toBeRemoved,
                                      QList<QVersitProperty>* toBeAdded)
 {
-    Q_UNUSED(contact);
-    Q_UNUSED(document);
-    Q_UNUSED(toBeRemoved);
-    if (detail.type() == DetailType
-            && processedFields->isEmpty()) {
-        QString key(detail.value(KeyField).toString());
-        QString value(detail.value(ValueField).toString());
-        if (!key.isEmpty() && !value.isEmpty()) {
-            QVersitProperty property;
-            property.setName(key);
-            property.setValue(value);
-            toBeAdded->append(property);
-        }
-        processedFields->insert(KeyField);
-        processedFields->insert(ValueField);
+    Q_UNUSED(contact)
+    Q_UNUSED(document)
+    Q_UNUSED(toBeRemoved)
+    if (detail.type() != DetailType)
+        return;
+
+    QString key(detail.value(KeyField).toString());
+    const QVariant dataVariant(detail.value(ValueField));
+    QString value(dataVariant.toString());
+
+    // Only reconstruct the original vCard property when data is a plain string.
+    // Preserve handler always stores property.value() as QString; complex types
+    // (int, QByteArray, etc.) are native extended details that need JSON encoding.
+    if (!key.isEmpty() && !value.isEmpty()
+            && dataVariant.userType() == QMetaType::QString) {
+        // Replace any X-QTPROJECT-EXTENDED-DETAIL encoding with the original property
+        toBeAdded->erase(
+            std::remove_if(toBeAdded->begin(), toBeAdded->end(),
+                [](const QVersitProperty& p) {
+                    return p.name() == QLatin1String("X-QTPROJECT-EXTENDED-DETAIL");
+                }),
+            toBeAdded->end());
+        QVersitProperty property;
+        property.setName(key);
+        property.setValue(value);
+        toBeAdded->append(property);
     }
+    processedFields->insert(KeyField);
+    processedFields->insert(ValueField);
 }
 
 void VCardPreserver::contactProcessed(const QContact& contact,
                                       QVersitDocument* document)
 {
-    Q_UNUSED(contact);
-    Q_UNUSED(document);
+    Q_UNUSED(contact)
+    Q_UNUSED(document)
 }
 
-QT_END_NAMESPACE_VERSIT
-
 #include "moc_vcardpreserver.cpp"
+
+QT_END_NAMESPACE_VERSIT

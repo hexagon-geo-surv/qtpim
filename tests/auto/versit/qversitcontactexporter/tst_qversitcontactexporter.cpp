@@ -757,7 +757,7 @@ void tst_QVersitContactExporter::testEncodeOrganization()
     const QString url = QStringLiteral("http://myhome.com/test.jpg");
     contact = createContactWithName(QStringLiteral("asdf"));
     organization = QContactOrganization();
-    organization.setLogoUrl(url);
+    organization.setLogoUrl(QUrl(url));
     contact.saveDetail(&organization);
     mResourceHandler->mSimulatedMimeType = QStringLiteral("image/jpeg");
     mExporter->setResourceHandler(mResourceHandler);
@@ -780,7 +780,7 @@ void tst_QVersitContactExporter::testEncodeOrganization()
     mResourceHandler->mSimulatedData = "simulated data";
     contact = createContactWithName(QStringLiteral("asdf"));
     organization = QContactOrganization();
-    organization.setLogoUrl(TEST_PHOTO_FILE);
+    organization.setLogoUrl(QUrl(TEST_PHOTO_FILE));
     contact.saveDetail(&organization);
     QVERIFY(mExporter->exportContacts(QList<QContact>() << contact, QVersitDocument::VCard30Type));
     document = mExporter->documents().first();
@@ -835,7 +835,7 @@ void tst_QVersitContactExporter::testEncodeAvatar()
 
     // Test1: Web URL
     const QString url = QStringLiteral("http://www.myhome.com/test.jpg");
-    contactAvatar.setImageUrl(url);
+    contactAvatar.setImageUrl(QUrl(url));
     contact.saveDetail(&contactAvatar);
     QVERIFY(mExporter->exportContacts(QList<QContact>() << contact, QVersitDocument::VCard30Type));
     QVersitDocument document = mExporter->documents().first();
@@ -846,7 +846,7 @@ void tst_QVersitContactExporter::testEncodeAvatar()
     QVERIFY(!mResourceHandler->mLoadResourceCalled);
 
     // Test 2: Local Media PHOTO
-    contactAvatar.setImageUrl(TEST_PHOTO_FILE);
+    contactAvatar.setImageUrl(QUrl(TEST_PHOTO_FILE));
     contact.saveDetail(&contactAvatar);
     QVERIFY(mExporter->exportContacts(QList<QContact>() << contact, QVersitDocument::VCard30Type));
     document = mExporter->documents().first();
@@ -872,7 +872,7 @@ void tst_QVersitContactExporter::testEncodeEmbeddedContent()
 
     // Test 1: URL
     const QString url = QStringLiteral("http://www.myhome.com/test.jpg");
-    contactAvatar.setImageUrl(url);
+    contactAvatar.setImageUrl(QUrl(url));
     contact.saveDetail(&contactAvatar);
     mResourceHandler->mSimulatedMimeType = QStringLiteral("image/jpeg");
     QVERIFY(mExporter->exportContacts(QList<QContact>() << contact, QVersitDocument::VCard30Type));
@@ -886,7 +886,7 @@ void tst_QVersitContactExporter::testEncodeEmbeddedContent()
     QCOMPARE(photoProperty.value(), url);
 
     // Test 2: Local PHOTO, image loaded by the loader
-    contactAvatar.setImageUrl(TEST_PHOTO_FILE);
+    contactAvatar.setImageUrl(QUrl(TEST_PHOTO_FILE));
     contact.saveDetail(&contactAvatar);
     mResourceHandler->clear();
     mResourceHandler->mSimulatedMimeType = QStringLiteral("image/jpeg");
@@ -905,7 +905,7 @@ void tst_QVersitContactExporter::testEncodeEmbeddedContent()
 
     // Without a resource handler
     mExporter->setResourceHandler(0);
-    contactAvatar.setImageUrl(TEST_PHOTO_FILE);
+    contactAvatar.setImageUrl(QUrl(TEST_PHOTO_FILE));
     contact.saveDetail(&contactAvatar);
     QVERIFY(mExporter->exportContacts(QList<QContact>() << contact, QVersitDocument::VCard30Type));
     document = mExporter->documents().first();
@@ -921,7 +921,7 @@ void tst_QVersitContactExporter::testEncodeRingtone()
     mResourceHandler->clear();
     mResourceHandler->mSimulatedMimeType = QStringLiteral("audio/wav");
     mResourceHandler->mSimulatedData = "simulated audio data";
-    ringtone.setAudioRingtoneUrl(TEST_AUDIO_FILE);
+    ringtone.setAudioRingtoneUrl(QUrl(TEST_AUDIO_FILE));
     QContact contact(createContactWithName(QStringLiteral("asdf")));
     contact.saveDetail(&ringtone);
     QVERIFY(mExporter->exportContacts(QList<QContact>() << contact, QVersitDocument::VCard30Type));
@@ -941,7 +941,7 @@ void tst_QVersitContactExporter::testEncodeRingtone()
     QContactRingtone urlRingtone;
     QContact urlContact(createContactWithName(QStringLiteral("asdf")));
     const QUrl url(QStringLiteral("http://qt.nokia.com/audioringtoneurl"));
-    urlRingtone.setAudioRingtoneUrl(url);
+    urlRingtone.setAudioRingtoneUrl(QUrl(url));
     urlContact.saveDetail(&urlRingtone);
     QVERIFY(mExporter->exportContacts(QList<QContact>() << urlContact, QVersitDocument::VCard30Type));
     document = mExporter->documents().first();
@@ -1546,7 +1546,7 @@ void tst_QVersitContactExporter::testEncodeMultipleExtendedDetails()
     QVersitDocument document = mExporter->documents().first();
     QCOMPARE(countProperties(document), 2);
     QList<QVersitProperty> actual;
-    foreach (const QVersitProperty &property, document.properties()) {
+    for (const QVersitProperty &property : document.properties()) {
         if (property.name() == QStringLiteral("X-QTPROJECT-EXTENDED-DETAIL"))
             actual << property;
     }
@@ -1611,7 +1611,7 @@ QContact tst_QVersitContactExporter::createContactWithName(QString name)
 int tst_QVersitContactExporter::countProperties(const QVersitDocument& document)
 {
     int count = 0;
-    foreach (const QVersitProperty& property, document.properties()) {
+    for (const QVersitProperty& property : document.properties()) {
         if (property.name() != QStringLiteral("FN")
             && property.name() != QStringLiteral("N")
             && property.name() != QStringLiteral("X-NOKIA-QCONTACTFIELD"))
@@ -1635,7 +1635,7 @@ QContactDetail tst_QVersitContactExporter::findDetailByType(
 QVersitProperty tst_QVersitContactExporter::findPropertyByName(
         const QVersitDocument &document, const QString &propertyName)
 {
-    foreach (const QVersitProperty& property, document.properties()) {
+    for (const QVersitProperty& property : document.properties()) {
         if (property.name() == propertyName)
             return property;
     }

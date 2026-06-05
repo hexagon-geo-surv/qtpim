@@ -8,6 +8,8 @@
 #include <QtCore/qset.h>
 #include <QtCore/qshareddata.h>
 
+#include <utility>
+
 #include <QtContacts/qcontactcollectionid.h>
 #include <QtContacts/qcontactmanager.h>
 
@@ -43,7 +45,7 @@ public:
     void insertRemovedCollections(const QList<QContactCollectionId> &collectionIds);
     void clearRemovedCollections();
 
-    QList<QPair<QContactCollectionId, QContactManager::Operation> > modifiedCollections() const;
+    QList<std::pair<QContactCollectionId, QContactManager::Operation> > modifiedCollections() const;
     void clearModifiedCollections();
 
     void clearAll();

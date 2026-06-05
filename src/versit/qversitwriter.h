@@ -6,12 +6,12 @@
 
 #include <QtCore/qlist.h>
 #include <QtCore/qobject.h>
+#include <QtCore/qstringconverter.h>
 
 #include <QtVersit/qversitdocument.h>
 
 QT_FORWARD_DECLARE_CLASS(QByteArray)
 QT_FORWARD_DECLARE_CLASS(QIODevice)
-QT_FORWARD_DECLARE_CLASS(QTextCodec)
 
 QT_BEGIN_NAMESPACE_VERSIT
 
@@ -47,8 +47,8 @@ public:
     void setDevice(QIODevice* outputDevice);
     QIODevice* device() const;
 
-    void setDefaultCodec(QTextCodec* codec);
-    QTextCodec* defaultCodec() const;
+    void setDefaultCodec(QStringConverter::Encoding encoding);
+    QStringConverter::Encoding defaultCodec() const;
 
     State state() const;
     Error error() const;

@@ -131,7 +131,7 @@ public:
         }
     }
 
-    QContactFilter filter() const
+    QContactFilter filter() const override
     {
         return d;
     }

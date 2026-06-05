@@ -1,5 +1,6 @@
 // Copyright (C) 2026 The Qt Company Ltd.
 // SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// Qt-Security score:critical reason:data-parser
 
 #ifndef QVERSITCONTACTIMPORTER_P_H
 #define QVERSITCONTACTIMPORTER_P_H
@@ -19,7 +20,8 @@
 #include <QtCore/qhash.h>
 #include <QtCore/qlist.h>
 #include <QtCore/qmap.h>
-#include <QtCore/qpair.h>
+
+#include <utility>
 
 #include <QtContacts/qcontact.h>
 #include <QtContacts/qcontactdetail.h>
@@ -91,8 +93,8 @@ public: // Data
     QVersitResourceHandler* mResourceHandler;
     QVCardRestoreHandler mRestoreHandler;
 
-    QHash<QString, QPair<QContactDetail::DetailType, int> > mDetailMappings;
-    QMultiHash<QString, QPair<QContactDetail::DetailType, int> > mSubTypeMappings;
+    QHash<QString, std::pair<QContactDetail::DetailType, int> > mDetailMappings;
+    QMultiHash<QString, std::pair<QContactDetail::DetailType, int> > mSubTypeMappings;
     QHash< int ,QString> mContextMappings;
 };
 

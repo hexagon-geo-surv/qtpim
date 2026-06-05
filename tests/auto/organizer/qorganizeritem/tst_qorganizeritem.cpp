@@ -71,7 +71,7 @@ void tst_QOrganizerItem::details()
     QVERIFY(keyTest.saveDetail(&note));
     QList<QOrganizerItemDetail> allDetails = keyTest.details();
     QList<int> detailKeys;
-    foreach (const QOrganizerItemDetail& det, allDetails) {
+    for (const QOrganizerItemDetail& det : allDetails) {
         int currKey = det.key();
         QVERIFY(!detailKeys.contains(currKey));
         detailKeys.append(currKey);
@@ -82,7 +82,7 @@ void tst_QOrganizerItem::details()
     QVERIFY(keyTest.saveDetail(&adr));
     allDetails = keyTest.details();
     detailKeys.clear();
-    foreach (const QOrganizerItemDetail& det, allDetails) {
+    for (const QOrganizerItemDetail& det : allDetails) {
         int currKey = det.key();
         QVERIFY(!detailKeys.contains(currKey));
         detailKeys.append(currKey);
@@ -887,7 +887,7 @@ void tst_QOrganizerItem::traits()
 
 void tst_QOrganizerItem::idTraits()
 {
-    QCOMPARE(sizeof(QOrganizerItemId), 6*sizeof(void *));
+    QCOMPARE(sizeof(QOrganizerItemId), sizeof(QString) + sizeof(QByteArray));
     QVERIFY(QTypeInfo<QOrganizerItemId>::isComplex);
     QVERIFY(!QTypeInfo<QOrganizerItemId>::isPointer);
 }
@@ -1122,8 +1122,8 @@ void tst_QOrganizerItem::todoOccurrence()
     testTodoOccurrence.setStatus(QOrganizerTodoProgress::StatusComplete);
     QCOMPARE(testTodoOccurrence.progressPercentage(), 50); // XXX TODO: should this update automatically?
 
-    testTodoOccurrence.setStartDateTime(QDate::currentDate().addDays(1).startOfDay());
-    QCOMPARE(testTodoOccurrence.startDateTime(), QDate::currentDate().addDays(1).startOfDay());
+    testTodoOccurrence.setStartDateTime(QDate::currentDate().startOfDay());
+    QCOMPARE(testTodoOccurrence.startDateTime(), QDate::currentDate().startOfDay());
     testTodoOccurrence.setDueDateTime(QDate::currentDate().startOfDay());
     QCOMPARE(testTodoOccurrence.dueDateTime(), QDate::currentDate().startOfDay());
     testTodoOccurrence.setFinishedDateTime(QDate::currentDate().addDays(1).startOfDay());

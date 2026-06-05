@@ -54,7 +54,7 @@ void QVersitOrganizerPluginLoader::loadPlugins() {
     if (plugins != mPluginPaths) {
         mPluginPaths = plugins;
 
-        foreach (const QString& pluginPath, mPluginPaths) {
+        for (const QString& pluginPath : std::as_const(mPluginPaths)) {
             QPluginLoader qpl(pluginPath);
             QObject* plugin = qpl.instance();
             QVersitOrganizerHandlerFactory* organizerPlugin =
@@ -86,7 +86,7 @@ QList<QVersitOrganizerHandler*> QVersitOrganizerPluginLoader::createOrganizerHan
     loadPlugins();
 
     QList<QVersitOrganizerHandler*> handlers;
-    foreach (const QVersitOrganizerHandlerFactory* factory, mOrganizerHandlerFactories) {
+    for (const QVersitOrganizerHandlerFactory* factory : std::as_const(mOrganizerHandlerFactories)) {
         if (factory->profiles().isEmpty() ||
                 (!profile.isEmpty() && factory->profiles().contains(profile))) {
             QVersitOrganizerHandler* handler = factory->createHandler();

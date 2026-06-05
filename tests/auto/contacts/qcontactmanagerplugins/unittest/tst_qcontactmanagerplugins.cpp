@@ -29,10 +29,11 @@ private slots:
 };
 
 /* Test a static factory as well */
-class DummyStaticEngineFactory : public QObject, public QContactManagerEngineFactory
+class DummyStaticEngineFactory : public QContactManagerEngineFactory
 {
     Q_OBJECT
-    Q_INTERFACES(QtContacts::QContactManagerEngineFactory)
+    Q_INTERFACES(QtContacts::QContactManagerEngineFactoryInterface)
+    Q_PLUGIN_METADATA(IID "org.qt-project.Qt.QContactManagerEngineFactoryInterface")
     public:
         QContactManagerEngine* engine(const QMap<QString, QString>& parameters, QContactManager::Error* error);
         QString managerName() const {return "teststaticdummy";}
@@ -45,55 +46,46 @@ QContactManagerEngine* DummyStaticEngineFactory::engine(const QMap<QString, QStr
     return 0; // always fail, haha
 }
 
-Q_EXPORT_PLUGIN2(contacts_teststaticdummy, DummyStaticEngineFactory)
-Q_IMPORT_PLUGIN(contacts_teststaticdummy)
-
-/* And a copy */
-Q_EXPORT_PLUGIN2(contacts_teststaticdummycopy, DummyStaticEngineFactory)
-Q_IMPORT_PLUGIN(contacts_teststaticdummycopy)
+Q_IMPORT_PLUGIN(DummyStaticEngineFactory)
 
 /* And test an impostor as well */
-class ImpostorEngineFactory : public QObject, public QContactManagerEngineFactory
+class ImpostorEngineFactory : public QContactManagerEngineFactory
 {
     Q_OBJECT
-    Q_INTERFACES(QtContacts::QContactManagerEngineFactory)
+    Q_INTERFACES(QtContacts::QContactManagerEngineFactoryInterface)
+    Q_PLUGIN_METADATA(IID "org.qt-project.Qt.QContactManagerEngineFactoryInterface")
     public:
         QContactManagerEngine* engine(const QMap<QString, QString>& , QContactManager::Error* ) {return 0;}
-        QContactEngineId* createContactEngineId(const QMap<QString, QString>& parameters, const QString& engineIdString) const {return 0;}
         QString managerName() const {return "memory";}
 };
 
-Q_EXPORT_PLUGIN2(contacts_testimpostordummy, ImpostorEngineFactory)
-Q_IMPORT_PLUGIN(contacts_testimpostordummy)
+Q_IMPORT_PLUGIN(ImpostorEngineFactory)
 
 /* And test another impostor as well */
-class ImpostorEngineFactory2 : public QObject, public QContactManagerEngineFactory
+class ImpostorEngineFactory2 : public QContactManagerEngineFactory
 {
     Q_OBJECT
-    Q_INTERFACES(QtContacts::QContactManagerEngineFactory)
+    Q_INTERFACES(QtContacts::QContactManagerEngineFactoryInterface)
+    Q_PLUGIN_METADATA(IID "org.qt-project.Qt.QContactManagerEngineFactoryInterface")
     public:
         QContactManagerEngine* engine(const QMap<QString, QString>& , QContactManager::Error* ) {return 0;}
-        QContactEngineId* createContactEngineId(const QMap<QString, QString>& parameters, const QString& engineIdString) const {return 0;}
         QString managerName() const {return "invalid";}
 };
 
-
-Q_EXPORT_PLUGIN2(contacts_testimpostordummy2, ImpostorEngineFactory2)
-Q_IMPORT_PLUGIN(contacts_testimpostordummy2)
+Q_IMPORT_PLUGIN(ImpostorEngineFactory2)
 
 /* An empty interface name */
-class EmptyEngineFactory : public QObject, public QContactManagerEngineFactory
+class EmptyEngineFactory : public QContactManagerEngineFactory
 {
     Q_OBJECT
-    Q_INTERFACES(QtContacts::QContactManagerEngineFactory)
+    Q_INTERFACES(QtContacts::QContactManagerEngineFactoryInterface)
+    Q_PLUGIN_METADATA(IID "org.qt-project.Qt.QContactManagerEngineFactoryInterface")
     public:
         QContactManagerEngine* engine(const QMap<QString, QString>& , QContactManager::Error* ) {return 0;}
-        QContactEngineId* createContactEngineId(const QMap<QString, QString>& parameters, const QString& engineIdString) const {return 0;}
         QString managerName() const {return QString();}
 };
 
-Q_EXPORT_PLUGIN2(contacts_teststaticemptydummy, EmptyEngineFactory)
-Q_IMPORT_PLUGIN(contacts_teststaticemptydummy)
+Q_IMPORT_PLUGIN(EmptyEngineFactory)
 
 /* And a different interface one too */
 
@@ -112,10 +104,10 @@ class BoringFactory : public QObject, public BoringInterface
 {
     Q_OBJECT
     Q_INTERFACES(BoringInterface)
+    Q_PLUGIN_METADATA(IID "REALLYBORING!")
 };
 
-Q_EXPORT_PLUGIN2(contacts_testboring, BoringFactory)
-Q_IMPORT_PLUGIN(contacts_testboring)
+Q_IMPORT_PLUGIN(BoringFactory)
 
 
 tst_QContactManagerPlugins::tst_QContactManagerPlugins()

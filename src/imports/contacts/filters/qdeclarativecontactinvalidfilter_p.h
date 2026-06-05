@@ -32,7 +32,7 @@ public:
         :QDeclarativeContactFilter(parent)
     {
     }
-    QContactFilter filter() const
+    QContactFilter filter() const override
     {
         return QContactInvalidFilter();
     }

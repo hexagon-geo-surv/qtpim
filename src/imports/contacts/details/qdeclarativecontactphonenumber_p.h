@@ -54,13 +54,13 @@ public:
         DtmfMenu = QContactPhoneNumber::SubTypeDtmfMenu
     };
 
-    QDeclarativeContactPhoneNumber(QObject* parent = nullptr)
+    QDeclarativeContactPhoneNumber(QObject* parent = Q_NULLPTR)
         :QDeclarativeContactDetail(parent)
     {
         setDetail(QContactPhoneNumber());
         connect(this, SIGNAL(valueChanged()), SIGNAL(detailChanged()));
     }
-    DetailType detailType() const
+    DetailType detailType() const override
     {
         return QDeclarativeContactDetail::PhoneNumber;
     }
@@ -79,7 +79,7 @@ public:
     {
         QList<int> oldList = detail().value< QList<int> >(QContactPhoneNumber::FieldSubTypes);
 
-        if (!readOnly() && QSet<int>(subTypes.constBegin(), subTypes.constEnd()) != QSet<int>(oldList.constBegin(), oldList.constEnd())) {
+        if (!readOnly() && QSet<int>(subTypes.cbegin(), subTypes.cend()) != QSet<int>(oldList.cbegin(), oldList.cend())) {
             detail().setValue(QContactPhoneNumber::FieldSubTypes, QVariant::fromValue(subTypes));
             emit valueChanged();
         }

@@ -40,7 +40,7 @@ void tst_QOrganizerE2E::initTestCase()
 {
     // back-up all existing items
     QStringList availableManagers(QOrganizerManager::availableManagers());
-    foreach (const QString &manager, availableManagers) {
+    for (const QString &manager : availableManagers) {
         QOrganizerManager organizerManager(manager);
         QList<QOrganizerItem> items(organizerManager.items());
         if (items.size() > 0) {
@@ -55,7 +55,7 @@ void tst_QOrganizerE2E::cleanupTestCase()
 {
     // remove all items generated when running tests
     QStringList availableManagers(QOrganizerManager::availableManagers());
-    foreach (const QString &manager, availableManagers) {
+    for (const QString &manager : availableManagers) {
         QOrganizerManager organizerManager(manager);
         organizerManager.removeItems(organizerManager.itemIds());
     }
@@ -75,12 +75,12 @@ void tst_QOrganizerE2E::testMegaItem()
     QOrganizerManager organizerManager(managerName);
 
     QList<QOrganizerItemType::ItemType> supportedItemTypes(organizerManager.supportedItemTypes());
-    foreach (QOrganizerItemType::ItemType itemType, supportedItemTypes) {
+    for (QOrganizerItemType::ItemType itemType : supportedItemTypes) {
         QOrganizerItem referenceItem = createItem(itemType);
         QCOMPARE(referenceItem.type(), itemType);
 
         QList<QOrganizerItemDetail::DetailType> supportedDetails(organizerManager.supportedItemDetails(itemType));
-        foreach (QOrganizerItemDetail::DetailType supportedDetail, supportedDetails) {
+        for (QOrganizerItemDetail::DetailType supportedDetail : supportedDetails) {
             QOrganizerItemDetail detail = createDetail(supportedDetail);
             if (detail.type() != supportedDetail)
                 continue;
@@ -92,7 +92,7 @@ void tst_QOrganizerE2E::testMegaItem()
         if (itemType == QOrganizerItemType::TypeEventOccurrence || itemType == QOrganizerItemType::TypeTodoOccurrence) {
             bool parentItemAvailable(false);
             QList<QOrganizerItem> items(organizerManager.items());
-            foreach (const QOrganizerItem &item, items) {
+            for (const QOrganizerItem &item : items) {
                 if ((itemType == QOrganizerItemType::TypeEventOccurrence && item.type() == QOrganizerItemType::TypeEvent)
                     || (itemType == QOrganizerItemType::TypeTodoOccurrence && item.type() == QOrganizerItemType::TypeTodo)) {
                     QOrganizerItemParent parent;
@@ -125,7 +125,7 @@ void tst_QOrganizerE2E::testMegaItem()
         QCOMPARE(itemRead.details(QOrganizerItemDetail::TypeReminder).size(), 0);
 
         // all details should saved and loaded correctly
-        foreach (const QOrganizerItemDetail &detail, referenceItem.details())
+        for (const QOrganizerItemDetail &detail : referenceItem.details())
             QCOMPARE(itemRead.detail(detail.type()), detail);
     }
 }
@@ -168,7 +168,7 @@ void tst_QOrganizerE2E::testInvalidParentId()
     QOrganizerManager organizerManager(managerName);
 
     QList<QOrganizerItemType::ItemType> supportedItemTypes(organizerManager.supportedItemTypes());
-    foreach (QOrganizerItemType::ItemType itemType, supportedItemTypes) {
+    for (QOrganizerItemType::ItemType itemType : supportedItemTypes) {
         if (itemType == QOrganizerItemType::TypeEventOccurrence || itemType == QOrganizerItemType::TypeTodoOccurrence) {
             QOrganizerItem item = createItem(itemType);
             QCOMPARE(item.type(), itemType);
@@ -190,7 +190,7 @@ void tst_QOrganizerE2E::addManager()
     availableManagers.removeAll("invalid");
     availableManagers.removeAll("skeleton");
 
-    foreach (const QString &manager, availableManagers)
+    for (const QString &manager : availableManagers)
         QTest::newRow(manager.toLatin1().constData()) << manager;
 }
 

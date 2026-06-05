@@ -34,16 +34,16 @@ public:
     MaliciousAsyncManagerEngine();
     ~MaliciousAsyncManagerEngine();
 
-    QString managerName() const;
-    bool startRequest(QOrganizerAbstractRequest *req);
-    bool cancelRequest(QOrganizerAbstractRequest *req);
+    QString managerName() const override;
+    bool startRequest(QOrganizerAbstractRequest *req) override;
+    bool cancelRequest(QOrganizerAbstractRequest *req) override;
 
-    QMap<QString, QString> managerParameters() const { return QMap<QString, QString>(); }
+    QMap<QString, QString> managerParameters() const override { return QMap<QString, QString>(); }
     int managerVersion() const { return 0; }
 
     // items
     QList<QOrganizerItem> items(const QList<QOrganizerItemId> &itemIds, const QOrganizerItemFetchHint &fetchHint,
-                                           QMap<int, QOrganizerManager::Error> *errorMap, QOrganizerManager::Error *error)
+                                           QMap<int, QOrganizerManager::Error> *errorMap, QOrganizerManager::Error *error) override
     {
         return QOrganizerManagerEngine::items(itemIds, fetchHint, errorMap, error);
     }
@@ -51,21 +51,21 @@ public:
     QList<QOrganizerItem> items(const QOrganizerItemFilter &filter, const QDateTime &startDateTime,
                                            const QDateTime &endDateTime, int maxCount,
                                            const QList<QOrganizerItemSortOrder> &sortOrders,
-                                           const QOrganizerItemFetchHint &fetchHint, QOrganizerManager::Error *error)
+                                           const QOrganizerItemFetchHint &fetchHint, QOrganizerManager::Error *error) override
     {
         return QOrganizerManagerEngine::items(filter, startDateTime, endDateTime, maxCount, sortOrders, fetchHint, error);
     }
 
     QList<QOrganizerItemId> itemIds(const QOrganizerItemFilter &filter, const QDateTime &startDateTime,
                                                const QDateTime &endDateTime, const QList<QOrganizerItemSortOrder> &sortOrders,
-                                               QOrganizerManager::Error *error)
+                                               QOrganizerManager::Error *error) override
     {
         return QOrganizerManagerEngine::itemIds(filter, startDateTime, endDateTime, sortOrders, error);
     }
 
     QList<QOrganizerItem> itemOccurrences(const QOrganizerItem &parentItem, const QDateTime &startDateTime,
                                                      const QDateTime &endDateTime, int maxCount,
-                                                     const QOrganizerItemFetchHint &fetchHint, QOrganizerManager::Error *error)
+                                                     const QOrganizerItemFetchHint &fetchHint, QOrganizerManager::Error *error) override
     {
         return QOrganizerManagerEngine::itemOccurrences(parentItem, startDateTime, endDateTime, maxCount, fetchHint, error);
     }
@@ -73,67 +73,67 @@ public:
     QList<QOrganizerItem> itemsForExport(const QDateTime &startDateTime, const QDateTime &endDateTime,
                                                     const QOrganizerItemFilter &filter,
                                                     const QList<QOrganizerItemSortOrder> &sortOrders,
-                                                    const QOrganizerItemFetchHint &fetchHint, QOrganizerManager::Error *error)
+                                                    const QOrganizerItemFetchHint &fetchHint, QOrganizerManager::Error *error) override
     {
         return QOrganizerManagerEngine::itemsForExport(startDateTime, endDateTime, filter, sortOrders, fetchHint, error);
     }
 
     bool saveItems(QList<QOrganizerItem> *items, const QList<QOrganizerItemDetail::DetailType> &detailMask,
-                              QMap<int, QOrganizerManager::Error> *errorMap, QOrganizerManager::Error *error)
+                              QMap<int, QOrganizerManager::Error> *errorMap, QOrganizerManager::Error *error) override
     {
         return QOrganizerManagerEngine::saveItems(items, detailMask, errorMap, error);
     }
 
-    bool removeItems(const QList<QOrganizerItemId> &itemIds, QMap<int, QOrganizerManager::Error> *errorMap, QOrganizerManager::Error *error)
+    bool removeItems(const QList<QOrganizerItemId> &itemIds, QMap<int, QOrganizerManager::Error> *errorMap, QOrganizerManager::Error *error) override
     {
         return QOrganizerManagerEngine::removeItems(itemIds, errorMap, error);
     }
 
-    bool removeItems(const QList<QOrganizerItem> *items, QMap<int, QOrganizerManager::Error> *errorMap, QOrganizerManager::Error *error)
+    bool removeItems(const QList<QOrganizerItem> *items, QMap<int, QOrganizerManager::Error> *errorMap, QOrganizerManager::Error *error) override
     {
         return QOrganizerManagerEngine::removeItems(items, errorMap, error);
     }
 
     // collections
-    QOrganizerCollectionId defaultCollectionId() const
+    QOrganizerCollectionId defaultCollectionId() const override
     {
         return QOrganizerManagerEngine::defaultCollectionId();
     }
 
-    QOrganizerCollection collection(const QOrganizerCollectionId &collectionId, QOrganizerManager::Error *error)
+    QOrganizerCollection collection(const QOrganizerCollectionId &collectionId, QOrganizerManager::Error *error) override
     {
         return QOrganizerManagerEngine::collection(collectionId, error);
     }
 
-    QList<QOrganizerCollection> collections(QOrganizerManager::Error *error)
+    QList<QOrganizerCollection> collections(QOrganizerManager::Error *error) override
     {
         return QOrganizerManagerEngine::collections(error);
     }
 
-    bool saveCollection(QOrganizerCollection *collection, QOrganizerManager::Error *error)
+    bool saveCollection(QOrganizerCollection *collection, QOrganizerManager::Error *error) override
     {
         return QOrganizerManagerEngine::saveCollection(collection, error);
     }
 
-    bool removeCollection(const QOrganizerCollectionId &collectionId, QOrganizerManager::Error *error)
+    bool removeCollection(const QOrganizerCollectionId &collectionId, QOrganizerManager::Error *error) override
     {
         return QOrganizerManagerEngine::removeCollection(collectionId, error);
     }
 
     /* Asynchronous Request Support */
-    void requestDestroyed(QOrganizerAbstractRequest *req);
-    bool waitForRequestFinished(QOrganizerAbstractRequest *req, int msecs) { return QOrganizerManagerEngine::waitForRequestFinished(req, msecs); }
+    void requestDestroyed(QOrganizerAbstractRequest *req) override;
+    bool waitForRequestFinished(QOrganizerAbstractRequest *req, int msecs) override { return QOrganizerManagerEngine::waitForRequestFinished(req, msecs); }
 
-    QList<QOrganizerItemFilter::FilterType> supportedFilters() const
+    QList<QOrganizerItemFilter::FilterType> supportedFilters() const override
     {
         return QOrganizerManagerEngine::supportedFilters();
     }
 
-    QList<QOrganizerItemType::ItemType> supportedItemTypes() const
+    QList<QOrganizerItemType::ItemType> supportedItemTypes() const override
     {
         return QOrganizerManagerEngine::supportedItemTypes();
     }
-    QList<QOrganizerItemDetail::DetailType> supportedItemDetails(QOrganizerItemType::ItemType itemType) const
+    QList<QOrganizerItemDetail::DetailType> supportedItemDetails(QOrganizerItemType::ItemType itemType) const override
     {
         return QOrganizerManagerEngine::supportedItemDetails(itemType);
     }
@@ -154,8 +154,8 @@ class MaliciousEngineFactory : public QOrganizerManagerEngineFactory
     Q_PLUGIN_METADATA(IID "org.qt-project.Qt.QOrganizerManagerEngineFactoryInterface" FILE "malicious.json")
 
 public:
-    QString managerName() const;
-    QOrganizerManagerEngine *engine(const QMap<QString, QString> &parameters, QOrganizerManager::Error *error);
+    QString managerName() const override;
+    QOrganizerManagerEngine *engine(const QMap<QString, QString> &parameters, QOrganizerManager::Error *error) override;
 
 private:
     MaliciousAsyncManagerEngine mame;

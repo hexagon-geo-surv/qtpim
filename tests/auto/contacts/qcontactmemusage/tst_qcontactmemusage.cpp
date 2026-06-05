@@ -42,6 +42,7 @@ void operator delete[](void *block)
 
 
 // Also hook malloc (with glibc)
+#if defined(__malloc_hook)
 void *(*old_hook)(size_t, const void*);
 void *qmallochook(size_t size, const void* )
 {
@@ -63,6 +64,7 @@ static int qmallocinithook()
 }
 
 Q_CONSTRUCTOR_FUNCTION(qmallocinithook);
+#endif // defined(__malloc_hook)
 
 class QMemUsed
 {

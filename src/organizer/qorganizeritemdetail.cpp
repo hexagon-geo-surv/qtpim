@@ -219,12 +219,12 @@ bool QOrganizerItemDetail::operator==(const QOrganizerItemDetail &other) const
     \relates QOrganizerItemDetail
     Returns the hash value for \a key.
  */
-Q_ORGANIZER_EXPORT size_t qHash(const QOrganizerItemDetail &key)
+Q_ORGANIZER_EXPORT size_t qHash(const QOrganizerItemDetail &key, size_t seed) noexcept
 {
-    size_t hash = QT_PREPEND_NAMESPACE(qHash)(key.d->m_detailType);
+    size_t hash = QT_PREPEND_NAMESPACE(qHash)(key.d->m_detailType, seed);
     QMap<int, QVariant>::const_iterator it = key.d->m_values.constBegin();
     while (it != key.d->m_values.constEnd()) {
-        hash += QT_PREPEND_NAMESPACE(qHash)(it.key()) + QT_PREPEND_NAMESPACE(qHash)(it.value().toString());
+        hash ^= QT_PREPEND_NAMESPACE(qHash)(it.key(), seed) ^ QT_PREPEND_NAMESPACE(qHash)(it.value().toString(), seed);
         ++it;
     }
     return hash;
@@ -256,7 +256,7 @@ Q_ORGANIZER_EXPORT QDataStream &operator<<(QDataStream &out, const QOrganizerIte
 {
     quint8 formatVersion = 1; // Version of QDataStream format for QOrganizerItemDetail
     return out << formatVersion
-               << static_cast<quint32>(detail.type())
+               << detail.type()
                << detail.values();
 }
 

@@ -84,7 +84,7 @@ QSet<QOrganizerCollectionId> QOrganizerCollectionChangeSet::addedCollections() c
 void QOrganizerCollectionChangeSet::insertAddedCollection(const QOrganizerCollectionId &collectionId)
 {
     d->m_addedCollections.insert(collectionId);
-    d->m_modifiedCollections.append(QPair<QOrganizerCollectionId, QOrganizerManager::Operation>(collectionId, QOrganizerManager::Add));
+    d->m_modifiedCollections.append(std::make_pair(collectionId, QOrganizerManager::Add));
 }
 
 /*!
@@ -93,9 +93,9 @@ void QOrganizerCollectionChangeSet::insertAddedCollection(const QOrganizerCollec
  */
 void QOrganizerCollectionChangeSet::insertAddedCollections(const QList<QOrganizerCollectionId> &collectionIds)
 {
-    foreach (const QOrganizerCollectionId &id, collectionIds) {
+    for (const QOrganizerCollectionId &id : collectionIds) {
         d->m_addedCollections.insert(id);
-        d->m_modifiedCollections.append(QPair<QOrganizerCollectionId, QOrganizerManager::Operation>(id, QOrganizerManager::Add));
+        d->m_modifiedCollections.append(std::make_pair(id, QOrganizerManager::Add));
     }
 }
 
@@ -122,7 +122,7 @@ QSet<QOrganizerCollectionId> QOrganizerCollectionChangeSet::changedCollections()
 void QOrganizerCollectionChangeSet::insertChangedCollection(const QOrganizerCollectionId &collectionId)
 {
     d->m_changedCollections.insert(collectionId);
-    d->m_modifiedCollections.append(QPair<QOrganizerCollectionId, QOrganizerManager::Operation>(collectionId, QOrganizerManager::Change));
+    d->m_modifiedCollections.append(std::make_pair(collectionId, QOrganizerManager::Change));
 }
 
 /*!
@@ -131,9 +131,9 @@ void QOrganizerCollectionChangeSet::insertChangedCollection(const QOrganizerColl
  */
 void QOrganizerCollectionChangeSet::insertChangedCollections(const QList<QOrganizerCollectionId> &collectionIds)
 {
-    foreach (const QOrganizerCollectionId &id, collectionIds) {
+    for (const QOrganizerCollectionId &id : collectionIds) {
         d->m_changedCollections.insert(id);
-        d->m_modifiedCollections.append(QPair<QOrganizerCollectionId, QOrganizerManager::Operation>(id, QOrganizerManager::Change));
+        d->m_modifiedCollections.append(std::make_pair(id, QOrganizerManager::Change));
     }
 }
 
@@ -160,7 +160,7 @@ QSet<QOrganizerCollectionId> QOrganizerCollectionChangeSet::removedCollections()
 void QOrganizerCollectionChangeSet::insertRemovedCollection(const QOrganizerCollectionId &collectionId)
 {
     d->m_removedCollections.insert(collectionId);
-    d->m_modifiedCollections.append(QPair<QOrganizerCollectionId, QOrganizerManager::Operation>(collectionId, QOrganizerManager::Remove));
+    d->m_modifiedCollections.append(std::make_pair(collectionId, QOrganizerManager::Remove));
 }
 
 /*!
@@ -169,9 +169,9 @@ void QOrganizerCollectionChangeSet::insertRemovedCollection(const QOrganizerColl
  */
 void QOrganizerCollectionChangeSet::insertRemovedCollections(const QList<QOrganizerCollectionId> &collectionIds)
 {
-    foreach (const QOrganizerCollectionId &id, collectionIds) {
+    for (const QOrganizerCollectionId &id : collectionIds) {
         d->m_removedCollections.insert(id);
-        d->m_modifiedCollections.append(QPair<QOrganizerCollectionId, QOrganizerManager::Operation>(id, QOrganizerManager::Remove));
+        d->m_modifiedCollections.append(std::make_pair(id, QOrganizerManager::Remove));
     }
 }
 
@@ -188,7 +188,7 @@ void QOrganizerCollectionChangeSet::clearRemovedCollections()
     the database. The list includes information about which database operation was done. The ids and
     operations are ordered so that the first operation is first in the list.
  */
-QList<QPair<QOrganizerCollectionId, QOrganizerManager::Operation> > QOrganizerCollectionChangeSet::modifiedCollections() const
+QList<std::pair<QOrganizerCollectionId, QOrganizerManager::Operation>> QOrganizerCollectionChangeSet::modifiedCollections() const
 {
     return d->m_modifiedCollections;
 }
@@ -226,11 +226,11 @@ void QOrganizerCollectionChangeSet::emitSignals(QOrganizerManagerEngine *engine)
         emit engine->dataChanged();
     } else {
         if (!d->m_addedCollections.isEmpty())
-            emit engine->collectionsAdded(d->m_addedCollections.values());
+            emit engine->collectionsAdded(QList<QOrganizerCollectionId>(d->m_addedCollections.cbegin(), d->m_addedCollections.cend()));
         if (!d->m_changedCollections.isEmpty())
-            emit engine->collectionsChanged(d->m_changedCollections.values());
+            emit engine->collectionsChanged(QList<QOrganizerCollectionId>(d->m_changedCollections.cbegin(), d->m_changedCollections.cend()));
         if (!d->m_removedCollections.isEmpty())
-            emit engine->collectionsRemoved(d->m_removedCollections.values());
+            emit engine->collectionsRemoved(QList<QOrganizerCollectionId>(d->m_removedCollections.cbegin(), d->m_removedCollections.cend()));
         if (!d->m_modifiedCollections.isEmpty())
             emit engine->collectionsModified(d->m_modifiedCollections);
 

@@ -96,11 +96,11 @@ TestCase {
         todoOccurrence.startDateTime = startDateTime
         compare(todoOccurrence.startDateTime, startDateTime)
 
-        var dueDateTime = new Date("2008-12-28T15:22:33+0300")
+        var dueDateTime = new Date("2008-12-28T15:22:33+03:00")
         todoOccurrence.dueDateTime = dueDateTime
         compare(todoOccurrence.dueDateTime, dueDateTime)
 
-        var finishedDateTime = new Date("1995-05-20T11:22:33+0200")
+        var finishedDateTime = new Date("1995-05-20T11:22:33+02:00")
         todoOccurrence.finishedDateTime = finishedDateTime
         compare(todoOccurrence.finishedDateTime, finishedDateTime)
 
@@ -127,11 +127,11 @@ TestCase {
         todo.startDateTime = startDateTime
         compare(todo.startDateTime, startDateTime)
 
-        var dueDateTime = new Date("2008-12-28T15:22:33+0300")
+        var dueDateTime = new Date("2008-12-28T15:22:33+03:00")
         todo.dueDateTime = dueDateTime
         compare(todo.dueDateTime, dueDateTime)
 
-        var finishedDateTime = new Date("1995-05-20T11:22:33+0200")
+        var finishedDateTime = new Date("1995-05-20T11:22:33+02:00")
         todo.finishedDateTime = finishedDateTime
         compare(todo.finishedDateTime, finishedDateTime)
 
@@ -198,7 +198,7 @@ TestCase {
         compare(eventOccurrence.startDateTime, startDateTime)
         compare(itemChangedSpy.count, ++count)
 
-        var endDateTime = new Date("1995-05-20T11:22:33+0200")
+        var endDateTime = new Date("1995-05-20T11:22:33+02:00")
         eventOccurrence.endDateTime = endDateTime
         itemChangedSpy.wait(waitTime);
         compare(eventOccurrence.endDateTime, endDateTime)
@@ -235,7 +235,7 @@ TestCase {
         compare(event.startDateTime, startDateTime)
         compare(itemChangedSpy.count, ++count)
 
-        var endDateTime = new Date("1995-05-20T11:22:33+0200")
+        var endDateTime = new Date("1995-05-20T11:22:33+02:00")
         event.endDateTime = endDateTime
         itemChangedSpy.wait(waitTime);
         compare(event.endDateTime, endDateTime)

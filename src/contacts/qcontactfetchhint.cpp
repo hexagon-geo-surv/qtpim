@@ -244,7 +244,7 @@ QDataStream& operator<<(QDataStream& out, const QContactFetchHint& hint)
 {
     quint8 formatVersion = 2; // Version of QDataStream format for QContactFetchHint
     QList<quint32> detailTypeHintHelper;
-    foreach (QContactDetail::DetailType hintType, hint.detailTypesHint())
+    for (QContactDetail::DetailType hintType : hint.detailTypesHint())
         detailTypeHintHelper.append(static_cast<quint32>(hintType));
 
     return out << formatVersion
@@ -267,7 +267,7 @@ QDataStream& operator>>(QDataStream& in, QContactFetchHint& hint)
         quint32 optimizations;
         QSize dimensions;
         in >> detailTypeHintsHelper >> relationshipTypeHints >> optimizations >> dimensions;
-        foreach (quint32 hintType, detailTypeHintsHelper)
+        for (quint32 hintType : detailTypeHintsHelper)
             detailTypeHints.append(QContactDetail::DetailType(hintType));
 
         hint.setDetailTypesHint(detailTypeHints);

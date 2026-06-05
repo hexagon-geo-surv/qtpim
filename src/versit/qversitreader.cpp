@@ -5,8 +5,7 @@
 #include "qversitreader_p.h"
 
 #include <QtCore/qbuffer.h>
-
-#include <QTextCodec>
+#include <QtCore/qstringconverter.h>
 
 QT_BEGIN_NAMESPACE_VERSIT
 
@@ -144,18 +143,19 @@ void QVersitReader::setData(const QByteArray &inputData)
  * UTF-32.  If the input is in some 8-bit codec, it will fall back to using the system
  * locale's codec.
  */
-void QVersitReader::setDefaultCodec(QTextCodec *codec)
+void QVersitReader::setDefaultCodec(QStringConverter::Encoding encoding)
 {
-    d->mDefaultCodec = codec;
+    d->mDefaultEncoding = encoding;
+    d->mHasDefaultEncoding = true;
 }
 
 /*!
- * Returns the codec the reader uses when parsing the input stream.  If the codec is
- * null, this denotes that the reader will try to detect the codec from the input.
+ * Returns the encoding the reader uses when parsing the input stream.  If no default
+ * encoding has been set, the reader will try to detect the encoding from the input.
  */
-QTextCodec* QVersitReader::defaultCodec() const
+QStringConverter::Encoding QVersitReader::defaultCodec() const
 {
-    return d->mDefaultCodec;
+    return d->mDefaultEncoding;
 }
 
 /*!
@@ -240,6 +240,6 @@ QList<QVersitDocument> QVersitReader::results() const
     return d->mVersitDocuments;
 }
 
-QT_END_NAMESPACE_VERSIT
-
 #include "moc_qversitreader.cpp"
+
+QT_END_NAMESPACE_VERSIT

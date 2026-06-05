@@ -3,11 +3,11 @@
 
 #include "qversitwriter.h"
 #include "qversitwriter_p.h"
-#include "qversitutils_p.h"
 
 #include <QtCore/qbuffer.h>
+#include <QtCore/qstringconverter.h>
 
-#include <QTextCodec>
+#include "qversitutils_p.h"
 
 QT_BEGIN_NAMESPACE_VERSIT
 
@@ -126,17 +126,18 @@ QIODevice* QVersitWriter::device() const
  * If \a codec is NULL, the writer uses the codec according to the specification prescribed default.
  * (for vCard 2.1, ASCII; for vCard 3.0, UTF-8).
  */
-void QVersitWriter::setDefaultCodec(QTextCodec *codec)
+void QVersitWriter::setDefaultCodec(QStringConverter::Encoding encoding)
 {
-    d->mDefaultCodec = codec;
+    d->mDefaultEncoding = encoding;
+    d->mHasDefaultEncoding = true;
 }
 
 /*!
- * Returns the document's codec.
+ * Returns the document's encoding.
  */
-QTextCodec* QVersitWriter::defaultCodec() const
+QStringConverter::Encoding QVersitWriter::defaultCodec() const
 {
-    return d->mDefaultCodec;
+    return d->mDefaultEncoding;
 }
 
 /*!
@@ -259,6 +260,6 @@ bool QVersitWriter::waitForFinished(int msec)
     }
 }
 
-QT_END_NAMESPACE_VERSIT
-
 #include "moc_qversitwriter.cpp"
+
+QT_END_NAMESPACE_VERSIT

@@ -5,6 +5,8 @@
 
 #include <QtCore/qpluginloader.h>
 
+#include <utility>
+
 #include "qversitpluginsearch_p.h"
 
 QT_BEGIN_NAMESPACE_VERSIT
@@ -52,7 +54,7 @@ void QVersitContactPluginLoader::loadPlugins() {
     if (plugins != mPluginPaths) {
         mPluginPaths = plugins;
 
-        foreach (const QString& pluginPath, mPluginPaths) {
+        for (const QString& pluginPath : std::as_const(mPluginPaths)) {
             QPluginLoader qpl(pluginPath);
             QObject* plugin = qpl.instance();
             QVersitContactHandlerFactory* contactPlugin =
@@ -78,13 +80,13 @@ QList<QVersitContactHandler*> QVersitContactPluginLoader::createContactHandlers(
     loadPlugins();
 
     QList<QVersitContactHandler*> handlers;
-    foreach (const QVersitContactHandlerFactory* factory, mContactHandlerFactories) {
+    for (const QVersitContactHandlerFactory* factory : std::as_const(mContactHandlerFactories)) {
         // if the plugin specifies no profiles, include it
         QSet<QString> factoryProfiles(factory->profiles());
         bool includePlugin = factory->profiles().isEmpty();
         if (!includePlugin) {
             // if the plugin's profile list intersects with the requested profile list, include it.
-            foreach (const QString& profile, profiles) {
+            for (const QString& profile : profiles) {
                 if (factoryProfiles.contains(profile)) {
                     includePlugin = true;
                     break;

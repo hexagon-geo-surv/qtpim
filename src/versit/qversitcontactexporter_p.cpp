@@ -7,6 +7,8 @@
 #include <QtCore/qdebug.h>
 #include <QtCore/qurl.h>
 
+#include <utility>
+
 #include <QtContacts/qcontactdetail.h>
 
 #include "qversitcontactimporter_p.h"
@@ -36,7 +38,7 @@ QVersitContactExporterPrivate::QVersitContactExporterPrivate(const QStringList& 
     for (int i = versitPropertyCount-1; i >= 0; i--) {
         mPropertyMappings.insert(
                 versitContactDetailMappings[i].detailType,
-                    QPair<int, QString>(
+                    std::make_pair(
                         versitContactDetailMappings[i].detailField,
                         QLatin1String(versitContactDetailMappings[i].versitPropertyName)));
     }
@@ -53,7 +55,7 @@ QVersitContactExporterPrivate::QVersitContactExporterPrivate(const QStringList& 
     int subTypeCount = sizeof(versitSubTypeMappings)/sizeof(VersitSubTypeMapping);
     for (int i=0; i < subTypeCount; i++) {
         mSubTypeMappings.insert(
-                    QPair<QContactDetail::DetailType, int>(
+                    std::make_pair(
                         versitSubTypeMappings[i].detailType, versitSubTypeMappings[i].contactSubType),
                         QLatin1String(versitSubTypeMappings[i].versitString));
     }
@@ -66,7 +68,7 @@ QVersitContactExporterPrivate::QVersitContactExporterPrivate(const QStringList& 
 QVersitContactExporterPrivate::~QVersitContactExporterPrivate()
 {
     delete mDefaultResourceHandler;
-    foreach (QVersitContactHandler* pluginHandler, mPluginDetailHandlers) {
+    for (QVersitContactHandler* pluginHandler : std::as_const(mPluginDetailHandlers)) {
         delete pluginHandler;
     }
 }
@@ -80,7 +82,7 @@ void QVersitContactExporterPrivate::exportContact(
     QVersitDocument& document)
 {
     QList<QContactDetail> allDetails = contact.details();
-    foreach (const QContactDetail& detail, allDetails) {
+    for (const QContactDetail& detail : std::as_const(allDetails)) {
         if (mDetailHandler
             && mDetailHandler->preProcessDetail(contact, detail, &document))
             continue;
@@ -164,7 +166,7 @@ void QVersitContactExporterPrivate::exportContact(
         }
 
         // run plugin handlers
-        foreach (QVersitContactExporterDetailHandlerV2* handler, mPluginDetailHandlers) {
+        for (QVersitContactExporterDetailHandlerV2* handler : std::as_const(mPluginDetailHandlers)) {
             handler->detailProcessed(contact, detail, document,
                                      &processedFields, &removedProperties, &generatedProperties);
         }
@@ -174,10 +176,10 @@ void QVersitContactExporterPrivate::exportContact(
                                              &processedFields, &removedProperties, &generatedProperties);
         }
 
-        foreach(const QVersitProperty& property, removedProperties) {
+        for (const QVersitProperty& property : std::as_const(removedProperties)) {
             document.removeProperty(property);
         }
-        foreach(const QVersitProperty& property, generatedProperties) {
+        for (const QVersitProperty& property : std::as_const(generatedProperties)) {
             document.addProperty(property);
         }
 
@@ -187,7 +189,7 @@ void QVersitContactExporterPrivate::exportContact(
     }
 
     // run plugin handlers
-    foreach (QVersitContactExporterDetailHandlerV2* handler, mPluginDetailHandlers) {
+    for (QVersitContactExporterDetailHandlerV2* handler : std::as_const(mPluginDetailHandlers)) {
         handler->contactProcessed(contact, &document);
     }
     // run the v2 handler, if set
@@ -205,7 +207,7 @@ void QVersitContactExporterPrivate::exportContact(
 void QVersitContactExporterPrivate::ensureDocumentContainsName(QVersitDocument* document)
 {
     bool containsN = false;
-    foreach (const QVersitProperty& property, document->properties()) {
+    for (const QVersitProperty& property : document->properties()) {
         const QString& name = property.name();
         if (name == QStringLiteral("N")) {
             containsN = true;
@@ -834,6 +836,11 @@ void QVersitContactExporterPrivate::encodeExtendedDetail(
 {
     const QContactExtendedDetail &extendedDetail =
             static_cast<const QContactExtendedDetail &>(detail);
+
+    // If FieldData was never set, skip JSON encoding and let the backup handler export all fields
+    if (!extendedDetail.hasValue(QContactExtendedDetail::FieldData))
+        return;
+
     QVersitProperty property;
     property.setName(mPropertyMappings.value(extendedDetail.type()).second);
     QString dataAsJson;
@@ -845,8 +852,20 @@ void QVersitContactExporterPrivate::encodeExtendedDetail(
     }
     property.setValueType(QVersitProperty::CompoundType);
     *generatedProperties << property;
-    *processedFields << QContactExtendedDetail::FieldName
-                     << QContactExtendedDetail::FieldData;
+    *processedFields << QContactExtendedDetail::FieldName;
+    // For types that need type-aware backup serialization, leave FieldData unprocessed
+    // so the backup handler can export it with a DATATYPE parameter preserving the type
+    switch (extendedDetail.data().userType()) {
+    case QMetaType::QByteArray:
+    case QMetaType::QDate:
+    case QMetaType::QTime:
+    case QMetaType::QDateTime:
+    case QMetaType::QUrl:
+        break;
+    default:
+        *processedFields << QContactExtendedDetail::FieldData;
+        break;
+    }
 }
 
 /*!
@@ -892,7 +911,7 @@ void QVersitContactExporterPrivate::encodeParameters(
             continue;
 
         inserted.insert(value);
-        QString mappedValue = mSubTypeMappings.value(QPair<QContactDetail::DetailType, int>(
+        QString mappedValue = mSubTypeMappings.value(std::make_pair(
                                                           detailType, value));
         if (mappedValue.length() > 0) {
             // QVersitProperty::addParameter inserts into beginning.

@@ -16,11 +16,11 @@ class VCardPreserverFactory : public QVersitContactHandlerFactory
     Q_PLUGIN_METADATA(IID "org.qt-project.Qt.QVersitContactHandlerFactoryInterface" FILE "vcardpreserver.json")
 
 public:
-    QSet<QString> profiles() const;
-    QString name() const;
-    int index() const;
-    QVersitContactHandler* createHandler() const;
-    virtual QStringList keys() const;
+    QSet<QString> profiles() const override;
+    QString name() const override;
+    int index() const override;
+    QVersitContactHandler* createHandler() const override;
+    QStringList keys() const override;
 };
 
 QT_END_NAMESPACE_VERSIT

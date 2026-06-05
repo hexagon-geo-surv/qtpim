@@ -1,17 +1,18 @@
 // Copyright (C) 2026 The Qt Company Ltd.
 // SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
+// Qt-Security score:critical reason:data-parser
 
 #ifndef QVERSITREADER_H
 #define QVERSITREADER_H
 
 #include <QtCore/qlist.h>
 #include <QtCore/qobject.h>
+#include <QtCore/qstringconverter.h>
 
 #include <QtVersit/qversitdocument.h>
 
 QT_FORWARD_DECLARE_CLASS(QByteArray)
 QT_FORWARD_DECLARE_CLASS(QIODevice)
-QT_FORWARD_DECLARE_CLASS(QTextCodec)
 
 QT_BEGIN_NAMESPACE_VERSIT
 
@@ -48,8 +49,8 @@ public:
     QIODevice* device() const;
     void setData(const QByteArray& inputData);
 
-    void setDefaultCodec(QTextCodec* codec);
-    QTextCodec* defaultCodec() const;
+    void setDefaultCodec(QStringConverter::Encoding encoding);
+    QStringConverter::Encoding defaultCodec() const;
 
     // output:
     QList<QVersitDocument> results() const;

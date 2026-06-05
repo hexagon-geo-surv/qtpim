@@ -392,7 +392,7 @@ private:
     template<typename T, typename Subclass>
     static bool equal(const Subclass* us, const Subclass* them, const Member& member)
     {
-        return *memberVariable<T>(us, member.offset) == *memberVariable<int>(them, member.offset);
+        return *memberVariable<T>(us, member.offset) == *memberVariable<T>(them, member.offset);
     }
 };
 
@@ -420,10 +420,14 @@ public:
         return new Subclass(*subclass());
     }
 
-    bool operator==(const QContactDetailBuiltinPrivate& other) const
+    bool operator==(const QContactDetailPrivate& other) const override
     {
-        Subclass *us(subclass());
-        const Subclass *them(other.subclass());
+        const QContactDetailBuiltinPrivate *otherBuiltin =
+            dynamic_cast<const QContactDetailBuiltinPrivate *>(&other);
+        if (!otherBuiltin)
+            return false;
+        const Subclass *us(subclass());
+        const Subclass *them(otherBuiltin->subclass());
         for (int i = 0; i < Subclass::FieldCount; ++i) {
             if (!equal(us, them, s_members[i])) {
                 return false;

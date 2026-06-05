@@ -7,6 +7,7 @@
 #include "qcontactmanagerengine.h"
 
 #include <algorithm>
+#include <utility>
 
 QT_BEGIN_NAMESPACE_CONTACTS
 
@@ -39,7 +40,7 @@ QT_BEGIN_NAMESPACE_CONTACTS
    rather than of multiple changes affecting the same contact.
 
    \code
-        foreach (QContactChangeSet::ContactChangeList changeList, set.changedContacts()) {
+        for (const QContactChangeSet::ContactChangeList &changeList : set.changedContacts()) {
             if (changeList.first.contains(QContactAvatar::Type)) {
                 qDebug() << "Contact IDs with avatar changes:" << changeList.second;
             }
@@ -123,7 +124,7 @@ void QContactChangeSet::insertAddedContact(QContactId addedContactId)
  */
 void QContactChangeSet::insertAddedContacts(const QList<QContactId>& addedContactIds)
 {
-    foreach (const QContactId& id, addedContactIds)
+    for (const QContactId &id : addedContactIds)
         d->m_addedContacts.insert(id);
 }
 
@@ -187,12 +188,12 @@ void QContactChangeSet::insertChangedContacts(const QList<QContactId>& changedCo
     }
     if (it == end) {
         // Add a list for this set of changes
-        d->m_changedContacts.append(qMakePair(changeSet, contactIds));
+        d->m_changedContacts.append(std::make_pair(changeSet, contactIds));
     } else {
         QList<QContactId> &changedIds((*it).second);
         QList<QContactId>::iterator iit = changedIds.begin();
 
-        foreach (const QContactId &contactId, contactIds) {
+        for (const QContactId &contactId : contactIds) {
             // Add this ID if not yet present
             iit = std::lower_bound(iit, changedIds.end(), contactId);
             if (iit == changedIds.end() || *iit != contactId) {
@@ -234,7 +235,7 @@ void QContactChangeSet::insertRemovedContact(QContactId removedContactId)
  */
 void QContactChangeSet::insertRemovedContacts(const QList<QContactId>& removedContactIds)
 {
-    foreach (const QContactId& id, removedContactIds)
+    for (const QContactId &id : removedContactIds)
         d->m_removedContacts.insert(id);
 }
 
@@ -270,7 +271,7 @@ void QContactChangeSet::insertAddedRelationshipsContact(QContactId affectedConta
  */
 void QContactChangeSet::insertAddedRelationshipsContacts(const QList<QContactId>& affectedContactIds)
 {
-    foreach (const QContactId& id, affectedContactIds)
+    for (const QContactId &id : affectedContactIds)
         d->m_addedRelationships.insert(id);
 }
 
@@ -306,7 +307,7 @@ void QContactChangeSet::insertRemovedRelationshipsContact(QContactId affectedCon
  */
 void QContactChangeSet::insertRemovedRelationshipsContacts(const QList<QContactId>& affectedContactIds)
 {
-    foreach (const QContactId& id, affectedContactIds)
+    for (const QContactId &id : affectedContactIds)
         d->m_removedRelationships.insert(id);
 }
 
@@ -326,7 +327,7 @@ void QContactChangeSet::clearRemovedRelationshipsContacts()
   to the old id at the point in time when emitSignals() is called,
   the QContactManagerEngine::selfContactIdChanged signal will be emitted.
  */
-void QContactChangeSet::setOldAndNewSelfContactId(const QPair<QContactId, QContactId> &oldAndNewContactId)
+void QContactChangeSet::setOldAndNewSelfContactId(const std::pair<QContactId, QContactId> &oldAndNewContactId)
 {
     d->m_oldAndNewSelfContactId = oldAndNewContactId;
 }
@@ -339,7 +340,7 @@ void QContactChangeSet::setOldAndNewSelfContactId(const QPair<QContactId, QConta
    at the point in time when emitSignals() is called,
    the QContactManagerEngine::selfContactIdChanged() signal will be emitted.
  */
-QPair<QContactId, QContactId> QContactChangeSet::oldAndNewSelfContactId() const
+std::pair<QContactId, QContactId> QContactChangeSet::oldAndNewSelfContactId() const
 {
     return d->m_oldAndNewSelfContactId;
 }
@@ -355,7 +356,7 @@ void QContactChangeSet::clearAll()
     d->m_removedContacts.clear();
     d->m_addedRelationships.clear();
     d->m_removedRelationships.clear();
-    d->m_oldAndNewSelfContactId = QPair<QContactId, QContactId>();
+    d->m_oldAndNewSelfContactId = std::pair<QContactId, QContactId>();
 }
 
 /*!
@@ -370,18 +371,18 @@ void QContactChangeSet::emitSignals(QContactManagerEngine *engine) const
         emit engine->dataChanged();
     } else {
         if (!d->m_addedContacts.isEmpty())
-            emit engine->contactsAdded(d->m_addedContacts.values());
+            emit engine->contactsAdded(QList<QContactId>(d->m_addedContacts.begin(), d->m_addedContacts.end()));
         if (!d->m_changedContacts.isEmpty()) {
             QList<ContactChangeList>::const_iterator it = d->m_changedContacts.constBegin(), end = d->m_changedContacts.constEnd();
             for ( ; it != end; ++it)
                 emit engine->contactsChanged((*it).second, (*it).first);
         }
         if (!d->m_removedContacts.isEmpty())
-            emit engine->contactsRemoved(d->m_removedContacts.values());
+            emit engine->contactsRemoved(QList<QContactId>(d->m_removedContacts.begin(), d->m_removedContacts.end()));
         if (!d->m_addedRelationships.isEmpty())
-            emit engine->relationshipsAdded(d->m_addedRelationships.values());
+            emit engine->relationshipsAdded(QList<QContactId>(d->m_addedRelationships.begin(), d->m_addedRelationships.end()));
         if (!d->m_removedRelationships.isEmpty())
-            emit engine->relationshipsRemoved(d->m_removedRelationships.values());
+            emit engine->relationshipsRemoved(QList<QContactId>(d->m_removedRelationships.begin(), d->m_removedRelationships.end()));
         if (d->m_oldAndNewSelfContactId.first != d->m_oldAndNewSelfContactId.second)
             emit engine->selfContactIdChanged(d->m_oldAndNewSelfContactId.first, d->m_oldAndNewSelfContactId.second);
     }

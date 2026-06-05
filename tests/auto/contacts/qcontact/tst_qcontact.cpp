@@ -58,7 +58,7 @@ void tst_QContact::details()
     QVERIFY(keyTest.saveDetail(&org));
     QList<QContactDetail> allDetails = keyTest.details();
     QList<int> detailKeys;
-    foreach (const QContactDetail& det, allDetails) {
+    for (const QContactDetail& det : allDetails) {
         int currKey = det.key();
         QVERIFY(!detailKeys.contains(currKey));
         detailKeys.append(currKey);
@@ -69,7 +69,7 @@ void tst_QContact::details()
     QVERIFY(keyTest.saveDetail(&num));
     allDetails = keyTest.details();
     detailKeys.clear();
-    foreach (const QContactDetail& det, allDetails) {
+    for (const QContactDetail& det : allDetails) {
         int currKey = det.key();
         QVERIFY(!detailKeys.contains(currKey));
         detailKeys.append(currKey);

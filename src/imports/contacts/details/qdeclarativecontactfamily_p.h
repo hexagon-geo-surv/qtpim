@@ -34,13 +34,13 @@ public:
         Spouse = QContactFamily::FieldSpouse,
         Children = QContactFamily::FieldChildren
     };
-    QDeclarativeContactFamily(QObject* parent = nullptr)
+    QDeclarativeContactFamily(QObject* parent = Q_NULLPTR)
         :QDeclarativeContactDetail(parent)
     {
         setDetail(QContactFamily());
         connect(this, SIGNAL(valueChanged()), SIGNAL(detailChanged()));
     }
-    DetailType detailType() const
+    DetailType detailType() const override
     {
         return QDeclarativeContactDetail::Family;
     }
@@ -55,7 +55,7 @@ public:
     QString spouse() const {return detail().value(QContactFamily::FieldSpouse).toString();}
     void setChildren(const QStringList& v)
     {
-        if (!readOnly() && QSet<QString>(v.constBegin(), v.constEnd()) != QSet<QString>(children().constBegin(), children().constEnd())) {
+        if (!readOnly() && QSet<QString>(v.cbegin(), v.cend()) != QSet<QString>(children().cbegin(), children().cend())) {
             detail().setValue(QContactFamily::FieldChildren, v);
             emit valueChanged();
         }

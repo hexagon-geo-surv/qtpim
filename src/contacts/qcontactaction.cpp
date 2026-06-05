@@ -144,7 +144,7 @@ QStringList QContactAction::availableActions(const QString& serviceName)
         }
     }
 
-    return ret.values();
+    return QStringList(ret.begin(), ret.end());
 }
 
 
@@ -251,6 +251,6 @@ QContactAction* QContactAction::action(const QContactActionDescriptor& descripto
     return qcam->action(descriptor);
 }
 
-QT_END_NAMESPACE_CONTACTS
-
 #include "moc_qcontactaction.cpp"
+
+QT_END_NAMESPACE_CONTACTS

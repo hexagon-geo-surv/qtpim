@@ -54,7 +54,7 @@ class QDeclarativeContactModel : public QAbstractListModel, public QQmlParserSta
     Q_INTERFACES(QQmlParserStatus)
 
 public:
-    explicit QDeclarativeContactModel(QObject *parent = nullptr);
+    explicit QDeclarativeContactModel(QObject *parent = Q_NULLPTR);
     ~QDeclarativeContactModel();
 
     enum {
@@ -78,8 +78,6 @@ public:
         ImportParseError       = QVersitReader::ParseError
     };
 
-    QHash<int, QByteArray> roleNames() const Q_DECL_OVERRIDE;
-
     QString manager() const;
     void setManager(const QString& manager);
 
@@ -100,6 +98,7 @@ public:
     // From QAbstractListModel
     int rowCount(const QModelIndex &parent) const override;
     QVariant data(const QModelIndex &index, int role) const override;
+    QHash<int, QByteArray> roleNames() const override;
 
     bool autoUpdate() const;
     void setAutoUpdate(bool autoUpdate);

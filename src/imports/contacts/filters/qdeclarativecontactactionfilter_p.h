@@ -45,7 +45,7 @@ public:
     {
         return d.actionName();
     }
-    QContactFilter filter() const
+    QContactFilter filter() const override
     {
         return d;
     }

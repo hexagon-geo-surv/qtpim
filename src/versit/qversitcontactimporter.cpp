@@ -211,7 +211,7 @@ bool QVersitContactImporter::importDocuments(const QList<QVersitDocument>& docum
     d->mContacts.clear();
     d->mErrors.clear();
     bool ok = true;
-    foreach (const QVersitDocument& document, documents) {
+    for (const QVersitDocument& document : documents) {
         QContact contact;
         QVersitContactImporter::Error error;
         if (d->importContact(document, contactIndex, &contact, &error)) {

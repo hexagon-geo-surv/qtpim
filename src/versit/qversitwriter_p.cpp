@@ -4,9 +4,10 @@
 #include "qversitwriter_p.h"
 
 #include <QtCore/qbuffer.h>
+#include <QtCore/qstringconverter.h>
 #include <QtCore/qstringlist.h>
 
-#include <QTextCodec>
+#include <utility>
 
 #include "qvcard21writer_p.h"
 #include "qvcard30writer_p.h"
@@ -17,11 +18,12 @@ QT_BEGIN_NAMESPACE_VERSIT
 
 /*! Constructs a writer. */
 QVersitWriterPrivate::QVersitWriterPrivate()
-    : mIoDevice(0),
+    : mIoDevice(nullptr),
     mState(QVersitWriter::InactiveState),
     mError(QVersitWriter::NoError),
     mIsCanceling(false),
-    mDefaultCodec(0)
+    mDefaultEncoding(QStringConverter::Utf8),
+    mHasDefaultEncoding(false)
 {
 }
 
@@ -48,7 +50,7 @@ void QVersitWriterPrivate::write()
     // Try to get the type from the parameter to startWriting...
     QVersitDocument::VersitType type = documentType();
 
-    foreach (const QVersitDocument& document, mInput) {
+    for (const QVersitDocument& document : std::as_const(mInput)) {
         if (isCanceling()) {
             canceled = true;
             break;
@@ -59,16 +61,16 @@ void QVersitWriterPrivate::write()
             type = document.type();
 
         QScopedPointer<QVersitDocumentWriter> writer(writerForType(type, document));
-        QTextCodec* codec = mDefaultCodec;
-        if (codec == NULL) {
+        if (mHasDefaultEncoding) {
+            writer->setEncoding(mDefaultEncoding);
+        } else {
             if (type == QVersitDocument::VCard21Type) {
-                codec = QTextCodec::codecForName("ISO-8859-1");
+                writer->setEncoding(QStringConverter::Latin1);
                 writer->setAsciiCodec();
             } else {
-                codec = QTextCodec::codecForName("UTF-8");
+                writer->setEncoding(QStringConverter::Utf8);
             }
         }
-        writer->setCodec(codec);
         writer->setDevice(mIoDevice);
         if (!writer->encodeVersitDocument(document)) {
             setError(QVersitWriter::IOError);
@@ -173,6 +175,5 @@ QVersitDocument::VersitType QVersitWriterPrivate::documentType() const
     return mType;
 }
 
-QT_END_NAMESPACE_VERSIT
-
 #include "moc_qversitwriter_p.cpp"
+QT_END_NAMESPACE_VERSIT

@@ -9,8 +9,7 @@
 #include <QtVersit/qversitproperty.h>
 #include <QtTest/QtTest>
 #include <QByteArray>
-
-#include <QTextCodec>
+#include <QtCore/qstringconverter.h>
 
 QTVERSIT_USE_NAMESPACE
 
@@ -42,9 +41,9 @@ void tst_QVersitWriter::testDevice()
 
 void tst_QVersitWriter::testDefaultCodec()
 {
-    QVERIFY(mWriter->defaultCodec() == 0);
-    mWriter->setDefaultCodec(QTextCodec::codecForName("UTF-16BE"));
-    QVERIFY(mWriter->defaultCodec() == QTextCodec::codecForName("UTF-16BE"));
+    QCOMPARE(mWriter->defaultCodec(), QStringConverter::Utf8);
+    mWriter->setDefaultCodec(QStringConverter::Utf16BE);
+    QCOMPARE(mWriter->defaultCodec(), QStringConverter::Utf16BE);
 }
 
 void tst_QVersitWriter::testWritingVersions()
@@ -137,19 +136,15 @@ END:VCARD\r\n");
     mOutputDevice = new QBuffer;
     mOutputDevice->open(QBuffer::ReadWrite);
     mWriter->setDevice(mOutputDevice);
-    QTextCodec* utf16(QTextCodec::codecForName("UTF-16"));
-    mWriter->setDefaultCodec(utf16);
+    mWriter->setDefaultCodec(QStringConverter::Utf16);
     QVERIFY2(mWriter->startWriting(list), QString::number(mWriter->error()).toLatin1().data());
     QVERIFY2(mWriter->waitForFinished(), QString::number(mWriter->error()).toLatin1().data());
     QCOMPARE(mWriter->state(), QVersitWriter::FinishedState);
     QCOMPARE(mWriter->error(), QVersitWriter::NoError);
     mOutputDevice->seek(0);
     result = mOutputDevice->readAll();
-
-    QTextCodec::ConverterState state(QTextCodec::DefaultConversion);
-    const QString decodedData = QString::fromLatin1(vCard21.data());
-    QByteArray expected(utf16->fromUnicode(decodedData.constData(), decodedData.size(), &state));
-
+    QByteArray expected(QStringEncoder(QStringConverter::Utf16).encode(
+        QString::fromLatin1(vCard21.data())));
     QCOMPARE(result, expected);
 }
 
@@ -251,18 +246,14 @@ void tst_QVersitWriter::testWritingDocument()
     QCOMPARE(result, expected);
 
     // try it again in another codec
-    QTextCodec* utf16(QTextCodec::codecForName("UTF-16"));
-    mWriter->setDefaultCodec(utf16);
+    mWriter->setDefaultCodec(QStringConverter::Utf16);
     mOutputDevice->buffer().clear();
     mOutputDevice->seek(0);
     QVERIFY2(mWriter->startWriting(document), QString::number(mWriter->error()).toLatin1().data());
     QVERIFY2(mWriter->waitForFinished(), QString::number(mWriter->error()).toLatin1().data());
     mOutputDevice->seek(0);
     result = mOutputDevice->readAll();
-
-    QTextCodec::ConverterState state(QTextCodec::DefaultConversion);
-    const QString decodedData = QString::fromLatin1(expected);
-    expected = utf16->fromUnicode(decodedData.constData(), decodedData.size(), &state);
+    expected = QStringEncoder(QStringConverter::Utf16).encode(QString::fromLatin1(expected));
     if (result!=expected) qDebug() << result << expected;
     QCOMPARE(result, expected);
 }

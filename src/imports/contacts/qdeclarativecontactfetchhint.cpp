@@ -38,7 +38,7 @@ QDeclarativeContactFetchHint::QDeclarativeContactFetchHint(QObject* parent)
 QList<int> QDeclarativeContactFetchHint::detailTypesHint() const
 {
     QList<int> savedList;
-    foreach (const QContactDetail::DetailType &detailTypeHint, m_fetchHint.detailTypesHint()) {
+    for (const QContactDetail::DetailType &detailTypeHint : m_fetchHint.detailTypesHint()) {
         savedList << static_cast<int>(detailTypeHint);
     }
 
@@ -46,9 +46,9 @@ QList<int> QDeclarativeContactFetchHint::detailTypesHint() const
 }
 void QDeclarativeContactFetchHint::setDetailTypesHint(const QList<int> &detailTypes)
 {
-    if (QSet<int>(detailTypes.constBegin(), detailTypes.constEnd()) != QSet<int>(detailTypesHint().constBegin(), detailTypesHint().constEnd())) {
+    if (QSet<int>(detailTypes.cbegin(), detailTypes.cend()) != QSet<int>(detailTypesHint().cbegin(), detailTypesHint().cend())) {
         QList<QContactDetail::DetailType> convertedDetailTypes;
-        foreach (const int detailType, detailTypes) {
+        for (const int detailType : detailTypes) {
             convertedDetailTypes << static_cast<QContactDetail::DetailType>(detailType);
         }
         m_fetchHint.setDetailTypesHint(convertedDetailTypes);
@@ -68,8 +68,7 @@ QStringList QDeclarativeContactFetchHint::relationshipTypesHint() const
 }
 void QDeclarativeContactFetchHint::setRelationshipTypesHint(const QStringList& relationshipTypes)
 {
-    if (QSet<QString>(relationshipTypes.constBegin(), relationshipTypes.constEnd())
-            != QSet<QString>(m_fetchHint.relationshipTypesHint().constBegin(), m_fetchHint.relationshipTypesHint().constEnd())) {
+    if (QSet<QString>(relationshipTypes.cbegin(), relationshipTypes.cend()) != QSet<QString>(m_fetchHint.relationshipTypesHint().cbegin(), m_fetchHint.relationshipTypesHint().cend())) {
         m_fetchHint.setRelationshipTypesHint(relationshipTypes);
         emit fetchHintChanged();
     }
@@ -158,6 +157,6 @@ void QDeclarativeContactFetchHint::setFetchHint(const QContactFetchHint& fetchHi
     emit fetchHintChanged();
 }
 
-QT_END_NAMESPACE
-
 #include "moc_qdeclarativecontactfetchhint_p.cpp"
+
+QT_END_NAMESPACE

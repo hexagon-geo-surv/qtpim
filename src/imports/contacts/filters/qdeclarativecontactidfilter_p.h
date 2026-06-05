@@ -42,7 +42,7 @@ public:
 
     void setIds(const QStringList &ids)
     {
-        foreach (const QString &id, ids) {
+        for (const QString &id : ids) {
             if (!m_ids.contains(id)) {
                 m_ids = ids;
                 emit valueChanged();
@@ -50,7 +50,7 @@ public:
             }
         }
 
-        foreach (const QString &id, m_ids) {
+        for (const QString &id : std::as_const(m_ids)) {
             if (!ids.contains(id)) {
                 m_ids = ids;
                 emit valueChanged();
@@ -58,12 +58,12 @@ public:
         }
     }
 
-    QContactFilter filter() const
+    QContactFilter filter() const override
     {
         QContactIdFilter f;
         QList<QContactId> ids;
 
-        foreach (const QString &id, m_ids) {
+        for (const QString &id : std::as_const(m_ids)) {
             QContactId contactId = QContactId::fromString(id);
             ids << contactId;
         }

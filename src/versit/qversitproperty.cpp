@@ -3,13 +3,13 @@
 
 #include "qversitproperty.h"
 #include "qversitproperty_p.h"
-#include "qversitdocument.h"
 
 #ifndef QT_NO_DEBUG_STREAM
 #include <QtCore/qdebug.h>
 #endif
+#include <QtCore/qstringconverter.h>
 
-#include <QTextCodec>
+#include "qversitdocument.h"
 
 QT_BEGIN_NAMESPACE_VERSIT
 
@@ -100,8 +100,7 @@ bool QVersitProperty::operator==(const QVersitProperty& other) const
 {
     bool equal = d->mGroups == other.d->mGroups &&
             d->mName == other.d->mName &&
-            ((d->mParameters.isEmpty() && other.d->mParameters.isEmpty()) // QTBUG-87575
-                || (d->mParameters == other.d->mParameters)) &&
+            d->mParameters == other.d->mParameters &&
             d->mValueType == other.d->mValueType;
     if (!equal)
         return false;
@@ -121,16 +120,16 @@ bool QVersitProperty::operator!=(const QVersitProperty& other) const
 }
 
 /*! Returns the hash value for \a key. */
-size_t qHash(const QVersitProperty &key)
+size_t qHash(const QVersitProperty &key, size_t seed) noexcept
 {
-    size_t hash = QT_PREPEND_NAMESPACE(qHash)(key.name()) + QT_PREPEND_NAMESPACE(qHash)(key.value());
-    foreach (const QString& group, key.groups()) {
-        hash += QT_PREPEND_NAMESPACE(qHash)(group);
+    size_t hash = QT_PREPEND_NAMESPACE(qHash)(key.name(), seed) ^ QT_PREPEND_NAMESPACE(qHash)(key.value(), seed);
+    for (const QString& group : key.groups()) {
+        hash ^= QT_PREPEND_NAMESPACE(qHash)(group, seed);
     }
     QMultiHash<QString,QString>::const_iterator it = key.parameters().constBegin();
     QMultiHash<QString,QString>::const_iterator end = key.parameters().constEnd();
     while (it != end) {
-        hash += QT_PREPEND_NAMESPACE(qHash)(it.key()) + QT_PREPEND_NAMESPACE(qHash)(it.value());
+        hash ^= QT_PREPEND_NAMESPACE(qHash)(it.key(), seed) ^ QT_PREPEND_NAMESPACE(qHash)(it.value(), seed);
         ++it;
     }
     return hash;
@@ -143,7 +142,7 @@ QDebug operator<<(QDebug dbg, const QVersitProperty& property)
     QString name = property.name();
     QMultiHash<QString,QString> parameters = property.parameters();
     dbg.nospace() << "QVersitProperty(";
-    foreach (const QString& group, groups) {
+    for (const QString& group : groups) {
         dbg.nospace() << group << '.';
     }
     dbg.nospace() << name;
@@ -166,7 +165,7 @@ QDebug operator<<(QDebug dbg, const QVersitProperty& property)
 void QVersitProperty::setGroups(const QStringList& groups)
 {
     d->mGroups.clear();
-    foreach (const QString& group, groups) {
+    for (const QString& group : groups) {
         d->mGroups.append(group);
     }
 }
@@ -284,15 +283,18 @@ QVariant QVersitProperty::variantValue() const
  */
 QString QVersitProperty::value() const
 {
-    if (d->mValue.metaType().id() == QMetaType::QByteArray) {
+    if (d->mValue.type() == QVariant::ByteArray) {
         if (d->mParameters.contains(QStringLiteral("CHARSET"))) {
-            QTextCodec* codec = QTextCodec::codecForName(
-                    d->mParameters.value(QStringLiteral("CHARSET")).toLatin1());
-            if (codec != NULL) {
-                return codec->toUnicode(d->mValue.toByteArray());
+            QByteArray charsetName = d->mParameters.value(QStringLiteral("CHARSET")).toLatin1();
+            auto opt = QStringConverter::encodingForName(charsetName.constData());
+            if (opt.has_value()) {
+                QStringDecoder dec(opt.value());
+                return dec.decode(d->mValue.toByteArray());
             }
         }
         return QString();
+    } else if (d->mValue.metaType() == QMetaType::fromType<QUrl>()) {
+        return d->mValue.value<QUrl>().toString();
     } else {
         return d->mValue.toString();
     }

@@ -34,7 +34,7 @@ public:
     {
     }
 
-    virtual bool compare(const QOrganizerItemFilterPrivate *other) const override
+    bool compare(const QOrganizerItemFilterPrivate *other) const override
     {
         const QOrganizerItemDetailFieldFilterPrivate *od = static_cast<const QOrganizerItemDetailFieldFilterPrivate *>(other);
         if (od) {
@@ -48,7 +48,7 @@ public:
     QDataStream &outputToStream(QDataStream &stream, quint8 formatVersion) const override
     {
         if (formatVersion == 1)
-            stream << quint32(m_detailType) << m_detailField << m_exactValue << static_cast<quint32>(m_flags);
+            stream << m_detailType << m_detailField << m_exactValue << static_cast<quint32>(m_flags);
         return stream;
     }
 

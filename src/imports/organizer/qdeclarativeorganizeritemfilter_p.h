@@ -76,7 +76,7 @@ public:
     QDeclarativeOrganizerItemInvalidFilter(QObject *parent = nullptr);
 
     // used by model
-    QOrganizerItemFilter filter() const;
+    QOrganizerItemFilter filter() const override;
 };
 
 
@@ -113,7 +113,7 @@ public:
     QDeclarativeOrganizerItemIntersectionFilter(QObject *parent = nullptr);
 
     // used by model
-    QOrganizerItemFilter filter() const;
+    QOrganizerItemFilter filter() const override;
 };
 
 
@@ -124,7 +124,7 @@ public:
     QDeclarativeOrganizerItemUnionFilter(QObject *parent = nullptr);
 
     // used by model
-    QOrganizerItemFilter filter() const;
+    QOrganizerItemFilter filter() const override;
 };
 
 
@@ -140,7 +140,7 @@ public:
     void setIds(const QStringList &ids);
 
     // used by model
-    QOrganizerItemFilter filter() const;
+    QOrganizerItemFilter filter() const override;
 
 Q_SIGNALS:
     void valueChanged();
@@ -162,7 +162,7 @@ public:
     void setDetail(QDeclarativeOrganizerItemDetail *detail);
 
     // used by model
-    QOrganizerItemFilter filter() const;
+    QOrganizerItemFilter filter() const override;
 
 signals:
     void valueChanged();
@@ -179,13 +179,13 @@ class QDeclarativeOrganizerItemDetailFieldFilter : public QDeclarativeOrganizerI
     Q_PROPERTY(QVariant value READ value WRITE setValue NOTIFY valueChanged)
     Q_PROPERTY(MatchFlags matchFlags READ matchFlags WRITE setMatchFlags NOTIFY valueChanged)
     Q_PROPERTY(int field READ field WRITE setField NOTIFY valueChanged)
-    Q_PROPERTY(QDeclarativeOrganizerItemDetail::DetailType detail READ detail WRITE setDetail NOTIFY valueChanged)
+    Q_PROPERTY(int detail READ detail WRITE setDetail NOTIFY valueChanged)
 
 public:
     QDeclarativeOrganizerItemDetailFieldFilter(QObject *parent = nullptr);
 
-    QDeclarativeOrganizerItemDetail::DetailType detail() const;
-    void setDetail(QDeclarativeOrganizerItemDetail::DetailType detail);
+    int detail() const;
+    void setDetail(int detail);
 
     int field() const;
     void setField(int field);
@@ -197,7 +197,7 @@ public:
     void setMatchFlags(QDeclarativeOrganizerItemFilter::MatchFlags flags);
 
     // used by model
-    QOrganizerItemFilter filter() const;
+    QOrganizerItemFilter filter() const override;
 
 signals:
     void valueChanged();
@@ -248,7 +248,7 @@ public:
     void setMaxValue(const QVariant &value);
 
     // used by model
-    QOrganizerItemFilter filter() const;
+    QOrganizerItemFilter filter() const override;
 
 signals:
     void valueChanged();
@@ -271,7 +271,7 @@ public:
     void setIds(const QStringList &ids);
 
     // used by model
-    QOrganizerItemFilter filter() const;
+    QOrganizerItemFilter filter() const override;
 
 Q_SIGNALS:
     void valueChanged();

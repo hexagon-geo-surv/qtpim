@@ -57,8 +57,7 @@ void DayPage::refresh()
     m_itemList->clear();
 
     // Today's item
-    QList<QOrganizerItem> items
-        = m_manager->items(m_day.startOfDay(), m_day.endOfDay());
+    QList<QOrganizerItem> items = m_manager->items(m_day.startOfDay(), QDateTime(m_day, QTime(23, 59, 59)));
 
     foreach (const QOrganizerItem &item, items)
     {

@@ -63,7 +63,7 @@ class TimeZone {
         QString tzid() const { return mTzid; }
         void addPhase(const TimeZonePhase& phase) { mPhases.append(phase); }
         bool isValid() const {
-            foreach (const TimeZonePhase& phase, mPhases) {
+            for (const TimeZonePhase& phase : mPhases) {
                 if (!phase.isValid()) return false;
             }
             return !mPhases.isEmpty();

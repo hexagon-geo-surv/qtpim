@@ -162,7 +162,7 @@ void tst_QVersitOrganizerImporter::testImportEventProperties()
     document.setComponentType(QStringLiteral("VCALENDAR"));
     QVersitDocument nested(QVersitDocument::ICalendar20Type);
     nested.setComponentType(QStringLiteral("VEVENT"));
-    foreach (const QVersitProperty& property, properties) {
+    for (const QVersitProperty& property : properties) {
         if (property.valueType() == QVersitProperty::VersitDocumentType)
             nested.addSubDocument(property.value<QVersitDocument>());
         else
@@ -174,7 +174,7 @@ void tst_QVersitOrganizerImporter::testImportEventProperties()
     QVERIFY(importer.errorMap().isEmpty());
     QList<QOrganizerItem> items = importer.items();
     QCOMPARE(items.size(), 1);
-    foreach (const QOrganizerItemDetail& expectedDetail, expectedDetails) {
+    for (const QOrganizerItemDetail& expectedDetail : expectedDetails) {
 
         QList<QOrganizerItemDetail> actualDetails = items.first().details(expectedDetail.type());
         if (!actualDetails.contains(expectedDetail)) {
@@ -1246,7 +1246,7 @@ void tst_QVersitOrganizerImporter::testImportTodoProperties()
     document.setComponentType(QStringLiteral("VCALENDAR"));
     QVersitDocument nested(QVersitDocument::ICalendar20Type);
     nested.setComponentType(QStringLiteral("VTODO"));
-    foreach (const QVersitProperty& property, properties) {
+    for (const QVersitProperty& property : properties) {
         if (property.valueType() == QVersitProperty::VersitDocumentType)
             nested.addSubDocument(property.value<QVersitDocument>());
         else
@@ -1260,7 +1260,7 @@ void tst_QVersitOrganizerImporter::testImportTodoProperties()
     QList<QOrganizerItem> items = importer.items();
     QCOMPARE(items.size(), 1);
 
-    foreach (const QOrganizerItemDetail& expectedDetail, expectedDetails) {
+    for (const QOrganizerItemDetail& expectedDetail : expectedDetails) {
         QOrganizerItemDetail actualDetail = items.first().detail(expectedDetail.type());
         if (actualDetail != expectedDetail) {
             qDebug() << "Actual:" << actualDetail;
@@ -1837,7 +1837,7 @@ void tst_QVersitOrganizerImporter::testMultipleExtendedDetails()
     QList<QOrganizerItem> items = importer.items();
     QList<QOrganizerItemDetail> actualDetails = items.first().details(QOrganizerItemDetail::TypeExtendedDetail);
     QCOMPARE(actualDetails.size(), 2);
-    foreach (const QOrganizerItemDetail& expectedDetail, expectedDetails) {
+    for (const QOrganizerItemDetail& expectedDetail : expectedDetails) {
         if (!actualDetails.contains(expectedDetail)) {
             qDebug() << "Actual:" << actualDetails;
             qDebug() << "Expected to find:" << expectedDetail;

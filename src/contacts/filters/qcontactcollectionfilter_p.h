@@ -35,7 +35,7 @@ public:
     {
     }
 
-    virtual bool compare(const QContactFilterPrivate *other) const override
+    bool compare(const QContactFilterPrivate *other) const override
     {
         const QContactCollectionFilterPrivate *od = static_cast<const QContactCollectionFilterPrivate *>(other);
         if (od)
@@ -63,7 +63,7 @@ public:
     QDebug &debugStreamOut(QDebug &dbg) const override
     {
         dbg.nospace() << "QContactCollectionFilter(collectionIds=";
-        QList<QContactCollectionId> ids(m_ids.values());
+        QList<QContactCollectionId> ids(m_ids.begin(), m_ids.end());
         std::sort(ids.begin(), ids.end());
         dbg.nospace() << ids;
         dbg.nospace() << ")";

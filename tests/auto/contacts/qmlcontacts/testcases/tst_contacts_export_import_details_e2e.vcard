@@ -1,0 +1,47 @@
+BEGIN:VCARD
+VERSION:3.0
+ADR;TYPE=HOME:;;Street;Locality;Region;12345;Country
+ADR;TYPE=HOME,WORK:;;Street2;Locality2;Region2;123452;Country2
+X-ANNIVERSARY:2012-01-01
+PHOTO;VALUE=URL:http://nokia.com/imageurl
+BDAY:2000-02-01T12:00:00
+EMAIL;TYPE=WORK:emailaddress@ovi.com.invalid
+EMAIL;TYPE=HOME,WORK:emailaddress2@ovi.com.invalid
+X-QTPROJECT-EXTENDED-DETAIL:Extended detail: string data;[\n    "string 1"\n
+ ]\n
+X-QTPROJECT-EXTENDED-DETAIL:Extended detail: number data;[\n    2\n]\n
+X-QTPROJECT-EXTENDED-DETAIL:Extended detail: date data;[\n    "2000-01-02T12
+ :13:14.000"\n]\n
+X-QTPROJECT-EXTENDED-DETAIL:Extended detail: array data;[\n    [\n        "s
+ tring 1"\,\n        "string 2"\n    ]\n]\n
+X-QTPROJECT-EXTENDED-DETAIL:Extended detail: object data;[\n    {\n        "
+ key 1": "string 1"\,\n        "key 2": "string 2"\n    }\n]\n
+X-SPOUSE:Spouse
+X-CHILDREN:Kid A,Kid B
+X-QTPROJECT-FAVORITE:true;1
+X-GENDER:Male
+UID:Guid
+GEO:1.1;1.2
+N:Last;First;Middle;Prefix;Suffix
+NICKNAME:Nick
+NOTE:Note
+X-SIP:http://qt.nokia.com/url
+TITLE:Title
+ORG:Organization;Department
+LOGO;VALUE=uri:http://qt.nokia.com/logourl
+X-ASSISTANT:Assistant
+ROLE:Role
+TITLE:Title2
+ORG:Organization2;Department2
+LOGO;VALUE=uri:http://qt.nokia.com/logourl2
+X-ASSISTANT:Assistant2
+ROLE:Role2
+TEL;TYPE=VOICE,CELL,FAX,VIDEO,HOME:12345
+TEL;TYPE=VOICE,CELL,FAX,VIDEO,HOME,WORK:54321
+SOUND;VALUE=URL:http://qt.nokia.com/audioringtoneurl
+CATEGORIES:Tag
+REV:2026-06-06T13:53:19
+URL;TYPE=WORK:http://qt.nokia.com/url
+URL;TYPE=HOME,WORK:http://qt.nokia.com/url2
+X-QTPROJECT-VERSION:1;Extended version
+END:VCARD

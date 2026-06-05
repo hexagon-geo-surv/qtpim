@@ -78,7 +78,7 @@ public:
 
     ~ContactExporterResourceHandler()
     {
-        foreach (const QString& fileName, m_files)
+        for (const QString &fileName : std::as_const(m_files))
             QFile::remove(fileName);
 
         m_files.clear();
@@ -86,7 +86,7 @@ public:
 
     bool saveResource(const QByteArray& contents,
                       const QVersitProperty& property,
-                      QString* location)
+                      QString* location) override
     {
         const QMimeType mt = QMimeDatabase().mimeTypeForData(contents);
         QString extension(QStringLiteral("data"));
@@ -110,7 +110,7 @@ public:
         return false;
     }
 
-    bool loadResource(const QString &location, QByteArray *contents, QString *mimeType)
+    bool loadResource(const QString &location, QByteArray *contents, QString *mimeType) override
     {
         if (location.isEmpty())
             return false;
@@ -205,9 +205,9 @@ QDeclarativeContactModel::~QDeclarativeContactModel()
 
 QHash<int, QByteArray> QDeclarativeContactModel::roleNames() const
 {
-    QHash<int, QByteArray> roleNames = QAbstractItemModel::roleNames();
-    roleNames.insert(ContactRole, "contact");
-    return roleNames;
+    QHash<int, QByteArray> roles = QAbstractItemModel::roleNames();
+    roles.insert(ContactRole, "contact");
+    return roles;
 }
 
 /*!
@@ -333,7 +333,7 @@ void QDeclarativeContactModel::updateCollections()
   */
 void QDeclarativeContactModel::cancelUpdate()
 {
-    foreach (QContactFetchRequest *req, d->m_pendingRequests) {
+    for (QContactFetchRequest *req : std::as_const(d->m_pendingRequests)) {
         req->cancel();
         req->deleteLater();
     }
@@ -519,12 +519,12 @@ void QDeclarativeContactModel::exportContacts(const QUrl& url, const QStringList
 
         QList<QContact> contacts;
         if (declarativeContacts.isEmpty()) {
-            foreach (QDeclarativeContact* dc, d->m_contacts) {
+            for (QDeclarativeContact *dc : std::as_const(d->m_contacts)) {
                 contacts.append(dc->contact());
             }
 
         } else {
-            foreach (const QVariant &contactVariant, declarativeContacts) {
+            for (const QVariant &contactVariant : std::as_const(declarativeContacts)) {
                 QObject *rawObject = contactVariant.value<QObject*>();
                 QDeclarativeContact *dc = qobject_cast<QDeclarativeContact*>(rawObject);
                 if (dc) {
@@ -631,12 +631,12 @@ void QDeclarativeContactModel::setFetchHint(QDeclarativeContactFetchHint* fetchH
   */
 QQmlListProperty<QDeclarativeContact> QDeclarativeContactModel::contacts()
 {
-    return { this,
-             nullptr,
-             &contacts_append,
-             &contacts_count,
-             &contacts_at,
-             &contacts_clear };
+    return QQmlListProperty<QDeclarativeContact>(this,
+                                                         0,
+                                                         contacts_append,
+                                                         contacts_count,
+                                                         contacts_at,
+                                                         contacts_clear);
 }
 
 
@@ -674,12 +674,12 @@ void QDeclarativeContactModel::contacts_clear(QQmlListProperty<QDeclarativeConta
   */
 QQmlListProperty<QDeclarativeContactSortOrder> QDeclarativeContactModel::sortOrders()
 {
-    return { this,
-             nullptr,
-             &sortOrder_append,
-             &sortOrder_count,
-             &sortOrder_at,
-             &sortOrder_clear };
+    return QQmlListProperty<QDeclarativeContactSortOrder>(this,
+                                                                  0,
+                                                                  sortOrder_append,
+                                                                  sortOrder_count,
+                                                                  sortOrder_at,
+                                                                  sortOrder_clear);
 }
 
 void QDeclarativeContactModel::startImport(QVersitReader::State state)
@@ -702,7 +702,7 @@ void QDeclarativeContactModel::startImport(QVersitReader::State state)
                     emit errorChanged();
                 }
             } else {
-                foreach (const QContact &c, contacts) {
+                for (const QContact &c : std::as_const(contacts)) {
                     ids << c.id().toString();
                 }
             }
@@ -742,7 +742,7 @@ int QDeclarativeContactModel::fetchContacts(const QStringList &contactIds)
     fetchRequest->setManager(d->m_manager);
 
     QList<QContactId> ids;
-    foreach (const QString &contactId, contactIds)
+    for (const QString &contactId : std::as_const(contactIds))
         ids.append(QContactId::fromString(contactId));
     fetchRequest->setIds(ids);
     int requestId = d->m_lastRequestId.fetchAndAddOrdered(1);
@@ -836,7 +836,7 @@ void QDeclarativeContactModel::onFetchContactsRequestStateChanged(QContactAbstra
     QVariantList list;
     if (request->error() == QContactManager::NoError) {
         QList<QContact> contacts(request->contacts());
-        foreach (const QContact &contact, contacts) {
+        for (const QContact &contact : std::as_const(contacts)) {
             // if the contact was already fetched update the contact
             QDeclarativeContact *declarativeContact = d->m_contactFetchedMap.value(contact.id(), 0);
             if (!declarativeContact) {
@@ -871,15 +871,16 @@ void QDeclarativeContactModel::collectionsFetched()
         d->m_updatePendingFlag &= ~QDeclarativeContactModelPrivate::UpdatingCollectionsPending;
         // prepare tables
         QHash<QString, const QContactCollection*> collections;
-        foreach (const QContactCollection& collection, req->collections()) {
+        const auto reqCollections = req->collections();
+        for (const QContactCollection &collection : reqCollections) {
             collections.insert(collection.id().toString(), &collection);
         }
         QHash<QString, QDeclarativeContactCollection*> declCollections;
-        foreach (QDeclarativeContactCollection* declCollection, d->m_collections) {
+        for (QDeclarativeContactCollection *declCollection : std::as_const(d->m_collections)) {
             declCollections.insert(declCollection->collection().id().toString(), declCollection);
         }
         // go tables through
-        for (auto it = collections.cbegin(), end = collections.cend(); it != end; ++it) {
+        for (auto it = collections.cbegin(); it != collections.cend(); ++it) {
             if (declCollections.contains(it.key())) {
                 // collection on both sides, update the declarative collection
                 declCollections.value(it.key())->setCollection(*it.value());
@@ -890,7 +891,7 @@ void QDeclarativeContactModel::collectionsFetched()
                 d->m_collections.append(declCollection);
             }
         }
-        for (auto it = declCollections.cbegin(), end = declCollections.cend(); it != end; ++it) {
+        for (auto it = declCollections.cbegin(); it != declCollections.cend(); ++it) {
             if (!collections.contains(it.key())) {
                 // collection deleted on the backend side, delete from declarative collection list
                 QDeclarativeContactCollection* toBeDeletedColl = it.value();
@@ -918,7 +919,7 @@ void QDeclarativeContactModel::clearContacts()
 void QDeclarativeContactModel::fetchAgain()
 {
     QList<QContactSortOrder> sortOrders;
-    foreach (QDeclarativeContactSortOrder* so, d->m_sortOrders) {
+    for (QDeclarativeContactSortOrder *so : std::as_const(d->m_sortOrders)) {
         sortOrders.append(so->sortOrder());
     }
     QContactFetchRequest* fetchRequest = new QContactFetchRequest(this);
@@ -939,7 +940,7 @@ void QDeclarativeContactModel::fetchAgain()
             this, SLOT(fetchRequestStateChanged(QContactAbstractRequest::State)));
 
     // cancel all previous requests
-    foreach (QContactFetchRequest *req, d->m_pendingRequests) {
+    for (QContactFetchRequest *req : std::as_const(d->m_pendingRequests)) {
         req->cancel();
         req->deleteLater();
     }
@@ -967,7 +968,7 @@ void QDeclarativeContactModel::requestUpdated()
         // if we are starting from scratch, we can show contact results as they arrive
         if (d->m_progressiveLoading) {
             QList<QDeclarativeContact*> dcs;
-            foreach (const QContact &c, contacts) {
+            for (const QContact &c : std::as_const(contacts)) {
                 if (d->m_contactMap.contains(c.id())) {
                     QDeclarativeContact* dc = d->m_contactMap.value(c.id());
                     dc->setContact(c);
@@ -1189,7 +1190,7 @@ void QDeclarativeContactModel::removeContacts(const QStringList &ids)
     QList<QContactId> contactIdsAsList;
     req->setManager(d->m_manager);
 
-    foreach (const QString& id, ids) {
+    for (const QString &id : std::as_const(ids)) {
         QContactId contactId = QContactId::fromString(id);
         if (!contactId.isNull())
             contactIdsAsList.append(contactId);
@@ -1208,7 +1209,7 @@ void QDeclarativeContactModel::onContactsRemoved(const QList<QContactId> &ids)
         return;
 
     bool emitSignal = false;
-    foreach (const QContactId &id, ids) {
+    for (const QContactId &id : std::as_const(ids)) {
         // delete the contact from fetched map if necessary
         QDeclarativeContact* contact = d->m_contactFetchedMap.take(id);
         if (contact)
@@ -1251,7 +1252,7 @@ void QDeclarativeContactModel::onContactsChanged(const QList<QContactId> &ids)
     // For example: if the model contains a filter
     if (!ids.isEmpty()) {
         QStringList pendingFetch;
-        foreach (const QContactId &id, ids) {
+        for (const QContactId &id : std::as_const(ids)) {
             QDeclarativeContact* dc = d->m_contactFetchedMap.value(id);
             if (dc)
                 pendingFetch << dc->contactId();
@@ -1312,14 +1313,13 @@ void QDeclarativeContactModel::sortOrder_append(QQmlListProperty<QDeclarativeCon
     }
 }
 
-qsizetype  QDeclarativeContactModel::sortOrder_count(QQmlListProperty<QDeclarativeContactSortOrder> *p)
+qsizetype QDeclarativeContactModel::sortOrder_count(QQmlListProperty<QDeclarativeContactSortOrder> *p)
 {
     QDeclarativeContactModel* model = qobject_cast<QDeclarativeContactModel*>(p->object);
     if (model)
         return model->d->m_sortOrders.size();
     return 0;
 }
-
 QDeclarativeContactSortOrder * QDeclarativeContactModel::sortOrder_at(QQmlListProperty<QDeclarativeContactSortOrder> *p, qsizetype idx)
 {
     QDeclarativeContactModel* model = qobject_cast<QDeclarativeContactModel*>(p->object);
@@ -1327,7 +1327,7 @@ QDeclarativeContactSortOrder * QDeclarativeContactModel::sortOrder_at(QQmlListPr
     QDeclarativeContactSortOrder* sortOrder = 0;
     if (model) {
         qsizetype i = 0;
-        foreach (QDeclarativeContactSortOrder* s, model->d->m_sortOrders) {
+        for (QDeclarativeContactSortOrder *s : std::as_const(model->d->m_sortOrders)) {
             if (i == idx) {
                 sortOrder = s;
                 break;
@@ -1338,7 +1338,6 @@ QDeclarativeContactSortOrder * QDeclarativeContactModel::sortOrder_at(QQmlListPr
     }
     return sortOrder;
 }
-
 void  QDeclarativeContactModel::sortOrder_clear(QQmlListProperty<QDeclarativeContactSortOrder> *p)
 {
     QDeclarativeContactModel* model = qobject_cast<QDeclarativeContactModel*>(p->object);
@@ -1358,7 +1357,7 @@ void  QDeclarativeContactModel::sortOrder_clear(QQmlListProperty<QDeclarativeCon
   */
 QQmlListProperty<QDeclarativeContactCollection> QDeclarativeContactModel::collections()
 {
-    return { this, nullptr, &collection_count, &collection_at };
+    return QQmlListProperty<QDeclarativeContactCollection>(this, 0, collection_count, collection_at);
 }
 
 qsizetype QDeclarativeContactModel::collection_count(QQmlListProperty<QDeclarativeContactCollection> *p)
@@ -1377,7 +1376,6 @@ QDeclarativeContactCollection *QDeclarativeContactModel::collection_at(QQmlListP
     }
     return collection;
 }
-
 /*!
     \internal
 
@@ -1396,7 +1394,7 @@ void QDeclarativeContactModel::onContactsAddedFetchRequestStateChanged(QContactA
     if (request->error() == QContactManager::NoError) {
         QList<QContact> fetchedContacts(request->contacts());
         bool contactsAdded = false;
-        foreach (const QContact &c,fetchedContacts) {
+        for (const QContact &c : std::as_const(fetchedContacts)) {
             if (d->m_contactMap.contains(c.id())) {
                 qWarning() <<Q_FUNC_INFO <<"contact to be added already exists in the model";
                 continue;
@@ -1419,7 +1417,7 @@ void QDeclarativeContactModel::onContactsAddedFetchRequestStateChanged(QContactA
 
 
 static bool contactListDoesNotContainContactWithId(const QList<QContact> &contactList, const QContactId &contactId) {
-    foreach (const QContact &contact, contactList) {
+    for (const QContact &contact : std::as_const(contactList)) {
         if (contact.id() == contactId)
             return false;
     }
@@ -1455,7 +1453,7 @@ void QDeclarativeContactModel::onContactsChangedFetchRequestStateChanged(QContac
         }
         //handle updated contacts which needs removal from model
         //all contacts requested but not received are removed
-        foreach (const QContactId &id, requestedContactIds) {
+        for (const QContactId &id : std::as_const(requestedContactIds)) {
             if (contactListDoesNotContainContactWithId(fetchedContacts, id)) {
                 for (int i=0;i<d->m_contacts.size();++i) {
                     if (d->m_contacts.at(i)->contactId() == id.toString()) {
@@ -1470,7 +1468,7 @@ void QDeclarativeContactModel::onContactsChangedFetchRequestStateChanged(QContac
                 }
             }
         }
-        foreach (const QContact &fetchedContact, fetchedContacts) {
+        for (const QContact &fetchedContact : std::as_const(fetchedContacts)) {
             QString contactIdString(fetchedContact.id().toString());
             bool fetchedContactFound = false;
             for (int i = 0; i < d->m_contacts.size(); ++i) {
@@ -1524,7 +1522,7 @@ int QDeclarativeContactModel::contactIndex(const QDeclarativeContact* contact)
 {
     if (d->m_sortOrders.count() > 0) {
         QList<QContactSortOrder> mSortOrders;
-        foreach (QDeclarativeContactSortOrder *sortOrder, d->m_sortOrders)
+        for (QDeclarativeContactSortOrder *sortOrder : std::as_const(d->m_sortOrders))
             mSortOrders.append(sortOrder->sortOrder());
         for (int i = 0; i < d->m_contacts.size(); i++) {
             // check to see if the new contact should be inserted here
@@ -1541,6 +1539,6 @@ int QDeclarativeContactModel::contactIndex(const QDeclarativeContact* contact)
     return d->m_contacts.size();
 }
 
-QT_END_NAMESPACE
-
 #include "moc_qdeclarativecontactmodel_p.cpp"
+
+QT_END_NAMESPACE

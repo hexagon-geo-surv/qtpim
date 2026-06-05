@@ -98,7 +98,7 @@ public:
 
         QSet<QContactActionTarget> retn;
         QList<QContactDetail> boolDets = contact.details("BooleanDefinition");
-        foreach (const QContactDetail& det, boolDets) {
+        for (const QContactDetail& det : boolDets) {
             if (det.variantValue("BooleanField").toBool()) {
                 QContactActionTarget curr(contact, det);
                 retn << curr;

@@ -65,27 +65,25 @@ QDeclarativeOrganizerRecurrenceRule::Frequency QDeclarativeOrganizerRecurrenceRu
 void QDeclarativeOrganizerRecurrenceRule::setLimit(const QVariant &value)
 {
     if (!value.isValid() ||
-#if QT_VERSION >= QT_VERSION_CHECK(5, 8, 0)
-        (value.metaType().id() == QMetaType::Nullptr) ||
-#endif
-        (value.metaType().id() == QMetaType::VoidStar && value.value<void *>() == 0)) {
+        (value.typeId() == QMetaType::VoidStar && value.value<void *>() == nullptr) ||
+        value.typeId() == QMetaType::Nullptr) {
         if (m_rule.limitType() != QOrganizerRecurrenceRule::NoLimit) {
             m_rule.clearLimit();
             emit recurrenceRuleChanged();
         }
-    } else if (value.metaType().id() == QMetaType::QDateTime) {
+    } else if (value.typeId() == QMetaType::QDateTime) {
         QDate v = value.toDateTime().toUTC().date();
         if (v != m_rule.limitDate()) {
             m_rule.setLimit(v);
             emit recurrenceRuleChanged();
         }
-    } else if (value.metaType().id() == QMetaType::QDate) {
+    } else if (value.typeId() == QMetaType::QDate) {
         QDate v = value.value<QDate>();
         if (v != m_rule.limitDate()) {
             m_rule.setLimit(v);
             emit recurrenceRuleChanged();
         }
-    }  else if ((value.metaType().id() == QMetaType::Int) || (value.metaType().id() == QMetaType::Double)) {
+    }  else if ((value.typeId() == QMetaType::Int) || (value.typeId() == QMetaType::Double)) {
         int v = value.value<int>();
         if (v != m_rule.limitCount()) {
             m_rule.setLimit(v);
@@ -93,7 +91,7 @@ void QDeclarativeOrganizerRecurrenceRule::setLimit(const QVariant &value)
         }
     } else {
         // TODO throw an error event
-        qmlWarning(this) << tr("Invalid recurrence rule limit; value ,") <<  value << tr(", did not match one of the types: date, integer or double");
+        qmlInfo(this) << tr("Invalid recurrence rule limit; value ,") <<  value << tr(", did not match one of the types: date, integer or double");
     }
 }
 
@@ -134,7 +132,7 @@ int QDeclarativeOrganizerRecurrenceRule::interval() const
 void QDeclarativeOrganizerRecurrenceRule::setDaysOfWeek(const QVariantList &days)
 {
     QSet<Qt::DayOfWeek> saved;
-    foreach (const QVariant &day, days)
+    for (const QVariant &day : days)
         saved << static_cast<Qt::DayOfWeek>(day.value<int>());
     if (saved != m_rule.daysOfWeek()) {
         m_rule.setDaysOfWeek(saved);
@@ -145,7 +143,7 @@ void QDeclarativeOrganizerRecurrenceRule::setDaysOfWeek(const QVariantList &days
 QVariantList QDeclarativeOrganizerRecurrenceRule::daysOfWeek() const
 {
     QVariantList days;
-    foreach (Qt::DayOfWeek day, m_rule.daysOfWeek())
+    for (Qt::DayOfWeek day : m_rule.daysOfWeek())
         days << day;
     return days;
 }
@@ -158,7 +156,7 @@ QVariantList QDeclarativeOrganizerRecurrenceRule::daysOfWeek() const
 void QDeclarativeOrganizerRecurrenceRule::setDaysOfMonth(const QVariantList &days)
 {
     QSet<int> saved;
-    foreach (const QVariant &day, days)
+    for (const QVariant &day : days)
         saved << day.value<int>();
     if (saved != m_rule.daysOfMonth()) {
         m_rule.setDaysOfMonth(saved);
@@ -169,7 +167,7 @@ void QDeclarativeOrganizerRecurrenceRule::setDaysOfMonth(const QVariantList &day
 QVariantList QDeclarativeOrganizerRecurrenceRule::daysOfMonth() const
 {
     QVariantList days;
-    foreach (int day, m_rule.daysOfMonth())
+    for (int day : m_rule.daysOfMonth())
         days << day;
     return days;
 }
@@ -182,7 +180,7 @@ QVariantList QDeclarativeOrganizerRecurrenceRule::daysOfMonth() const
 void QDeclarativeOrganizerRecurrenceRule::setDaysOfYear(const QVariantList &days)
 {
     QSet<int> saved;
-    foreach (const QVariant &day, days)
+    for (const QVariant &day : days)
         saved << day.value<int>();
     if (saved != m_rule.daysOfYear()) {
         m_rule.setDaysOfYear(saved);
@@ -193,7 +191,7 @@ void QDeclarativeOrganizerRecurrenceRule::setDaysOfYear(const QVariantList &days
 QVariantList QDeclarativeOrganizerRecurrenceRule::daysOfYear() const
 {
     QVariantList days;
-    foreach (int day, m_rule.daysOfYear())
+    for (int day : m_rule.daysOfYear())
         days << day;
     return days;
 }
@@ -220,7 +218,7 @@ QVariantList QDeclarativeOrganizerRecurrenceRule::daysOfYear() const
 void QDeclarativeOrganizerRecurrenceRule::setMonthsOfYear(const QVariantList &months)
 {
     QSet<QOrganizerRecurrenceRule::Month> saved;
-    foreach (const QVariant &day, months)
+    for (const QVariant &day : months)
         saved << static_cast<QOrganizerRecurrenceRule::Month>(day.value<int>());
     if (saved != m_rule.monthsOfYear()) {
         m_rule.setMonthsOfYear(saved);
@@ -231,7 +229,7 @@ void QDeclarativeOrganizerRecurrenceRule::setMonthsOfYear(const QVariantList &mo
 QVariantList QDeclarativeOrganizerRecurrenceRule::monthsOfYear() const
 {
     QVariantList ms;
-    foreach (int m, m_rule.monthsOfYear())
+    for (int m : m_rule.monthsOfYear())
         ms << m;
     return ms;
 }
@@ -244,7 +242,7 @@ QVariantList QDeclarativeOrganizerRecurrenceRule::monthsOfYear() const
 void QDeclarativeOrganizerRecurrenceRule::setWeeksOfYear(const QVariantList &weeks)
 {
     QSet<int> saved;
-    foreach (const QVariant &week, weeks)
+    for (const QVariant &week : weeks)
         saved << week.value<int>();
     if (saved != m_rule.weeksOfYear()) {
         m_rule.setWeeksOfYear(saved);
@@ -255,7 +253,7 @@ void QDeclarativeOrganizerRecurrenceRule::setWeeksOfYear(const QVariantList &wee
 QVariantList QDeclarativeOrganizerRecurrenceRule::weeksOfYear() const
 {
     QVariantList weeks;
-    foreach (int week, m_rule.weeksOfYear())
+    for (int week : m_rule.weeksOfYear())
         weeks << week;
     return weeks;
 }
@@ -269,7 +267,7 @@ void QDeclarativeOrganizerRecurrenceRule::setPositions(const QVariantList &pos)
 {
     if (pos != positions()) {
         QSet<int> saved;
-        foreach (const QVariant &p, pos)
+        for (const QVariant &p : pos)
             saved << p.value<int>();
         m_rule.setPositions(saved);
         emit recurrenceRuleChanged();
@@ -279,7 +277,7 @@ void QDeclarativeOrganizerRecurrenceRule::setPositions(const QVariantList &pos)
 QVariantList QDeclarativeOrganizerRecurrenceRule::positions() const
 {
     QVariantList pos;
-    foreach (int p, m_rule.positions())
+    for (int p : m_rule.positions())
         pos << p;
     return pos;
 }
@@ -327,6 +325,6 @@ void QDeclarativeOrganizerRecurrenceRule::setRule(const QOrganizerRecurrenceRule
     m_rule = rule;
 }
 
-QT_END_NAMESPACE
-
 #include "moc_qdeclarativeorganizerrecurrencerule_p.cpp"
+
+QT_END_NAMESPACE

@@ -378,7 +378,7 @@ void tst_QOrganizerItemDetail::values()
     QMap<int, QVariant> emptyValues;
     QMap<int, QVariant> values = p.values();
     QList<int> keys = values.keys();
-    foreach (int key, keys)
+    for (int key : keys)
         QVERIFY(p.setValue(key, QVariant()));
 
     QCOMPARE(p.values(), emptyValues);
@@ -407,7 +407,7 @@ void tst_QOrganizerItemDetail::values()
 
     /* Set values */
     keys = values.keys();
-    foreach (int key, keys)
+    for (int key : keys)
         QVERIFY(p.setValue(key, values.value(key)));
 
     /* Now repeat the tests with our bulk set map */
@@ -468,7 +468,7 @@ void tst_QOrganizerItemDetail::values()
     /* Reset again */
     values = p.values();
     keys = values.keys();
-    foreach (int key, keys)
+    for (int key : keys)
         QVERIFY(p.setValue(key, QVariant()));
     QCOMPARE(p.values(), emptyValues);
 

@@ -68,7 +68,7 @@ public:
         return d.since();
     }
 
-    QContactFilter filter() const
+    QContactFilter filter() const override
     {
         return d;
     }

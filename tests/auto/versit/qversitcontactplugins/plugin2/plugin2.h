@@ -16,10 +16,10 @@ class Plugin2 : public QVersitContactHandlerFactory
     Q_PLUGIN_METADATA(IID "org.qt-project.Qt.QVersitContactHandlerFactoryInterface" FILE "plugin2.json")
 
 public:
-    QString name() const;
-    int index() const;
-    QVersitContactHandler* createHandler() const;
-    QSet<QString> profiles() const;
+    QString name() const override;
+    int index() const override;
+    QVersitContactHandler* createHandler() const override;
+    QSet<QString> profiles() const override;
 };
 
 #endif

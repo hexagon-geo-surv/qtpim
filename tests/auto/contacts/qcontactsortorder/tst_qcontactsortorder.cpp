@@ -46,9 +46,8 @@ void tst_QContactSortOrder::cleanup()
 
 void tst_QContactSortOrder::traits()
 {
-    QTypeInfo<QContactSortOrder> ti;
-    QVERIFY(ti.isComplex);
-    QVERIFY(!ti.isPointer);
+    QVERIFY(QTypeInfo<QContactSortOrder>::isComplex);
+    QVERIFY(!QTypeInfo<QContactSortOrder>::isPointer);
     QCOMPARE(sizeof(QContactSortOrder), sizeof(void *));
 }
 

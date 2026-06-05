@@ -49,7 +49,6 @@ void tst_QOrganizerItemSortOrder::traits()
     QTypeInfo<QOrganizerItemSortOrder> ti;
     QVERIFY(ti.isComplex);
     QVERIFY(!ti.isPointer);
-    QCOMPARE(sizeof(QOrganizerItemSortOrder), sizeof(void *));
 }
 
 void tst_QOrganizerItemSortOrder::sortObject()

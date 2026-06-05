@@ -12,6 +12,7 @@
 #include <QtTest/QtTest>
 #include <QByteArray>
 #include <QVariant>
+#include <QtCore/qstringconverter.h>
 
 #include <QTextCodec>
 
@@ -25,7 +26,7 @@ Q_DECLARE_METATYPE(QVersitProperty)
 void tst_QVCard30Writer::init()
 {
     mWriter = new QVCard30Writer(QVersitDocument::VCard30Type);
-    mWriter->setCodec(QTextCodec::codecForName("UTF-8"));
+    mWriter->setEncoding(QStringConverter::Utf8);
 }
 
 void tst_QVCard30Writer::cleanup()

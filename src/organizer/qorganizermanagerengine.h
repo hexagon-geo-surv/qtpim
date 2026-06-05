@@ -152,11 +152,11 @@ Q_SIGNALS:
     void itemsAdded(const QList<QOrganizerItemId> &itemIds);
     void itemsChanged(const QList<QOrganizerItemId> &itemIds, const QList<QOrganizerItemDetail::DetailType> &typesChanged);
     void itemsRemoved(const QList<QOrganizerItemId> &itemIds);
-    void itemsModified(const QList<QPair<QOrganizerItemId, QOrganizerManager::Operation> > &itemIds);
+    void itemsModified(const QList<std::pair<QOrganizerItemId, QOrganizerManager::Operation>> &itemIds);
     void collectionsAdded(const QList<QOrganizerCollectionId> &collectionIds);
     void collectionsChanged(const QList<QOrganizerCollectionId> &collectionIds);
     void collectionsRemoved(const QList<QOrganizerCollectionId> &collectionIds);
-    void collectionsModified(const QList<QPair<QOrganizerCollectionId, QOrganizerManager::Operation> > &collectionIds);
+    void collectionsModified(const QList<std::pair<QOrganizerCollectionId, QOrganizerManager::Operation>> &collectionIds);
 
 private:
     Q_DISABLE_COPY(QOrganizerManagerEngine)

@@ -34,7 +34,7 @@ public:
     {
     }
 
-    virtual bool compare(const QOrganizerItemFilterPrivate *other) const override
+    bool compare(const QOrganizerItemFilterPrivate *other) const override
     {
         const QOrganizerItemDetailRangeFilterPrivate *od = static_cast<const QOrganizerItemDetailRangeFilterPrivate *>(other);
         if (od) {
@@ -49,8 +49,7 @@ public:
     QDataStream &outputToStream(QDataStream &stream, quint8 formatVersion) const override
     {
         if (formatVersion == 1) {
-            stream << static_cast<quint32>(m_detailType)
-                   << m_detailField << m_minValue << m_maxValue
+            stream << m_detailType << m_detailField << m_minValue << m_maxValue
                    << static_cast<quint32>(m_flags)
                    << static_cast<quint32>(m_rangeflags);
         }

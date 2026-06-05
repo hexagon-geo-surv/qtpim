@@ -40,7 +40,7 @@ public:
         setDetail(QContactSyncTarget());
         connect(this, SIGNAL(valueChanged()), SIGNAL(detailChanged()));
     }
-    DetailType detailType() const
+    DetailType detailType() const override
     {
         return QDeclarativeContactDetail::SyncTarget;
     }

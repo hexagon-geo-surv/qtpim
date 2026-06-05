@@ -352,7 +352,7 @@ TestCase {
         compare(todoTime.value(TodoTime.FieldStartDateTime), startDateTime)
 
         compare(todoTime.value(TodoTime.FieldDueDateTime), undefined)
-        var dueDateTime = new Date("1995-05-20T11:22:33+0200")
+        var dueDateTime = new Date("1995-05-20T11:22:33+02:00")
         todoTime.dueDateTime = dueDateTime
         compare(todoTime.dueDateTime, dueDateTime)
         compare(todoTime.value(TodoTime.FieldDueDateTime), dueDateTime)
@@ -405,7 +405,7 @@ TestCase {
         compare(timestamp.created, timestamp)
 
         compare(timestamp1.value(Timestamp.FieldLastModified), undefined)
-        var lastModified = new Date("1995-05-20T11:22:33+0200")
+        var lastModified = new Date("1995-05-20T11:22:33+02:00")
         timestamp.lastModified = lastModified
         compare(timestamp.lastModified, lastModified)
     }
@@ -523,7 +523,7 @@ TestCase {
         compare(eventTime.value(EventTime.FieldStartDateTime), startDateTime)
 
         compare(eventTime.value(EventTime.FieldEndDateTime), undefined)
-        var endDateTime = new Date("1995-05-20T11:22:33+0200")
+        var endDateTime = new Date("1995-05-20T11:22:33+02:00")
         eventTime.endDateTime = endDateTime
         compare(eventTime.endDateTime, endDateTime)
         compare(eventTime.value(EventTime.FieldEndDateTime), endDateTime)

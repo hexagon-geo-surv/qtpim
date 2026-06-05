@@ -37,90 +37,90 @@ public:
     MaliciousAsyncManagerEngine();
     ~MaliciousAsyncManagerEngine();
 
-    QString managerName() const;
-    bool startRequest(QContactAbstractRequest* req);
-    bool cancelRequest(QContactAbstractRequest *req);
+    QString managerName() const override;
+    bool startRequest(QContactAbstractRequest* req) override;
+    bool cancelRequest(QContactAbstractRequest *req) override;
 
-    QMap<QString, QString> managerParameters() const {return QMap<QString, QString>();}
-    int managerVersion() const {return 0;}
+    QMap<QString, QString> managerParameters() const override {return QMap<QString, QString>();}
+    int managerVersion() const override {return 0;}
 
-    QList<QContactId> contactIds(const QContactFilter& filter, const QList<QContactSortOrder>& sort, QContactManager::Error* error) const
+    QList<QContactId> contactIds(const QContactFilter& filter, const QList<QContactSortOrder>& sort, QContactManager::Error* error) const override
     {
         return QContactManagerEngine::contactIds(filter, sort, error);
     }
 
-    QList<QContact> contacts(const QContactFilter& filter, const QList<QContactSortOrder>& sort, const QContactFetchHint& fetch, QContactManager::Error* error) const
+    QList<QContact> contacts(const QContactFilter& filter, const QList<QContactSortOrder>& sort, const QContactFetchHint& fetch, QContactManager::Error* error) const override
     {
         return QContactManagerEngine::contacts(filter, sort, fetch, error);
     }
 
-    QContact contact(const QContactId& id, const QContactFetchHint& fetch, QContactManager::Error* error) const
+    QContact contact(const QContactId& id, const QContactFetchHint& fetch, QContactManager::Error* error) const override
     {
         return QContactManagerEngine::contact(id, fetch, error);
     }
 
-    bool saveContacts(QList<QContact>* contacts, QMap<int, QContactManager::Error>* errorMap, QContactManager::Error* error)
+    bool saveContacts(QList<QContact>* contacts, QMap<int, QContactManager::Error>* errorMap, QContactManager::Error* error) override
     {
         return QContactManagerEngine::saveContacts(contacts, errorMap, error);
     }
 
-    bool removeContacts(const QList<QContactId>& contacts, QMap<int, QContactManager::Error>* errorMap, QContactManager::Error* error)
+    bool removeContacts(const QList<QContactId>& contacts, QMap<int, QContactManager::Error>* errorMap, QContactManager::Error* error) override
     {
         return QContactManagerEngine::removeContacts(contacts, errorMap, error);
     }
 
     /* "Self" contact id (MyCard) */
-    bool setSelfContactId(const QContactId& id, QContactManager::Error* error)
+    bool setSelfContactId(const QContactId& id, QContactManager::Error* error) override
     {
         return QContactManagerEngine::setSelfContactId(id, error);
     }
 
-    QContactId selfContactId(QContactManager::Error* error) const
+    QContactId selfContactId(QContactManager::Error* error) const override
     {
         return QContactManagerEngine::selfContactId(error);
     }
 
     /* Relationships between contacts */
-    QList<QContactRelationship> relationships(const QString& relType, const QContactId& contactId, QContactRelationship::Role role, QContactManager::Error* error) const
+    QList<QContactRelationship> relationships(const QString& relType, const QContactId& contactId, QContactRelationship::Role role, QContactManager::Error* error) const override
     {
         return QContactManagerEngine::relationships(relType, contactId, role, error);
     }
 
-    bool saveRelationships(QList<QContactRelationship>* relationships, QMap<int, QContactManager::Error>* errorMap, QContactManager::Error* error)
+    bool saveRelationships(QList<QContactRelationship>* relationships, QMap<int, QContactManager::Error>* errorMap, QContactManager::Error* error) override
     {
         return QContactManagerEngine::saveRelationships(relationships, errorMap, error);
     }
 
-    bool removeRelationships(const QList<QContactRelationship>& relationships, QMap<int, QContactManager::Error>* errorMap, QContactManager::Error* error)
+    bool removeRelationships(const QList<QContactRelationship>& relationships, QMap<int, QContactManager::Error>* errorMap, QContactManager::Error* error) override
     {
         return QContactManagerEngine::removeRelationships(relationships, errorMap, error);
     }
 
     /* Contact validation */
-    bool validateContact(const QContact& contact, QContactManager::Error* error) const
+    bool validateContact(const QContact& contact, QContactManager::Error* error) const override
     {
         return QContactManagerEngine::validateContact(contact, error);
     }
 
     /* Asynchronous Request Support */
-    void requestDestroyed(QContactAbstractRequest* req);
-    bool waitForRequestFinished(QContactAbstractRequest* req, int msecs) {return QContactManagerEngine::waitForRequestFinished(req, msecs);}
+    void requestDestroyed(QContactAbstractRequest* req) override;
+    bool waitForRequestFinished(QContactAbstractRequest* req, int msecs) override {return QContactManagerEngine::waitForRequestFinished(req, msecs);}
 
-    bool isRelationshipTypeSupported(const QString& relType, QContactType::TypeValues type) const
+    bool isRelationshipTypeSupported(const QString& relType, QContactType::TypeValues type) const override
     {
         return QContactManagerEngine::isRelationshipTypeSupported(relType, type);
     }
 
-    bool isFilterSupported(const QContactFilter& fil) const
+    bool isFilterSupported(const QContactFilter& fil) const override
     {
         return QContactManagerEngine::isFilterSupported(fil);
     }
 
-    QList<QMetaType::Type> supportedDataTypes() const
+    QList<QVariant::Type> supportedDataTypes() const override
     {
         return QContactManagerEngine::supportedDataTypes();
     }
-    QList<QContactType::TypeValues> supportedContactTypes() const
+    QList<QContactType::TypeValues> supportedContactTypes() const override
     {
         return QContactManagerEngine::supportedContactTypes();
     }
@@ -139,8 +139,8 @@ class MaliciousEngineFactory : public QContactManagerEngineFactory
     Q_PLUGIN_METADATA(IID "org.qt-project.Qt.QContactManagerEngineFactoryInterface" FILE "malicious.json")
 
     public:
-        QContactManagerEngine* engine(const QMap<QString, QString>& parameters, QContactManager::Error* error);
-        QString managerName() const;
+        QContactManagerEngine* engine(const QMap<QString, QString>& parameters, QContactManager::Error* error) override;
+        QString managerName() const override;
 
     private:
         MaliciousAsyncManagerEngine mame;

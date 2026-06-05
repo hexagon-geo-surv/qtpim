@@ -15,9 +15,10 @@
 // We mean it.
 //
 
-#include <QtCore/qpair.h>
 #include <QtCore/qset.h>
 #include <QtCore/qshareddata.h>
+
+#include <utility>
 
 #include <QtContacts/qcontactid.h>
 #include <QtContacts/qcontactchangeset.h>
@@ -55,7 +56,7 @@ public:
     QSet<QContactId> m_removedContacts;
     QSet<QContactId> m_addedRelationships;
     QSet<QContactId> m_removedRelationships;
-    QPair<QContactId, QContactId> m_oldAndNewSelfContactId;
+    std::pair<QContactId, QContactId> m_oldAndNewSelfContactId;
 };
 
 QT_END_NAMESPACE_CONTACTS

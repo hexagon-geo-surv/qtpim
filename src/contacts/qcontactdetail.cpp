@@ -250,15 +250,15 @@ bool QContactDetail::operator==(const QContactDetail& other) const
 
 /*! Returns the hash value for \a key.
 */
-size_t qHash(const QContactDetail &key)
+size_t qHash(const QContactDetail &key, size_t seed) noexcept
 {
-    size_t hash = qHash(QString().setNum(key.type()))
-                + QT_PREPEND_NAMESPACE(qHash)(key.accessConstraints());
+    size_t hash = qHash(QString().setNum(key.type()), seed)
+                ^ QT_PREPEND_NAMESPACE(qHash)(key.accessConstraints(), seed);
     QMap<int, QVariant> values = key.values();
     QMap<int, QVariant>::const_iterator it = values.constBegin(), end = values.constEnd();
     for ( ; it != end; ++it) {
-        hash += QT_PREPEND_NAMESPACE(qHash)(it.key())
-              + QT_PREPEND_NAMESPACE(qHash)(it.value().toString());
+        hash ^= QT_PREPEND_NAMESPACE(qHash)(it.key(), seed)
+              ^ QT_PREPEND_NAMESPACE(qHash)(it.value().toString(), seed);
     }
     return hash;
 }
@@ -308,8 +308,9 @@ QDataStream& operator>>(QDataStream& in, QContactDetail& detail)
         QContactDetail::AccessConstraints accessConstraints(accessConstraintsInt);
         detail.d->m_access = accessConstraints;
 
-        for (auto it = values.cbegin(), end = values.cend(); it != end; ++it)
+        for (auto it = values.cbegin(), end = values.cend(); it != end; ++it) {
             detail.setValue(it.key(), it.value());
+        }
     } else {
         in.setStatus(QDataStream::ReadCorruptData);
     }

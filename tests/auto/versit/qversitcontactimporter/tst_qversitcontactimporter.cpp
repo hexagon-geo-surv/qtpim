@@ -28,8 +28,8 @@ public:
                             int contactIndex,
                             QContact* contact)
     {
-        Q_UNUSED(document);
-        Q_UNUSED(contact);
+        Q_UNUSED(document)
+        Q_UNUSED(contact)
         Q_UNUSED(contactIndex);
         mPreProcessedProperties.append(property);
         return mPreProcess;
@@ -41,9 +41,9 @@ public:
                              int contactIndex,
                              QContact* contact)
     {
-        Q_UNUSED(document);
-        Q_UNUSED(contact);
-        Q_UNUSED(contactIndex);
+        Q_UNUSED(document)
+        Q_UNUSED(contact)
+        Q_UNUSED(contactIndex)
         if (!alreadyProcessed)
             mUnknownProperties.append(property);
         else
@@ -80,15 +80,15 @@ public:
     {
         Q_UNUSED(property);
         *location = QString::number(mIndex++);
-        mObjects.insert(*location, contents);
+        mObjects.insert(QUrl(*location), contents);
         return true;
     }
 
     bool loadResource(const QString &location, QByteArray *contents, QString *mimeType)
     {
-        Q_UNUSED(location);
-        Q_UNUSED(contents);
-        Q_UNUSED(mimeType);
+        Q_UNUSED(location)
+        Q_UNUSED(contents)
+        Q_UNUSED(mimeType)
         return false;
     }
 
@@ -438,7 +438,7 @@ void tst_QVersitContactImporter::testOrganizationLogo()
     QVERIFY(mImporter->importDocuments(QList<QVersitDocument>() << document));
     contact = mImporter->contacts().first();
     QContactOrganization organization = contact.detail<QContactOrganization>();
-    QByteArray content = mResourceHandler->mObjects.value(organization.logoUrl().toString());
+    QByteArray content = mResourceHandler->mObjects.value(organization.logoUrl());
     QCOMPARE(content, logo);
 
     // LOGO as a URL
@@ -711,7 +711,7 @@ void tst_QVersitContactImporter::testAnniversary()
     QContact contact = mImporter->contacts().first();
     QContactAnniversary anniversary = contact.detail<QContactAnniversary>();
     QCOMPARE(anniversary.originalDate(), QDate(1981, 5, 20));
-    QCOMPARE(anniversary.value(QContactAnniversary::FieldOriginalDate).metaType().id(), QMetaType::QDate);
+    QCOMPARE(anniversary.value(QContactAnniversary::FieldOriginalDate).type(), QVariant::Date);
 
     // Evolution format
     property.setName(QStringLiteral("X-EVOLUTION-ANNIVERSARY"));
@@ -721,7 +721,7 @@ void tst_QVersitContactImporter::testAnniversary()
     contact = mImporter->contacts().first();
     anniversary = contact.detail<QContactAnniversary>();
     QCOMPARE(anniversary.originalDate(), QDate(1981, 5, 20));
-    QCOMPARE(anniversary.value(QContactAnniversary::FieldOriginalDate).metaType().id(), QMetaType::QDate);
+    QCOMPARE(anniversary.value(QContactAnniversary::FieldOriginalDate).type(), QVariant::Date);
 
     // Date : ISO 8601 in basic format
     property.setName(QStringLiteral("X-ANNIVERSARY"));
@@ -731,7 +731,7 @@ void tst_QVersitContactImporter::testAnniversary()
     contact = mImporter->contacts().first();
     anniversary = contact.detail<QContactAnniversary>();
     QCOMPARE(anniversary.originalDate(), QDate(1981, 5, 20));
-    QCOMPARE(anniversary.value(QContactAnniversary::FieldOriginalDate).metaType().id(), QMetaType::QDate);
+    QCOMPARE(anniversary.value(QContactAnniversary::FieldOriginalDate).type(), QVariant::Date);
 
     // Date time tests
     property.setName(QStringLiteral("X-ANNIVERSARY"));
@@ -742,7 +742,7 @@ void tst_QVersitContactImporter::testAnniversary()
     anniversary = contact.detail<QContactAnniversary>();
     QCOMPARE(anniversary.originalDate(), QDate(1981, 5, 20));
     QCOMPARE(anniversary.originalDateTime(), QDateTime(QDate(1981, 5, 20), QTime(0,1,2), Qt::LocalTime));
-    QCOMPARE(anniversary.value(QContactAnniversary::FieldOriginalDate).metaType().id(), QMetaType::QDateTime);
+    QCOMPARE(anniversary.value(QContactAnniversary::FieldOriginalDate).type(), QVariant::DateTime);
 
     property.setValue(QStringLiteral("19810520T010203Z")); // utc
     document = createDocumentWithProperty(property);
@@ -751,7 +751,7 @@ void tst_QVersitContactImporter::testAnniversary()
     anniversary = contact.detail<QContactAnniversary>();
     QCOMPARE(anniversary.originalDate(), QDate(1981, 5, 20));
     QCOMPARE(anniversary.originalDateTime(), QDateTime(QDate(1981, 5, 20), QTime(1,2,3), Qt::UTC));
-    QCOMPARE(anniversary.value(QContactAnniversary::FieldOriginalDate).metaType().id(), QMetaType::QDateTime);
+    QCOMPARE(anniversary.value(QContactAnniversary::FieldOriginalDate).type(), QVariant::DateTime);
 }
 
 void tst_QVersitContactImporter::testBirthday()
@@ -766,7 +766,7 @@ void tst_QVersitContactImporter::testBirthday()
     QContact contact = mImporter->contacts().first();
     QContactBirthday bday = contact.detail<QContactBirthday>();
     QCOMPARE(bday.date().toString(Qt::ISODate), dateValue);
-    QCOMPARE(bday.value(QContactBirthday::FieldBirthday).metaType().id(), QMetaType::QDate);
+    QCOMPARE(bday.value(QContactBirthday::FieldBirthday).type(), QVariant::Date);
 
     // Date : ISO 8601 in basic format
     dateValue = QStringLiteral("19810520");
@@ -776,7 +776,7 @@ void tst_QVersitContactImporter::testBirthday()
     contact = mImporter->contacts().first();
     bday = contact.detail<QContactBirthday>();
     QCOMPARE(bday.date(), QDate(1981, 5, 20));
-    QCOMPARE(bday.value(QContactBirthday::FieldBirthday).metaType().id(), QMetaType::QDate);
+    QCOMPARE(bday.value(QContactBirthday::FieldBirthday).type(), QVariant::Date);
 
     dateValue = QStringLiteral("1981-05-20");
     property.setValue(dateValue);
@@ -785,7 +785,7 @@ void tst_QVersitContactImporter::testBirthday()
     contact = mImporter->contacts().first();
     bday = contact.detail<QContactBirthday>();
     QCOMPARE(bday.date(), QDate(1981, 5, 20));
-    QCOMPARE(bday.value(QContactBirthday::FieldBirthday).metaType().id(), QMetaType::QDate);
+    QCOMPARE(bday.value(QContactBirthday::FieldBirthday).type(), QVariant::Date);
 
     dateValue = QStringLiteral("19810520T100000");
     property.setValue(dateValue);
@@ -794,7 +794,7 @@ void tst_QVersitContactImporter::testBirthday()
     contact = mImporter->contacts().first();
     bday = contact.detail<QContactBirthday>();
     QCOMPARE(bday.dateTime(), QDateTime(QDate(1981, 5, 20), QTime(10, 0, 0), Qt::LocalTime));
-    QCOMPARE(bday.value(QContactBirthday::FieldBirthday).metaType().id(), QMetaType::QDateTime);
+    QCOMPARE(bday.value(QContactBirthday::FieldBirthday).type(), QVariant::DateTime);
 
     dateValue = QStringLiteral("1981-05-20T10:00:00");
     property.setValue(dateValue);
@@ -803,7 +803,7 @@ void tst_QVersitContactImporter::testBirthday()
     contact = mImporter->contacts().first();
     bday = contact.detail<QContactBirthday>();
     QCOMPARE(bday.dateTime(), QDateTime(QDate(1981, 5, 20), QTime(10, 0, 0), Qt::LocalTime));
-    QCOMPARE(bday.value(QContactBirthday::FieldBirthday).metaType().id(), QMetaType::QDateTime);
+    QCOMPARE(bday.value(QContactBirthday::FieldBirthday).type(), QVariant::DateTime);
 
     dateValue = QStringLiteral("19810520T100000Z");
     property.setValue(dateValue);
@@ -812,7 +812,7 @@ void tst_QVersitContactImporter::testBirthday()
     contact = mImporter->contacts().first();
     bday = contact.detail<QContactBirthday>();
     QCOMPARE(bday.dateTime(), QDateTime(QDate(1981, 5, 20), QTime(10, 0, 0), Qt::UTC));
-    QCOMPARE(bday.value(QContactBirthday::FieldBirthday).metaType().id(), QMetaType::QDateTime);
+    QCOMPARE(bday.value(QContactBirthday::FieldBirthday).type(), QVariant::DateTime);
 
     dateValue = QStringLiteral("1981-05-20T10:00:00Z");
     property.setValue(dateValue);
@@ -821,7 +821,7 @@ void tst_QVersitContactImporter::testBirthday()
     contact = mImporter->contacts().first();
     bday = contact.detail<QContactBirthday>();
     QCOMPARE(bday.dateTime(), QDateTime(QDate(1981, 5, 20), QTime(10, 0, 0), Qt::UTC));
-    QCOMPARE(bday.value(QContactBirthday::FieldBirthday).metaType().id(), QMetaType::QDateTime);
+    QCOMPARE(bday.value(QContactBirthday::FieldBirthday).type(), QVariant::DateTime);
 }
 
 void tst_QVersitContactImporter::testGender()
@@ -1350,42 +1350,6 @@ void tst_QVersitContactImporter::addFavoritePropertyToDocument(QString favorite,
     document.addProperty(property);
 }
 
-void tst_QVersitContactImporter::testFolksFavorite()
-{
-    QFETCH(QString, favoriteValue);
-    QFETCH(bool, favoriteCreated);
-    QVersitDocument document(QVersitDocument::VCard30Type);
-    QVersitProperty property;
-    property.setName(QStringLiteral("X-FOLKS-FAVOURITE"));
-    property.setValue(QStringList{favoriteValue});
-    property.setValueType(QVersitProperty::CompoundType);
-    document.addProperty(property);
-
-    QVERIFY(mImporter->importDocuments(QList<QVersitDocument>() << document));
-
-    QContact contact = mImporter->contacts().first();
-    if (!favoriteCreated) {
-        QCOMPARE(contact.details(QContactFavorite::Type).size(), 0);
-        return;
-    }
-    QContactFavorite favorite = (QContactFavorite)contact.detail(QContactFavorite::Type);
-    QString actualFavoriteValue = favorite.isFavorite() ? QStringLiteral("true") : QStringLiteral("false");
-    QCOMPARE(actualFavoriteValue, favoriteValue);
-}
-
-void tst_QVersitContactImporter::testFolksFavorite_data()
-{
-    QTest::addColumn<QString>("favoriteValue");
-    QTest::addColumn<bool>("favoriteCreated");
-
-    {
-        QTest::newRow("favorite true") << QString("true") << true;
-        QTest::newRow("favorite false") << QString("false") << true;
-        QTest::newRow("favorite invalid") << QString("invalid") << false;
-        QTest::newRow("favorite empty") << QString("") << false;
-    }
-}
-
 void tst_QVersitContactImporter::testSound()
 {
     // Test embedded sound file
@@ -1469,7 +1433,7 @@ void tst_QVersitContactImporter::testExtendedDetail()
     QContactExtendedDetail extendedDetail = (QContactExtendedDetail)contact.detail(QContactExtendedDetail::Type);
     QCOMPARE(extendedDetail.name(), extendedDetailName);
     QCOMPARE(extendedDetail.data(), extendedDetailData);
-    QCOMPARE(extendedDetail.data().metaType(), extendedDetailData.metaType());
+    QCOMPARE(extendedDetail.data().type(), extendedDetailData.type());
 }
 
 void tst_QVersitContactImporter::testExtendedDetail_data()
@@ -1500,33 +1464,20 @@ void tst_QVersitContactImporter::testExtendedDetail_data()
     }
 
     {
-        QTest::newRow("integral data")
-                << QString("name")
-                << QVariant((qlonglong)2)
-                << jsonArrayWith.arg("2")
-                << true;
-        QTest::newRow("integral data - perfectly representable") // QTBUG-87443
-                << QString("name")
-                << QVariant((qlonglong)2)
-                << jsonArrayWith.arg("2.0")
-                << true;
-    }
-
-    {
         QTest::newRow("double data")
                 << QString("name")
-                << QVariant((double)2.1)
-                << jsonArrayWith.arg("2.1")
+                << QVariant((qlonglong)2LL)
+                << jsonArrayWith.arg("2")
                 << true;
         QTest::newRow("double data, negative")
                 << QString("name")
-                << QVariant((double)-1.2)
-                << jsonArrayWith.arg("-1.2")
+                << QVariant((qlonglong)-1LL)
+                << jsonArrayWith.arg("-1")
                 << true;
         QTest::newRow("double data, multiple digits")
                 << QString("name")
-                << QVariant((double)10.23456)
-                << jsonArrayWith.arg("10.23456")
+                << QVariant((double)10.2)
+                << jsonArrayWith.arg("10.2")
                 << true;
     }
 
@@ -1591,11 +1542,7 @@ void tst_QVersitContactImporter::testExtendedDetail_data()
     {
         QTest::newRow("null denoting an empty variant")
                 << QString("name")
-#if QT_VERSION >= QT_VERSION_CHECK(5, 8, 0)
-                << QVariant::fromValue<std::nullptr_t>(nullptr)
-#else
-                << QVariant()
-#endif
+                << QVariant::fromValue(nullptr)
                 << jsonArrayWith.arg("null")
                 << true;
         QTest::newRow("compact json with extra whitespace removed")

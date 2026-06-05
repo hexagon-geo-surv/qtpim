@@ -32,10 +32,10 @@ public:
     {
     }
 
-    QContactFilter filter() const
+    QContactFilter filter() const override
     {
         QList<QContactFilter> filters;
-        foreach (QDeclarativeContactFilter* f, m_filters) {
+        for (QDeclarativeContactFilter* f : std::as_const(m_filters)) {
             filters << f->filter();
         }
         QContactUnionFilter f;

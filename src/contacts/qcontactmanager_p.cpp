@@ -36,18 +36,20 @@ QList<QJsonObject> QContactManagerData::m_metaData;
 QStringList QContactManagerData::m_managerNames;
 
 
+#ifndef QT_NO_LIBRARY
 Q_GLOBAL_STATIC_WITH_ARGS(QFactoryLoader, loader, (QT_CONTACT_MANAGER_ENGINE_INTERFACE, QLatin1String("/contacts")))
+#endif
 
 static void qContactsCleanEngines()
 {
     // This is complicated by needing to remove any engines before we unload factories
     // guard pointers as one engine could be parent of another manager and cause doubledelete
     QList<QPointer<QContactManager> > aliveManagers;
-    foreach(QContactManager* manager, QContactManagerData::m_aliveEngines) {
+    for (QContactManager *manager : QContactManagerData::m_aliveEngines) {
         aliveManagers << QPointer<QContactManager>(manager);
     }
 
-    foreach(QPointer<QContactManager> manager, aliveManagers) {
+    for (QPointer<QContactManager> manager : aliveManagers) {
         if (!manager) {
             // deleting engine of one manager, could cause deleting next manager in list (aggregation case)
             continue;
@@ -103,7 +105,7 @@ void QContactManagerData::createEngine(const QString &managerName, const QMap<QS
     m_lastError = QContactManager::NoError;
 
     while (!found) {
-        foreach (QContactManagerEngineFactory* f, factories) {
+        for (QContactManagerEngineFactory *f : factories) {
             QList<int> versions = f->supportedImplementationVersions();
             if (implementationVersion == -1 ||//no given implementation version required
                     versions.isEmpty() || //the manager engine factory does not report any version
@@ -126,12 +128,16 @@ void QContactManagerData::createEngine(const QString &managerName, const QMap<QS
         loadFactoriesMetadata();
         if (!m_metaData.isEmpty()) {
             QFactoryLoader *l = loader();
-            foreach (const QJsonObject &metaDataObject, m_metaData) {
-                if (metaDataObject.value(QStringLiteral("MetaData")).toObject().value(QStringLiteral("Keys")).toArray().at(0).toString() ==
+            for (int i = 0; i < m_metaData.size(); ++i) {
+                const QJsonObject &metaDataObject = m_metaData.at(i);
+                // Qt 6 CBOR-encoded metadata uses integer keys; "4" = MetaData
+                if (metaDataObject.value(QStringLiteral("4")).toObject().value(QStringLiteral("Keys")).toArray().at(0).toString() ==
                         builtManagerName) {
-                    QContactManagerEngineFactory *managerFactory = qobject_cast<QContactManagerEngineFactory *>(l->instance(m_metaData.indexOf(metaDataObject)));
-                    QContactActionManagerPlugin *actionFactory = qobject_cast<QContactActionManagerPlugin *>(l->instance(m_metaData.indexOf(metaDataObject)));
-                    m_engines.insert(builtManagerName, managerFactory);
+                    QContactManagerEngineFactory *managerFactory = qobject_cast<QContactManagerEngineFactory *>(l->instance(i));
+                    // Verify the factory's actual managerName matches; JSON key and managerName() may diverge
+                    if (managerFactory && managerFactory->managerName() == builtManagerName)
+                        m_engines.insert(builtManagerName, managerFactory);
+                    QContactActionManagerPlugin *actionFactory = qobject_cast<QContactActionManagerPlugin *>(l->instance(i));
                     m_actionManagers.append(actionFactory);
                 }
             }
@@ -183,6 +189,7 @@ void QContactManagerData::loadStaticFactories()
                         qWarning("Static contacts plugin %s has the same name as a currently loaded plugin; ignored", qPrintable(name));
                     } else {
                         m_engines.insert(name, f);
+                        m_managerNames << name;
                     }
                 } else {
                     qWarning("Static contacts plugin with reserved name %s ignored", qPrintable(name));
@@ -204,14 +211,17 @@ void QContactManagerData::loadFactoriesMetadata()
     loadStaticFactories();
 
     QFactoryLoader *l = loader();
-    QList<QJsonObject> metaData = l->metaData();
+    QList<QJsonObject> metaData;
+    for (const auto &entry : l->metaData())
+        metaData.append(entry.toCbor().toJsonObject());
     m_metaData = metaData;
     if (m_metaData != m_pluginPaths) {
         m_pluginPaths = m_metaData;
         QString currentManagerName;
         /* Now discover the dynamic plugins */
-        foreach (const QJsonObject &metaDataObject, metaData) {
-            currentManagerName = metaDataObject.value(QStringLiteral("MetaData")).toObject().value(QStringLiteral("Keys")).toArray().at(0).toString();
+        for (const QJsonObject &metaDataObject : metaData) {
+            // Qt 6 CBOR-encoded metadata uses integer keys; "4" = MetaData
+            currentManagerName = metaDataObject.value(QStringLiteral("4")).toObject().value(QStringLiteral("Keys")).toArray().at(0).toString();
 
 #if !defined QT_NO_DEBUG
             if (showDebug)
@@ -268,9 +278,9 @@ void QContactManagerData::unregisterObserver(QContactManager *manager, QContactO
 
 void QContactManagerData::_q_contactsUpdated(const QList<QContactId> &ids, const QList<QContactDetail::DetailType> &typesChanged)
 {
-    foreach (const QContactId &id, ids) {
-        QList<QContactObserver*> observers = m_observerForContact.values(id);
-        foreach (QContactObserver* observer, observers) {
+    for (const QContactId &id : ids) {
+        const QList<QContactObserver *> observers = m_observerForContact.values(id);
+        for (QContactObserver *observer : observers) {
             QMetaObject::invokeMethod(observer, "contactChanged", Q_ARG(QList<QContactDetail::DetailType>, typesChanged));
         }
     }
@@ -278,9 +288,9 @@ void QContactManagerData::_q_contactsUpdated(const QList<QContactId> &ids, const
 
 void QContactManagerData::_q_contactsDeleted(const QList<QContactId> &ids)
 {
-    foreach (const QContactId &id, ids) {
-        QList<QContactObserver*> observers = m_observerForContact.values(id);
-        foreach (QContactObserver* observer, observers) {
+    for (const QContactId &id : ids) {
+        const QList<QContactObserver *> observers = m_observerForContact.values(id);
+        for (QContactObserver *observer : observers) {
             QMetaObject::invokeMethod(observer, "contactRemoved");
         }
     }

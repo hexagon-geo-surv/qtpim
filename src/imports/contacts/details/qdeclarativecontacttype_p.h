@@ -43,7 +43,7 @@ public:
     };
 
 
-    DetailType detailType() const
+    DetailType detailType() const override
     {
         return QDeclarativeContactDetail::Type;
     }

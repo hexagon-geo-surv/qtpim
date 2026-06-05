@@ -29,7 +29,7 @@ QVersitOrganizerImporterPrivate::QVersitOrganizerImporterPrivate(const QString& 
     for (int i = 0; i < versitPropertyCount; i++) {
         mPropertyMappings.insert(
                 QLatin1String(versitOrganizerDetailMappings[i].versitPropertyName),
-                QPair<QOrganizerItemDetail::DetailType, int>(
+                std::make_pair(
                     versitOrganizerDetailMappings[i].detailType,
                     versitOrganizerDetailMappings[i].detailField));
     }
@@ -40,7 +40,7 @@ QVersitOrganizerImporterPrivate::QVersitOrganizerImporterPrivate(const QString& 
 
 QVersitOrganizerImporterPrivate::~QVersitOrganizerImporterPrivate()
 {
-    foreach (QVersitOrganizerHandler* pluginHandler, mPluginPropertyHandlers) {
+    for (QVersitOrganizerHandler* pluginHandler : mPluginPropertyHandlers) {
         delete pluginHandler;
     }
 }
@@ -70,20 +70,20 @@ bool QVersitOrganizerImporterPrivate::importDocument(
         *error = QVersitOrganizerImporter::EmptyDocumentError;
         return false;
     }
-    foreach (const QVersitProperty& property, properties) {
+    for (const QVersitProperty& property : properties) {
         importProperty(subDocument, property, item);
     }
 
     if (!subDocument.subDocuments().isEmpty()) {
-        foreach (const QVersitDocument &nestedSubDoc, subDocument.subDocuments())
-            foreach (const QVersitProperty &nestedProp, nestedSubDoc.properties()) {
+        for (const QVersitDocument &nestedSubDoc : subDocument.subDocuments())
+            for (const QVersitProperty &nestedProp : nestedSubDoc.properties()) {
                 importProperty(nestedSubDoc, nestedProp, item);
                 if (nestedSubDoc.componentType() == QStringLiteral("VALARM"))
                     break;
             }
     }
     // run plugin handlers
-    foreach (QVersitOrganizerImporterPropertyHandler* handler, mPluginPropertyHandlers) {
+    for (QVersitOrganizerImporterPropertyHandler* handler : mPluginPropertyHandlers) {
         handler->subDocumentProcessed(topLevel, subDocument, item);
     }
     // run property handlers
@@ -160,7 +160,7 @@ void QVersitOrganizerImporterPrivate::importProperty(
     }
 
     // run plugin handlers
-    foreach (QVersitOrganizerImporterPropertyHandler* handler, mPluginPropertyHandlers) {
+    for (QVersitOrganizerImporterPropertyHandler* handler : mPluginPropertyHandlers) {
         handler->propertyProcessed(document, property, *item, &success, &updatedDetails);
     }
     // run the handler, if set
@@ -168,7 +168,7 @@ void QVersitOrganizerImporterPrivate::importProperty(
         mPropertyHandler->propertyProcessed(document, property, *item, &success, &updatedDetails);
     }
 
-    foreach (QOrganizerItemDetail detail, updatedDetails) {
+    for (QOrganizerItemDetail detail : updatedDetails) {
         item->saveDetail(&detail);
     }
 }
@@ -180,7 +180,7 @@ bool QVersitOrganizerImporterPrivate::createSimpleDetail(
 {
     if (property.value().isEmpty())
         return false;
-    QPair<QOrganizerItemDetail::DetailType, int> mapping = mPropertyMappings[property.name()];
+    auto mapping = mPropertyMappings[property.name()];
     QOrganizerItemDetail::DetailType definitionName = mapping.first;
     int fieldName = mapping.second;
     QOrganizerItemDetail detail(item->detail(definitionName));
@@ -236,7 +236,7 @@ bool QVersitOrganizerImporterPrivate::createVersion(
 
     QVariant variant = property.variantValue();
     if (property.valueType() != QVersitProperty::CompoundType
-            || variant.metaType().id() != QMetaType::QStringList) {
+            || variant.type() != QVariant::StringList) {
         return false;
     }
     QStringList values = variant.toStringList();
@@ -289,6 +289,7 @@ bool QVersitOrganizerImporterPrivate::createItemReminder(
         QOrganizerItem* item,
         QList<QOrganizerItemDetail>* updatedDetails)
 {
+    (void)item;
     int repetitionCount = 0;
     int repetitionDelay = 0;
     int secondsBeforeStart = 0;
@@ -296,11 +297,12 @@ bool QVersitOrganizerImporterPrivate::createItemReminder(
     const QList<QVersitProperty> valarmProperties = valarmDocument.properties();
     QString actionValue;
     QVariantList attachValues;
+    QVariantList qtProjectAttachValues;
     QString descriptionValue;
     QString summaryValue;
     QStringList attendees;
 
-    foreach (const QVersitProperty &valarmProperty, valarmProperties) {
+    for (const QVersitProperty &valarmProperty : valarmProperties) {
         if (valarmProperty.name() == QStringLiteral("TRIGGER")) {
             secondsBeforeStart = triggerToSecondsBeforeStart(valarmProperty, *item);
             alreadySetSecondsBeforeStart = true;
@@ -310,9 +312,10 @@ bool QVersitOrganizerImporterPrivate::createItemReminder(
             repetitionDelay = Duration::parseDuration(valarmProperty.value()).toSeconds();
         } else if (valarmProperty.name() == QStringLiteral("ACTION")) {
             actionValue = valarmProperty.value().toUpper();
-        } else if (valarmProperty.name() == QStringLiteral("ATTACH") ||
-                   valarmProperty.name() == QStringLiteral("X-QTPROJECT-ATTACH")) {
+        } else if (valarmProperty.name() == QStringLiteral("ATTACH")) {
             attachValues.append(valarmProperty.variantValue());
+        } else if (valarmProperty.name() == QStringLiteral("X-QTPROJECT-ATTACH")) {
+            qtProjectAttachValues.append(valarmProperty.variantValue());
         } else if (valarmProperty.name() == QStringLiteral("DESCRIPTION")) {
             descriptionValue = valarmProperty.value();
         } else if (valarmProperty.name() == QStringLiteral("SUMMARY")) {
@@ -338,8 +341,8 @@ bool QVersitOrganizerImporterPrivate::createItemReminder(
         QOrganizerItemVisualReminder visualReminder;
         visualReminder.setRepetition(repetitionCount, repetitionDelay);
         visualReminder.setSecondsBeforeStart(secondsBeforeStart);
-        if (!attachValues.isEmpty())
-            visualReminder.setDataUrl(QUrl(attachValues.first().toString()));
+        if (!qtProjectAttachValues.isEmpty())
+            visualReminder.setDataUrl(QUrl(qtProjectAttachValues.first().toString()));
         if (!descriptionValue.isEmpty()) {
             visualReminder.setMessage(descriptionValue);
             updatedDetails->append(visualReminder);
@@ -440,7 +443,7 @@ bool QVersitOrganizerImporterPrivate::createExtendedDetail(
     QOrganizerItemExtendedDetail extendedDetail;
     const QVariant variant = property.variantValue();
     if (property.valueType() != QVersitProperty::CompoundType
-            || variant.metaType().id() != QMetaType::QStringList)
+            || variant.type() != QVariant::StringList)
         return false;
 
     QStringList values = variant.toStringList();
@@ -719,7 +722,7 @@ bool QVersitOrganizerImporterPrivate::parseRecurRule(const QString& str, QOrgani
         return false;
     }
 
-    foreach (const QString& part, parts) {
+    for (const QString& part : parts) {
         QStringList keyValue = part.split(QLatin1Char('='));
         if (keyValue.size() != 2)
             return false;
@@ -759,7 +762,7 @@ void QVersitOrganizerImporterPrivate::parseRecurFragment(const QString& key, con
     } else if (key == QStringLiteral("BYDAY")) {
         QSet<Qt::DayOfWeek> days;
         QStringList dayParts = value.split(QLatin1Char(','));
-        foreach (QString dayStr, dayParts) {
+        for (QString dayStr : dayParts) {
             if (dayStr.length() < 2) {
                 // bad day specifier
                 continue;
@@ -795,7 +798,7 @@ void QVersitOrganizerImporterPrivate::parseRecurFragment(const QString& key, con
     } else if (key == QStringLiteral("BYMONTH")) {
         QSet<QOrganizerRecurrenceRule::Month> months;
         QStringList monthParts = value.split(QLatin1Char(','));
-        foreach (const QString& monthPart, monthParts) {
+        for (const QString& monthPart : monthParts) {
             bool ok;
             int month = monthPart.toInt(&ok);
             if (ok && month >= 1 && month <= 12) {
@@ -831,7 +834,7 @@ QSet<int> QVersitOrganizerImporterPrivate::parseInts(const QString& str, int min
 {
     QSet<int> values;
     QStringList parts = str.split(QLatin1Char(','));
-    foreach (const QString& part, parts) {
+    for (const QString& part : parts) {
         bool ok;
         int value = part.toInt(&ok);
         if (ok && value >= min && value <= max && value != 0) {
@@ -899,7 +902,7 @@ bool QVersitOrganizerImporterPrivate::parseDates(const QString& str, QSet<QDate>
     if (parts.size() == 0)
         return false;
 
-    foreach (QString part, parts) {
+    for (const QString& part : parts) {
         QDate date = parseDate(part);
         if (date.isValid())
             *dates << date;
@@ -1126,12 +1129,12 @@ QString Duration::nextToken(QString* str)
 TimeZone QVersitOrganizerImporterPrivate::importTimeZone(const QVersitDocument& document) const
 {
     TimeZone timeZone;
-    foreach (const QVersitProperty& property, document.properties()) {
+    for (const QVersitProperty& property : document.properties()) {
         if (property.name() == QStringLiteral("TZID") && !property.value().isEmpty()) {
             timeZone.setTzid(property.value());
         }
     }
-    foreach (const QVersitDocument& subDocument, document.subDocuments()) {
+    for (const QVersitDocument& subDocument : document.subDocuments()) {
         timeZone.addPhase(importTimeZonePhase(subDocument));
     }
     return timeZone;
@@ -1142,7 +1145,7 @@ TimeZonePhase QVersitOrganizerImporterPrivate::importTimeZonePhase(const QVersit
     TimeZonePhase phase;
     phase.setStandard(document.componentType() == QStringLiteral("STANDARD"));
 
-    foreach (const QVersitProperty& property, document.properties()) {
+    for (const QVersitProperty& property : document.properties()) {
         if (property.name() == QStringLiteral("TZOFFSETTO")) {
             QString value(property.value());
             if (value.size() == 5

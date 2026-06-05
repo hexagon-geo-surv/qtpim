@@ -99,8 +99,9 @@ void tst_QContactManagerDetails::addManagers()
     managers.removeAll("testdummy");
     managers.removeAll("teststaticdummy");
     managers.removeAll("maliciousplugin");
+    managers.removeAll("dummytest");
 
-    foreach(QString mgr, managers) {
+    for (QString mgr : managers) {
         QMap<QString, QString> params;
         QTest::newRow(QString("mgr='%1'").arg(mgr).toLatin1().constData()) << QContactManager::buildUri(mgr, params);
     }
@@ -255,7 +256,7 @@ void tst_QContactManagerDetails::testBirthday()
     QContact c;
 
     QContactBirthday b;
-    b.setDateTime(QDate(2001, 1, 1).startOfDay());
+    b.setDateTime( QDate(2001,1,1).startOfDay() );
     c.saveDetail( &b );
 
     saveAndVerifyContact( cm.data(), c );

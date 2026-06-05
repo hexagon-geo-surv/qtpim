@@ -142,7 +142,7 @@ bool QContactSendEmailAction::invokeAction(const QContactActionTarget& target, c
 
 bool QContactSendEmailAction::invokeAction(const QList<QContactActionTarget>& targets, const QVariantMap& )
 {
-    foreach (const QContactActionTarget& target, targets) {
+    for (const QContactActionTarget& target : targets) {
         if (!isTargetSupported(target)) {
             return false;
         }
