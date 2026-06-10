@@ -40,7 +40,8 @@ sourcedirs  += .. \
                 ../../plugins/versit
 
 exampledirs += ../../../examples/versit \
-               snippets/
+               snippets/ \
+               .
 
 
 imagedirs   += images

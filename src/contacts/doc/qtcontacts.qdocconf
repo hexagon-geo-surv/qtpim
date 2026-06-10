@@ -40,7 +40,8 @@ sourcedirs  += .. \
                 ../../plugins/contacts
 
 exampledirs += ../../../examples/contacts \
-               snippets/
+               snippets/ \
+               .
 
 
 imagedirs   += images

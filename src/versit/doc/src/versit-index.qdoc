@@ -30,10 +30,10 @@
     \snippet doc_src_qtversit.cpp versit include
     \snippet doc_src_qtversit.cpp versit organizer include
 
-    To use the C++ library in your application, add the following configuration
-    option to your \c .pro file:
+    To use the C++ library in your application, add the following to your
+    \c CMakeLists.txt file:
 
-    \snippet doc_src_qtversit.pro versit project modifications
+    \snippet snippets/CMakeLists.txt cmake_use
 
     \section1 Related Information
 

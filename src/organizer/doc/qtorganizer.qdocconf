@@ -42,7 +42,8 @@ sourcedirs  += .. \
                 ../../imports/organizer
 
 exampledirs += ../../../examples/organizer \
-               snippets/
+               snippets/ \
+               .
 
 
 imagedirs   += images
