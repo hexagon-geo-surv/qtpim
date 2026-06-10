@@ -1742,7 +1742,7 @@ QVariant QDeclarativeOrganizerModel::data(const QModelIndex &index, int role) co
     QDeclarativeOrganizerItem* di = d->m_items.at(index.row());
     Q_ASSERT(di);
     QOrganizerItem item = di->item();
-    switch(role) {
+    switch (role) {
         case Qt::DisplayRole:
             return item.displayLabel();
         case Qt::DecorationRole:

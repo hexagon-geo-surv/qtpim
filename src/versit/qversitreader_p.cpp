@@ -530,7 +530,7 @@ void QVersitReaderPrivate::read()
     LineReader lineReader = mHasDefaultEncoding
         ? LineReader(mIoDevice, mDefaultEncoding)
         : LineReader(mIoDevice);
-    while(!lineReader.atEnd()) {
+    while (!lineReader.atEnd()) {
         if (isCanceling()) {
             canceled = true;
             break;

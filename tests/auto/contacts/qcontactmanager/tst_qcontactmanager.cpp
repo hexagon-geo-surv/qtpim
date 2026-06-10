@@ -45,13 +45,13 @@ inline size_t qHash(const QMetaMethod &method, size_t seed = 0) noexcept
                    __spiedSigCount++; \
                 } \
             } \
-            if(__spiedSigCount == __expectedCount) { \
+            if (__spiedSigCount == __expectedCount) { \
                 break; \
             } \
             QTest::qWait(__step); \
         } \
         QCOMPARE(__spiedSigCount, __expectedCount); \
-    } while(0)
+    } while (0)
 
 //TESTED_COMPONENT=src/contacts
 
@@ -311,7 +311,7 @@ void tst_QContactManager::dumpContactDifferences(const QContact& ca, const QCont
     // First remove any matches
     for (QContactDetail d : aDetails) {
         for (QContactDetail d2 : bDetails) {
-            if(d == d2) {
+            if (d == d2) {
                 a.removeDetail(&d);
                 b.removeDetail(&d2);
                 break;
@@ -355,7 +355,7 @@ bool tst_QContactManager::isSuperset(const QContact& ca, const QContact& cb)
     // First remove any matches
     for (QContactDetail d : aDetails) {
         for (QContactDetail d2 : bDetails) {
-            if(d == d2) {
+            if (d == d2) {
                 a.removeDetail(&d);
                 b.removeDetail(&d2);
                 break;

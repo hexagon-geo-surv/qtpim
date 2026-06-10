@@ -402,10 +402,10 @@ void QVersitContactExporterPrivate::encodeRev(
     QString value;
     QVersitProperty property;
     property.setName(mPropertyMappings.value(detail.type()).second);
-    if ( rev.lastModified().toString(Qt::ISODate).size() ) {
-        if ( rev.lastModified().timeSpec() == Qt::UTC ) {
+    if (rev.lastModified().toString(Qt::ISODate).size()) {
+        if (rev.lastModified().timeSpec() == Qt::UTC) {
             value = rev.lastModified().toString(Qt::ISODate);
-            if( !value.endsWith(QLatin1Char('Z'), Qt::CaseInsensitive) ) {
+            if (!value.endsWith(QLatin1Char('Z'), Qt::CaseInsensitive)) {
                 value += QLatin1Char('Z');
             }
         }
@@ -415,10 +415,10 @@ void QVersitContactExporterPrivate::encodeRev(
         property.setValue(value);
         *generatedProperties << property;
         *processedFields << QContactTimestamp::FieldModificationTimestamp;
-    } else if ( rev.created().toString(Qt::ISODate).size()) {
-        if ( rev.created().timeSpec() == Qt::UTC ) {
+    } else if (rev.created().toString(Qt::ISODate).size()) {
+        if (rev.created().timeSpec() == Qt::UTC) {
             value = rev.created().toString(Qt::ISODate);
-            if( !value.endsWith(QLatin1Char('Z'), Qt::CaseInsensitive) ) {
+            if (!value.endsWith(QLatin1Char('Z'), Qt::CaseInsensitive)) {
                 value += QLatin1Char('Z');
             }
         }
@@ -931,7 +931,7 @@ bool QVersitContactExporterPrivate::encodeContentFromFile(const QString& resourc
     QVariant value;
     QByteArray imageData;
     QString mimeType;
-    if (isValidRemoteUrl( resourcePath )) {
+    if (isValidRemoteUrl(resourcePath)) {
         encodeContent = true;
         value.setValue(resourcePath);
         property.insertParameter(QStringLiteral("VALUE"), QStringLiteral("uri"));

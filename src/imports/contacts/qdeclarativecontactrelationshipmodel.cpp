@@ -340,7 +340,7 @@ void QDeclarativeContactRelationshipModel::relationshipsSaved()
         QList<QContactRelationship> rs = req->relationships();
         QList<int> errorIds = req->errorMap().keys();
 
-        for( int i = 0; i < rs.count(); i++) {
+        for ( int i = 0; i < rs.count(); i++) {
             if (!errorIds.contains(i)) {
                 //saved
                 QContactRelationship r = rs.at(i);
@@ -369,7 +369,7 @@ void QDeclarativeContactRelationshipModel::relationshipsRemoved()
         QList<int> errorIds = req->errorMap().keys();
 
 
-        for( int i = 0; i < rs.count(); i++) {
+        for ( int i = 0; i < rs.count(); i++) {
             if (!errorIds.contains(i)) {
                 int row = 0;
                 QContactRelationship r = rs.at(i);

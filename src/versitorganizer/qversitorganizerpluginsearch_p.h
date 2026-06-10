@@ -32,7 +32,7 @@ QT_BEGIN_NAMESPACE_VERSITORGANIZER
 inline QStringList mobilityPlugins(const QString& plugintype)
 {
 #if !defined QT_NO_DEBUG
-    const bool showDebug = qgetenv("QT_DEBUG_PLUGINS").toInt() > 0;
+    const bool showDebug = qEnvironmentVariableIntValue("QT_DEBUG_PLUGINS") > 0;
 #endif
 
     QStringList paths = QCoreApplication::libraryPaths();
@@ -94,8 +94,8 @@ inline QStringList mobilityPlugins(const QString& plugintype)
 
     /* Add application path + plugintype */
     QDir appldir(QCoreApplication::applicationDirPath());
-    if(appldir.cd(plugintype)){
-        if (!processed.contains(appldir.absolutePath())){
+    if (appldir.cd(plugintype)) {
+        if (!processed.contains(appldir.absolutePath())) {
             processed.insert(appldir.absolutePath());
             QStringList files = appldir.entryList(QDir::Files);
 #if !defined QT_NO_DEBUG

@@ -48,7 +48,7 @@ public slots:
 
         mutex.lock();
         if (activeRequests.contains(req)) {
-            switch(req->type()) {
+            switch (req->type()) {
                 case QContactAbstractRequest::ContactIdFetchRequest:
                     QContactManagerEngine::updateContactIdFetchRequest(static_cast<QContactIdFetchRequest*>(req), idResult, errorResult, QContactAbstractRequest::FinishedState);
                     break;

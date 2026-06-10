@@ -508,7 +508,7 @@ bool QContactManagerEngine::removeCollection(const QContactCollectionId& collect
 */
 QContactFilter QContactManagerEngine::canonicalizedFilter(const QContactFilter &filter)
 {
-    switch(filter.type()) {
+    switch (filter.type()) {
         case QContactFilter::ActionFilter:
         {
             // Find any matching actions, and do a union filter on their filter objects
@@ -1112,7 +1112,7 @@ static inline int compareStrings(const QString& left, const QString& right, Qt::
  */
 int QContactManagerEngine::compareVariant(const QVariant& first, const QVariant& second, Qt::CaseSensitivity sensitivity)
 {
-    switch(first.typeId()) {
+    switch (first.typeId()) {
         case QMetaType::Int:
             {
                 const int a = first.toInt();
@@ -1210,7 +1210,7 @@ int QContactManagerEngine::compareVariant(const QVariant& first, const QVariant&
  */
 bool QContactManagerEngine::testFilter(const QContactFilter &filter, const QContact &contact)
 {
-    switch(filter.type()) {
+    switch (filter.type()) {
         case QContactFilter::InvalidFilter:
             return false;
 
@@ -1248,7 +1248,7 @@ bool QContactManagerEngine::testFilter(const QContactFilter &filter, const QCont
 
                 /* See if we need to test any values at all */
                 if (presenceTest) {
-                    for(int j=0; j < details.count(); j++) {
+                    for (int j=0; j < details.count(); j++) {
                         const QContactDetail& detail = details.at(j);
 
                         /* Check that the field is present and has a non-empty value */
@@ -1363,7 +1363,7 @@ bool QContactManagerEngine::testFilter(const QContactFilter &filter, const QCont
                     bool matchContains = (cdf.matchFlags() & 7) == QContactFilter::MatchContains;
 
                     /* Value equality test */
-                    for(int j=0; j < details.count(); j++) {
+                    for (int j=0; j < details.count(); j++) {
                         const QContactDetail& detail = details.at(j);
                         const QString& var = detail.value(cdf.detailField()).toString();
                         const QString& needle = cdf.value().toString();
@@ -1380,7 +1380,7 @@ bool QContactManagerEngine::testFilter(const QContactFilter &filter, const QCont
                 } else {
                     /* Nope, testing the values as a variant */
                     /* Value equality test */
-                    for(int j = 0; j < details.count(); j++) {
+                    for (int j = 0; j < details.count(); j++) {
                         const QContactDetail& detail = details.at(j);
                         const QVariant& var = detail.value(cdf.detailField());
                         if (!var.isNull() && compareVariant(var, cdf.value(), cs) == 0)
@@ -1410,7 +1410,7 @@ bool QContactManagerEngine::testFilter(const QContactFilter &filter, const QCont
 
                 /* See if this is a field presence test */
                 if (!cdf.minValue().isValid() && !cdf.maxValue().isValid()) {
-                    for(int j=0; j < details.count(); j++) {
+                    for (int j=0; j < details.count(); j++) {
                         const QContactDetail& detail = details.at(j);
                         if (detail.values().contains(cdf.detailField()))
                             return true;
@@ -1434,7 +1434,7 @@ bool QContactManagerEngine::testFilter(const QContactFilter &filter, const QCont
                     const bool testMin = !minVal.isEmpty();
                     const bool testMax = !maxVal.isEmpty();
 
-                    for(int j=0; j < details.count(); j++) {
+                    for (int j=0; j < details.count(); j++) {
                         const QContactDetail& detail = details.at(j);
 
                         // The detail has to have a field of this type in order to be compared.
@@ -1453,7 +1453,7 @@ bool QContactManagerEngine::testFilter(const QContactFilter &filter, const QCont
                     const bool testMax = cdf.maxValue().isValid();
 
                     /* Nope, testing the values as a variant */
-                    for(int j=0; j < details.count(); j++) {
+                    for (int j=0; j < details.count(); j++) {
                         const QContactDetail& detail = details.at(j);
                         const QVariant& var = detail.value(cdf.detailField());
 
@@ -1567,7 +1567,7 @@ bool QContactManagerEngine::testFilter(const QContactFilter &filter, const QCont
                 const QContactIntersectionFilter bf(filter);
                 const QList<QContactFilter>& terms = bf.filters();
                 if (terms.count() > 0) {
-                    for(int j = 0; j < terms.count(); j++) {
+                    for (int j = 0; j < terms.count(); j++) {
                         if (!testFilter(terms.at(j), contact)) {
                             return false;
                         }
@@ -1584,7 +1584,7 @@ bool QContactManagerEngine::testFilter(const QContactFilter &filter, const QCont
                 const QContactUnionFilter bf(filter);
                 const QList<QContactFilter>& terms = bf.filters();
                 if (terms.count() > 0) {
-                    for(int j = 0; j < terms.count(); j++) {
+                    for (int j = 0; j < terms.count(); j++) {
                         if (testFilter(terms.at(j), contact)) {
                             return true;
                         }
@@ -1622,7 +1622,7 @@ bool validateActionFilter(const QContactFilter& filter)
     QList<QContactFilter> toVerify;
     toVerify << filter;
 
-    while(toVerify.count() > 0) {
+    while (toVerify.count() > 0) {
         QContactFilter f = toVerify.takeFirst();
         if (f.type() == QContactFilter::ActionFilter)
             return false;
@@ -2271,7 +2271,7 @@ bool QContactManagerEngine::saveContacts(QList<QContact> *contacts, const QList<
         QHash<int, int> existingIdMap; // contacts index to existingContacts index
 
         // Try to figure out which of our arguments are new contacts
-        for(int i = 0; i < contacts->count(); i++) {
+        for (int i = 0; i < contacts->count(); i++) {
             // See if there's a contactId that's not from this manager
             const QContact c = contacts->at(i);
             if (c.id().managerUri() == managerUri()) {

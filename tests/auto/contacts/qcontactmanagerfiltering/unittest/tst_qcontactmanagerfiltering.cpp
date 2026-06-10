@@ -2064,7 +2064,7 @@ void tst_QContactManagerFiltering::relationshipFiltering()
 
     // 1. Create contacts to be used in relationship testing
     QContact contactA;
-    if(relationshipType == QContactRelationship::HasMember()) {
+    if (relationshipType == QContactRelationship::HasMember()) {
         // Change contact type to group as this is required at least by symbian backend
         // TODO: should it be possible to query this constraint from the backend?
         contactA = createContact(cm, QContactType::TypeGroup, "ContactA");
@@ -2085,7 +2085,7 @@ void tst_QContactManagerFiltering::relationshipFiltering()
     h2i.setRelationshipType(relationshipType);
     // save and check error code
     bool succeeded = false;
-    if(cm->isRelationshipTypeSupported(relationshipType, contactA.type())
+    if (cm->isRelationshipTypeSupported(relationshipType, contactA.type())
         && cm->isRelationshipTypeSupported(relationshipType, contactB.type())) {
         succeeded = true;
         QVERIFY(cm->saveRelationship(&h2i));
@@ -2117,7 +2117,7 @@ void tst_QContactManagerFiltering::relationshipFiltering()
     QList<QContactId> ids2 = cm->contactIds(crf);
 
     // 5. Remove the created relationship and contacts
-    if(succeeded) {
+    if (succeeded) {
         // Check that an existing relationship can be removed
         QVERIFY(cm->removeRelationship(h2i));
         QCOMPARE(cm->error(), QContactManager::NoError);
@@ -2132,7 +2132,7 @@ void tst_QContactManagerFiltering::relationshipFiltering()
     }
 
     // 6. Verify the filtering result
-    if(succeeded) {
+    if (succeeded) {
         QCOMPARE_UNSORTED(output, expected);
         QCOMPARE(ids2, QList<QContactId>());
     } else {
@@ -3589,7 +3589,7 @@ void tst_QContactManagerFiltering::dumpContactDifferences(const QContact& ca, co
     // First remove any matches
     for (QContactDetail d : aDetails) {
         for (QContactDetail d2 : bDetails) {
-            if(d == d2) {
+            if (d == d2) {
                 a.removeDetail(&d);
                 b.removeDetail(&d2);
                 break;
@@ -3630,7 +3630,7 @@ bool tst_QContactManagerFiltering::isSuperset(const QContact& ca, const QContact
     // First remove any matches
     for (QContactDetail d : aDetails) {
         for (QContactDetail d2 : bDetails) {
-            if(d == d2) {
+            if (d == d2) {
                 a.removeDetail(&d);
                 b.removeDetail(&d2);
                 break;

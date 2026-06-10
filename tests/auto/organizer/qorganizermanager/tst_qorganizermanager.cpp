@@ -215,7 +215,7 @@ void tst_QOrganizerManager::dumpOrganizerItemDifferences(const QOrganizerItem& c
     // First remove any matches
     for (QOrganizerItemDetail d : aDetails) {
         for (QOrganizerItemDetail d2 : bDetails) {
-            if(d == d2) {
+            if (d == d2) {
                 a.removeDetail(&d);
                 b.removeDetail(&d2);
                 break;
@@ -264,7 +264,7 @@ bool tst_QOrganizerManager::isSuperset(const QOrganizerItem& ca, const QOrganize
     // First remove any matches
     for (QOrganizerItemDetail d : aDetails) {
         for (QOrganizerItemDetail d2 : bDetails) {
-            if(d == d2) {
+            if (d == d2) {
                 a.removeDetail(&d);
                 b.removeDetail(&d2);
                 break;

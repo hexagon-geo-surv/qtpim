@@ -61,16 +61,16 @@ void tst_QOrganizerManagerDetails::cleanupTestCase()
 bool tst_QOrganizerManagerDetails::saveAndLoadItem(QOrganizerManager *manager, QOrganizerItem &original, QOrganizerItem &loaded)
 {
     // Save item
-    if(manager->saveItem(&original) == false)
+    if (manager->saveItem(&original) == false)
         return false;
 
     // Check the id
-    if(original.id().isNull())
+    if (original.id().isNull())
         return false;
 
     // Load same item from database
     loaded = manager->item(original.id());
-    if(manager->error())
+    if (manager->error())
         return false;
 
     // TODO: Ignore some details which are not relevant and will mess

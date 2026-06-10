@@ -94,12 +94,12 @@ void EventOccurrenceEditPage::saveOrNextClicked()
     m_organizerEventOccurrence.setStartDateTime(start);
     m_organizerEventOccurrence.setEndDateTime(end);
     m_listOfEvents.append(m_organizerEventOccurrence);
-    if(m_numOfEntiresToBeCreated > 1){
+    if (m_numOfEntiresToBeCreated > 1) {
         m_numOfEntiresToBeCreated--;
         // Clear subject field indicating its a new editor.
         m_subjectEdit->clear();
     } else {
-        if(!m_multipleEntries){
+        if (!m_multipleEntries) {
                 // If single entry
                 m_manager->saveItem(&m_organizerEventOccurrence);
         } else {

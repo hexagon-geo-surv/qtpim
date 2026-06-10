@@ -248,7 +248,7 @@ bool PartialSaveRequestController::start()
     // First, remove the contacts that aren't from this manager
     QList<QContact> contacts(request()->contacts());
     // Try to figure out which of our arguments are new contacts
-    for(int i = 0; i < contacts.count(); i++) {
+    for (int i = 0; i < contacts.count(); i++) {
         // See if there's a contactId that's not from this manager
         const QContact c = contacts.at(i);
         if (c.id().managerUri() == m_engine->managerUri()) {

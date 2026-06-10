@@ -276,7 +276,7 @@ void CalendarDemo::addEvents()
 
     // Create a large number of events asynchronously
     QOrganizerCollectionId defaultCollectionId = m_manager->defaultCollectionId();
-    for(int index=0 ; index <  100 ; index++) {
+    for (int index=0 ; index <  100 ; index++) {
         QOrganizerItem item;
         item.setType(QOrganizerItemType::TypeEvent);
         item.setDescription(QString("Event %1").arg(index));
@@ -337,7 +337,7 @@ void CalendarDemo::importItems()
         if (!importer.importDocument(document)) {
             errorMessage += tr("Import failed,");
             QMap<int, QVersitOrganizerImporter::Error>::const_iterator iterator = importer.errorMap().constBegin();
-            while(iterator != importer.errorMap().constEnd()){
+            while (iterator != importer.errorMap().constEnd()){
                 switch (iterator.value()){
                 case QVersitOrganizerImporter::InvalidDocumentError:
                     errorMessage += QString(" index %1:").arg(iterator.key());
@@ -402,7 +402,7 @@ void CalendarDemo::exportItems()
     if (!exporter.exportItems(items)) {
             errorMessage += tr("Export failed,");
             QMap<int, QVersitOrganizerExporter::Error>::const_iterator iterator = exporter.errorMap().constBegin();
-            while(iterator != exporter.errorMap().constEnd()){
+            while (iterator != exporter.errorMap().constEnd()){
                 switch (iterator.value()){
                 case QVersitOrganizerExporter::EmptyOrganizerError:
                     errorMessage += QString(" index %1:").arg(iterator.key());
@@ -447,7 +447,7 @@ void CalendarDemo::deleteAllEntries()
     // Fetch all the entries
     QList<QOrganizerItemId> ids = m_manager->itemIds();
 
-    if(ids.count()) {
+    if (ids.count()) {
         m_remReq.setItemIds(ids);
         m_remReq.setManager(m_manager);
         m_remReq.start();
@@ -483,7 +483,7 @@ void CalendarDemo::editExistingCalendar(QOrganizerManager *manager, QOrganizerCo
 
 void CalendarDemo::saveReqStateChanged(QOrganizerAbstractRequest::State reqState)
 {
-    if(QOrganizerAbstractRequest::ActiveState == reqState) {
+    if (QOrganizerAbstractRequest::ActiveState == reqState) {
         // Request started. Show a progress or wait dialog
         m_progressDlg = new QProgressDialog("Saving events..", "Cancel", 100, 100, this);
         connect(m_progressDlg, SIGNAL(canceled()), &m_saveReq, SLOT(cancel()));
@@ -499,7 +499,7 @@ void CalendarDemo::saveReqStateChanged(QOrganizerAbstractRequest::State reqState
 
 void CalendarDemo::removeReqStateChanged(QOrganizerAbstractRequest::State reqState)
 {
-    if(QOrganizerAbstractRequest::ActiveState == reqState) {
+    if (QOrganizerAbstractRequest::ActiveState == reqState) {
         // Request started. Show a progress or wait dialog
         m_progressDlg = new QProgressDialog("Removing events..", "Cancel", 100, 100, this);
         connect(m_progressDlg, SIGNAL(canceled()), &m_remReq, SLOT(cancel()));

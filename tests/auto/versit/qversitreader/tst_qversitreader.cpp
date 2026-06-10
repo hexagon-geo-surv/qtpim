@@ -1694,7 +1694,7 @@ void tst_QVersitReader::testReadLine()
         QByteArray expectedBytes(encoder.encode(expectedLine));
         QVERIFY(!lineReader.atEnd());
         line = lineReader.readLine();
-        if(line.toByteArray() != expectedBytes) {
+        if (line.toByteArray() != expectedBytes) {
             qDebug() << line.toByteArray();
             qDebug() << expectedBytes;
             QCOMPARE(line.toByteArray(), expectedBytes);

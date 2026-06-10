@@ -120,7 +120,7 @@ void tst_QContactManagerDetails::cleanupTestCase()
 bool tst_QContactManagerDetails::saveAndLoadContact( QContactManager *cm, QContact &original, QContact &loaded )
 {
     // Save contact
-    if( cm->saveContact(&original) == false )
+    if ( cm->saveContact(&original) == false )
         return false;
 
     // Check the id
@@ -129,7 +129,7 @@ bool tst_QContactManagerDetails::saveAndLoadContact( QContactManager *cm, QConta
 
     // Load same contact from database
     loaded = cm->contact(original.id());
-    if( cm->error() )
+    if ( cm->error() )
         return false;
 
     // Ignore some details which are not relevant and will mess
