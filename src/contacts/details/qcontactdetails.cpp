@@ -38,6 +38,7 @@ QT_BEGIN_NAMESPACE_CONTACTS
 QT_WARNING_PUSH
 QT_WARNING_DISABLE_CLANG("-Winvalid-offsetof")
 QT_WARNING_DISABLE_GCC("-Winvalid-offsetof")
+QT_WARNING_DISABLE_CLANG("-Winvalid-offsetof")
 
 
 /* template docs:
