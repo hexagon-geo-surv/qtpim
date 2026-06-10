@@ -5,6 +5,8 @@
 #ifndef QVERSITORGANIZERHANDLER_H
 #define QVERSITORGANIZERHANDLER_H
 
+#include <QtCore/qobject.h>
+
 #include <QtVersitOrganizer/qversitorganizerimporter.h>
 #include <QtVersitOrganizer/qversitorganizerexporter.h>
 

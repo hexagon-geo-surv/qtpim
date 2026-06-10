@@ -19,6 +19,7 @@
 #include <QtCore/qhash.h>
 #include <QtCore/qlist.h>
 #include <QtCore/qmutex.h>
+#include <QtCore/qobject.h>
 
 #include <QtContacts/qcontact.h>
 #include <QtContacts/qcontactactiondescriptor.h>
