@@ -129,14 +129,14 @@ public:
 
 Q_SIGNALS:
     void dataChanged();
-    void itemsAdded(const QList<QOrganizerItemId> &itemIds);
-    void itemsChanged(const QList<QOrganizerItemId> &itemIds, const QList<QOrganizerItemDetail::DetailType> &typesChanged);
-    void itemsRemoved(const QList<QOrganizerItemId> &itemIds);
-    void itemsModified(const QList<std::pair<QOrganizerItemId, QOrganizerManager::Operation>> &itemIds);
-    void collectionsAdded(const QList<QOrganizerCollectionId> &collectionIds);
-    void collectionsChanged(const QList<QOrganizerCollectionId> &collectionIds);
-    void collectionsRemoved(const QList<QOrganizerCollectionId> &collectionIds);
-    void collectionsModified(const QList<std::pair<QOrganizerCollectionId, QOrganizerManager::Operation>> &collectionIds);
+    void itemsAdded(const QList<QtOrganizer::QOrganizerItemId> &itemIds);
+    void itemsChanged(const QList<QtOrganizer::QOrganizerItemId> &itemIds, const QList<QtOrganizer::QOrganizerItemDetail::DetailType> &typesChanged);
+    void itemsRemoved(const QList<QtOrganizer::QOrganizerItemId> &itemIds);
+    void itemsModified(const QList<std::pair<QtOrganizer::QOrganizerItemId, QtOrganizer::QOrganizerManager::Operation>> &itemIds);
+    void collectionsAdded(const QList<QtOrganizer::QOrganizerCollectionId> &collectionIds);
+    void collectionsChanged(const QList<QtOrganizer::QOrganizerCollectionId> &collectionIds);
+    void collectionsRemoved(const QList<QtOrganizer::QOrganizerCollectionId> &collectionIds);
+    void collectionsModified(const QList<std::pair<QtOrganizer::QOrganizerCollectionId, QtOrganizer::QOrganizerManager::Operation>> &collectionIds);
 
 private:
     friend class QOrganizerManagerData;
@@ -145,8 +145,8 @@ private:
 
     void createEngine(const QString &managerName, const QMap<QString, QString> &parameters);
 
-    Q_PRIVATE_SLOT(d, void _q_itemsUpdated(const QList<QOrganizerItemId> &ids, const QList<QOrganizerItemDetail::DetailType> &typesChanged))
-    Q_PRIVATE_SLOT(d, void _q_itemsDeleted(const QList<QOrganizerItemId> &ids))
+    Q_PRIVATE_SLOT(d, void _q_itemsUpdated(const QList<QtOrganizer::QOrganizerItemId> &ids, const QList<QtOrganizer::QOrganizerItemDetail::DetailType> &typesChanged))
+    Q_PRIVATE_SLOT(d, void _q_itemsDeleted(const QList<QtOrganizer::QOrganizerItemId> &ids))
 };
 
 QT_END_NAMESPACE_ORGANIZER

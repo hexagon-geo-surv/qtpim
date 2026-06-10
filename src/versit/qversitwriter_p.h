@@ -35,7 +35,7 @@ class QVersitWriterPrivate : public QThread
     Q_OBJECT
 
 signals:
-    void stateChanged(QVersitWriter::State state);
+    void stateChanged(QtVersit::QVersitWriter::State state);
 
 public:
     QVersitWriterPrivate();

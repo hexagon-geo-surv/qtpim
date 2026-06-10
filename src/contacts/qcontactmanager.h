@@ -134,16 +134,16 @@ public:
 
 Q_SIGNALS:
     void dataChanged();
-    void contactsAdded(const QList<QContactId>& contactIds);
-    void contactsChanged(const QList<QContactId>& contactIds, const QList<QContactDetail::DetailType>& typesChanged);
-    void contactsRemoved(const QList<QContactId>& contactIds);
-    void relationshipsAdded(const QList<QContactId>& affectedContactIds);
-    void relationshipsRemoved(const QList<QContactId>& affectedContactIds);
-    void selfContactIdChanged(const QContactId& oldId, const QContactId& newId); // need both? or just new?
-    void collectionsAdded(const QList<QContactCollectionId> &collectionIds);
-    void collectionsChanged(const QList<QContactCollectionId> &collectionIds);
-    void collectionsRemoved(const QList<QContactCollectionId> &collectionIds);
-    void collectionsModified(const QList<std::pair<QContactCollectionId, QContactManager::Operation> > &collectionIds);
+    void contactsAdded(const QList<QtContacts::QContactId>& contactIds);
+    void contactsChanged(const QList<QtContacts::QContactId>& contactIds, const QList<QtContacts::QContactDetail::DetailType>& typesChanged);
+    void contactsRemoved(const QList<QtContacts::QContactId>& contactIds);
+    void relationshipsAdded(const QList<QtContacts::QContactId>& affectedContactIds);
+    void relationshipsRemoved(const QList<QtContacts::QContactId>& affectedContactIds);
+    void selfContactIdChanged(const QtContacts::QContactId& oldId, const QtContacts::QContactId& newId);
+    void collectionsAdded(const QList<QtContacts::QContactCollectionId> &collectionIds);
+    void collectionsChanged(const QList<QtContacts::QContactCollectionId> &collectionIds);
+    void collectionsRemoved(const QList<QtContacts::QContactCollectionId> &collectionIds);
+    void collectionsModified(const QList<std::pair<QtContacts::QContactCollectionId, QtContacts::QContactManager::Operation> > &collectionIds);
 
 protected:
     void connectNotify(const QMetaMethod &signal) override;
@@ -155,8 +155,8 @@ private:
 
     Q_DISABLE_COPY(QContactManager)
 
-    Q_PRIVATE_SLOT(d, void _q_contactsUpdated(const QList<QContactId>& ids, const QList<QContactDetail::DetailType>& typesChanged))
-    Q_PRIVATE_SLOT(d, void _q_contactsDeleted(const QList<QContactId>& ids))
+    Q_PRIVATE_SLOT(d, void _q_contactsUpdated(const QList<QtContacts::QContactId>& ids, const QList<QtContacts::QContactDetail::DetailType>& typesChanged))
+    Q_PRIVATE_SLOT(d, void _q_contactsDeleted(const QList<QtContacts::QContactId>& ids))
 
     // private data pointer
     QContactManagerData* d;

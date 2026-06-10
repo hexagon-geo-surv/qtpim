@@ -66,7 +66,7 @@ public:
     Q_INVOKABLE bool waitForFinished(int msec = -1);
 
 Q_SIGNALS:
-    void stateChanged(QVersitReader::State state);
+    void stateChanged(QtVersit::QVersitReader::State state);
     void resultsAvailable();
 
 private: // data

@@ -60,7 +60,7 @@ public Q_SLOTS:
     bool waitForFinished(int msecs = 0);
 
 Q_SIGNALS:
-    void stateChanged(QOrganizerAbstractRequest::State newState);
+    void stateChanged(QtOrganizer::QOrganizerAbstractRequest::State newState);
     void resultsAvailable();
 
 protected:

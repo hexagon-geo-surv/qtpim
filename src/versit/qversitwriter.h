@@ -65,7 +65,7 @@ public:
     Q_INVOKABLE bool waitForFinished(int msec = -1);
 
 Q_SIGNALS:
-    void stateChanged(QVersitWriter::State state);
+    void stateChanged(QtVersit::QVersitWriter::State state);
 
 private: // data
     QVersitWriterPrivate* d;

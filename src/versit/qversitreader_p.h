@@ -170,7 +170,7 @@ public: // Constructors and destructor
     void init(QVersitReader* reader);
 
 signals:
-    void stateChanged(QVersitReader::State state);
+    void stateChanged(QtVersit::QVersitReader::State state);
     void resultsAvailable();
 
 protected: // From QThread

@@ -25,7 +25,7 @@ public:
     QOrganizerItemId itemId() const;
 
 Q_SIGNALS:
-    void itemChanged(const QList<QOrganizerItemDetail::DetailType> &typesChanged);
+    void itemChanged(const QList<QtOrganizer::QOrganizerItemDetail::DetailType> &typesChanged);
     void itemRemoved();
 
 private:

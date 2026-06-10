@@ -64,7 +64,7 @@ public:
     inline static const QString ActionOpenInViewer() {return QStringLiteral("view");};
 
 Q_SIGNALS:
-    void stateChanged(QContactAction::State);
+    void stateChanged(QtContacts::QContactAction::State);
     void resultsAvailable();
 
 public:

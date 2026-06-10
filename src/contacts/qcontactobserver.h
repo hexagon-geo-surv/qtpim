@@ -23,7 +23,7 @@ public:
     ~QContactObserver();
     QContactId contactId() const;
 Q_SIGNALS:
-    void contactChanged(const QList<QContactDetail::DetailType> &typesChanged);
+    void contactChanged(const QList<QtContacts::QContactDetail::DetailType> &typesChanged);
     void contactRemoved();
 
 private:

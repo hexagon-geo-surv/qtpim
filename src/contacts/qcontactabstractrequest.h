@@ -68,7 +68,7 @@ public Q_SLOTS:
     bool waitForFinished(int msecs = 0);
 
 Q_SIGNALS:
-    void stateChanged(QContactAbstractRequest::State newState);
+    void stateChanged(QtContacts::QContactAbstractRequest::State newState);
     void resultsAvailable();
 
 protected:
