@@ -307,7 +307,7 @@ void tst_QContactDetails::birthday()
     b3.setDateTime(currDateTime);
     QCOMPARE(QContactDetail(b3).value(QContactBirthday::FieldBirthday), QVariant(currDateTime));
     b3.setDateTime(QDateTime(currDate, QTime(0,0,0,0)));
-    QCOMPARE(QContactDetail(b3).value(QContactBirthday::FieldBirthday).metaType().id(), QMetaType::QDate);    // unfortunate but unavoidable with current impl.
+    QCOMPARE(QContactDetail(b3).value(QContactBirthday::FieldBirthday).typeId(), QMetaType::QDate);    // unfortunate but unavoidable with current impl.
     QCOMPARE(QContactDetail(b3).value<QDateTime>(QContactBirthday::FieldBirthday), b3.dateTime());
 
     // test property add
@@ -342,17 +342,13 @@ void tst_QContactDetails::displayLabel()
 
     // test property set
     d1.setLabel("1234");
-    d1.setLabelGroup("1");
     QCOMPARE(d1.label(), QString("1234"));
     QCOMPARE(d1.value(QContactDisplayLabel::FieldLabel).toString(), QString("1234"));
-    QCOMPARE(d1.labelGroup(), QString("1"));
-    QCOMPARE(d1.value(QContactDisplayLabel::FieldLabelGroup).toString(), QString("1"));
 
     // test property add
     QVERIFY(c.saveDetail(&d1));
     QCOMPARE(c.details(QContactDisplayLabel::Type).count(), 1);
     QCOMPARE(QContactDisplayLabel(c.details(QContactDisplayLabel::Type).value(0)).label(), d1.label());
-    QCOMPARE(QContactDisplayLabel(c.details(QContactDisplayLabel::Type).value(0)).labelGroup(), d1.labelGroup());
 
     // test property update
     d1.setValue(QContactDisplayLabel::FieldContext, QContactDetail::ContextWork);
@@ -360,7 +356,6 @@ void tst_QContactDetails::displayLabel()
     QVERIFY(c.saveDetail(&d1));
     QCOMPARE(c.details(QContactDisplayLabel::Type).value(0).value(QContactDisplayLabel::FieldContext).value<QList<int> >(), QList<int>() << QContactDetail::ContextWork);
     QCOMPARE(c.details(QContactDisplayLabel::Type).value(0).value(QContactDisplayLabel::FieldLabel).toString(), QString("12345"));
-    QCOMPARE(c.details(QContactDisplayLabel::Type).value(0).value(QContactDisplayLabel::FieldLabelGroup).toString(), QString("1"));
 
     // test property remove
     QVERIFY(c.removeDetail(&d1));

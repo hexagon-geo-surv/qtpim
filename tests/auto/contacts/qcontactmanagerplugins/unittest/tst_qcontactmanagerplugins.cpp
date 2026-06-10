@@ -35,8 +35,8 @@ class DummyStaticEngineFactory : public QContactManagerEngineFactory
     Q_INTERFACES(QtContacts::QContactManagerEngineFactoryInterface)
     Q_PLUGIN_METADATA(IID "org.qt-project.Qt.QContactManagerEngineFactoryInterface")
     public:
-        QContactManagerEngine* engine(const QMap<QString, QString>& parameters, QContactManager::Error* error);
-        QString managerName() const {return "teststaticdummy";}
+        QContactManagerEngine* engine(const QMap<QString, QString>& parameters, QContactManager::Error* error) override;
+        QString managerName() const override {return "teststaticdummy";}
 };
 
 QContactManagerEngine* DummyStaticEngineFactory::engine(const QMap<QString, QString>& parameters, QContactManager::Error* error)
@@ -55,8 +55,8 @@ class ImpostorEngineFactory : public QContactManagerEngineFactory
     Q_INTERFACES(QtContacts::QContactManagerEngineFactoryInterface)
     Q_PLUGIN_METADATA(IID "org.qt-project.Qt.QContactManagerEngineFactoryInterface")
     public:
-        QContactManagerEngine* engine(const QMap<QString, QString>& , QContactManager::Error* ) {return 0;}
-        QString managerName() const {return "memory";}
+        QContactManagerEngine* engine(const QMap<QString, QString>& , QContactManager::Error* ) override {return 0;}
+        QString managerName() const override {return "memory";}
 };
 
 Q_IMPORT_PLUGIN(ImpostorEngineFactory)
@@ -68,8 +68,8 @@ class ImpostorEngineFactory2 : public QContactManagerEngineFactory
     Q_INTERFACES(QtContacts::QContactManagerEngineFactoryInterface)
     Q_PLUGIN_METADATA(IID "org.qt-project.Qt.QContactManagerEngineFactoryInterface")
     public:
-        QContactManagerEngine* engine(const QMap<QString, QString>& , QContactManager::Error* ) {return 0;}
-        QString managerName() const {return "invalid";}
+        QContactManagerEngine* engine(const QMap<QString, QString>& , QContactManager::Error* ) override {return 0;}
+        QString managerName() const override {return "invalid";}
 };
 
 Q_IMPORT_PLUGIN(ImpostorEngineFactory2)
@@ -81,8 +81,8 @@ class EmptyEngineFactory : public QContactManagerEngineFactory
     Q_INTERFACES(QtContacts::QContactManagerEngineFactoryInterface)
     Q_PLUGIN_METADATA(IID "org.qt-project.Qt.QContactManagerEngineFactoryInterface")
     public:
-        QContactManagerEngine* engine(const QMap<QString, QString>& , QContactManager::Error* ) {return 0;}
-        QString managerName() const {return QString();}
+        QContactManagerEngine* engine(const QMap<QString, QString>& , QContactManager::Error* ) override {return 0;}
+        QString managerName() const override {return QString();}
 };
 
 Q_IMPORT_PLUGIN(EmptyEngineFactory)

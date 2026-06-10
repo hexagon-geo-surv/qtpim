@@ -32,7 +32,7 @@ public:
     /* Capabilities reporting */
     QStringList capabilities() const;
     QStringList fastFilterableDefinitions() const;
-    QList<QVariant::Type> supportedDataTypes() const override;
+    QList<QMetaType::Type> supportedDataTypes() const override;
 
     QMap<QString, QString> managerParameters() const override {return QMap<QString, QString>();}
     int managerVersion() const override {return 0;}

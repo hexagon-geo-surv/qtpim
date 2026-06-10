@@ -41,8 +41,8 @@ static QString urlToLocalFileName(const QUrl& url)
 {
    if (!url.isValid()) {
       return url.toString();
-   } else if (url.scheme() == "qrc") {
-      return url.toString().remove(0, 5).prepend(':');
+   } else if (url.scheme() == QLatin1String("qrc")) {
+      return url.toString().remove(0, 5).prepend(QLatin1Char(':'));
    } else {
       return url.toLocalFile();
    }
@@ -551,7 +551,7 @@ void QDeclarativeOrganizerModel::setManager(const QString& managerName)
         delete d->m_manager;
     }
 
-    if (managerName.startsWith("qtorganizer:")) {
+    if (managerName.startsWith(QLatin1String("qtorganizer:"))) {
         d->m_manager = QOrganizerManager::fromUri(managerName, this);
     } else {
         d->m_manager = new QOrganizerManager(managerName, QMap<QString, QString>(), this);
@@ -1299,7 +1299,7 @@ void QDeclarativeOrganizerModel::removeItems(const QStringList& ids)
 
     // FIXME: no special format for occurrence ids
     for (const QString &id : ids) {
-        if (id.startsWith(QString("qtorganizer:occurrence"))) {
+        if (id.startsWith(QStringLiteral("qtorganizer:occurrence"))) {
             qmlInfo(this) << tr("Can't remove an occurrence item, please modify the parent item's recurrence rule instead!");
             continue;
         }

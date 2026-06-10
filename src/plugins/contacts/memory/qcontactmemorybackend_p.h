@@ -150,7 +150,7 @@ public:
     /* Capabilities reporting */
     virtual bool isRelationshipTypeSupported(const QString &relationshipType, QContactType::TypeValues contactType) const override;
     virtual bool isFilterSupported(const QContactFilter &filter) const override;
-    virtual QList<QVariant::Type> supportedDataTypes() const override;
+    virtual QList<QMetaType::Type> supportedDataTypes() const override;
     /*! \reimp */
     virtual QList<QContactType::TypeValues> supportedContactTypes() const override
     {

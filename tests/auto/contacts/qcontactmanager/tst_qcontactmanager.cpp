@@ -193,28 +193,21 @@ private:
     const char * const mSignal;
 };
 
-QT_BEGIN_NAMESPACE
-static uint qHash(const QMetaMethod &m)
-{
-    return qHash(m.methodIndex());
-}
-QT_END_NAMESPACE
-
 /* Two backends for testing lazy signal connections */
 class QContactLazyEngine2 : public QContactManagerEngine
 {
 public:
     QContactLazyEngine2() {}
-    QString managerName() const {return "lazy2";}
+    QString managerName() const override {return "lazy2";}
 
     /*! \reimp */
-    int managerVersion() const {return 0;}
+    int managerVersion() const override {return 0;}
 
-    void connectNotify(const QMetaMethod &signal)
+    void connectNotify(const QMetaMethod &signal) override
     {
         connectionCounts[signal]++;
     }
-    void disconnectNotify(const QMetaMethod &signal)
+    void disconnectNotify(const QMetaMethod &signal) override
     {
         connectionCounts[signal]--;
     }
@@ -227,17 +220,17 @@ class QContactLazyEngine : public QContactManagerEngine
 {
 public:
     QContactLazyEngine() {}
-    QString managerName() const {
+    QString managerName() const override {
         return "lazy";}
 
     /*! \reimp */
-    int managerVersion() const {return 0;}
+    int managerVersion() const override {return 0;}
 
-    void connectNotify(const QMetaMethod &signal)
+    void connectNotify(const QMetaMethod &signal) override
     {
         connectionCounts[signal]++;
     }
-    void disconnectNotify(const QMetaMethod &signal)
+    void disconnectNotify(const QMetaMethod &signal) override
     {
         connectionCounts[signal]--;
     }
@@ -251,8 +244,8 @@ class LazyEngineFactory : public QContactManagerEngineFactory
     Q_OBJECT
     Q_PLUGIN_METADATA(IID "org.qt-project.Qt.QContactManagerEngineFactoryInterface" FILE "lazy.json")
     public:
-        QContactManagerEngine* engine(const QMap<QString, QString>& parameters, QContactManager::Error* error);
-        QString managerName() const {return "testlazy";}
+        QContactManagerEngine* engine(const QMap<QString, QString>& parameters, QContactManager::Error* error) override;
+        QString managerName() const override {return "testlazy";}
 };
 
 QContactManagerEngine* LazyEngineFactory::engine(const QMap<QString, QString>& parameters, QContactManager::Error* error)
@@ -1088,7 +1081,7 @@ void tst_QContactManager::addAndUpdate()
     cm->saveContacts(&saveList, &errorMap);
     QCOMPARE(cm->contactIds().size(), originalCount + saveList.size());
     QCOMPARE(errorMap.size(), 0);
-    for (const QContact contact : saveList) {
+    for (const QContact &contact : saveList) {
         QVERIFY(cm->removeContact(contact.id()));
     }
 }
@@ -2268,7 +2261,7 @@ void tst_QContactManager::selfContactId()
 QList<QContactDetail> tst_QContactManager::removeAllDefaultDetails(const QList<QContactDetail>& details)
 {
     QList<QContactDetail> newlist;
-    for (const QContactDetail d : details) {
+    for (const QContactDetail &d : details) {
         if (d.type() != QContactType::Type && d.type() != QContactTimestamp::Type) {
             newlist << d;
         }

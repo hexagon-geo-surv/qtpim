@@ -3,6 +3,7 @@
 
 #include "qversitorganizerimporter_p.h"
 
+#include <QTimeZone>
 #include <QtOrganizer/qorganizer.h>
 
 #include <QtVersit/qversitdocument.h>
@@ -236,7 +237,7 @@ bool QVersitOrganizerImporterPrivate::createVersion(
 
     QVariant variant = property.variantValue();
     if (property.valueType() != QVersitProperty::CompoundType
-            || variant.type() != QVariant::StringList) {
+            || variant.typeId() != QMetaType::QStringList) {
         return false;
     }
     QStringList values = variant.toStringList();
@@ -443,7 +444,7 @@ bool QVersitOrganizerImporterPrivate::createExtendedDetail(
     QOrganizerItemExtendedDetail extendedDetail;
     const QVariant variant = property.variantValue();
     if (property.valueType() != QVersitProperty::CompoundType
-            || variant.type() != QVariant::StringList)
+            || variant.typeId() != QMetaType::QStringList)
         return false;
 
     QStringList values = variant.toStringList();
@@ -667,7 +668,7 @@ QDateTime QVersitOrganizerImporterPrivate::parseDateTime(QString str) const
         str.chop(1); // take away z from end;
     QDateTime dt(QDateTime::fromString(str, QStringLiteral("yyyyMMddTHHmmss")));
     if (utc)
-        dt.setTimeSpec(Qt::UTC);
+        dt.setTimeZone(QTimeZone::UTC);
     return dt;
 }
 

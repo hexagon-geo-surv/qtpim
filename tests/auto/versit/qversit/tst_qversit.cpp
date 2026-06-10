@@ -36,7 +36,7 @@ public:
     }
 
     bool saveResource(const QByteArray& contents, const QVersitProperty& property,
-                      QString* location)
+                      QString* location) override
     {
         Q_UNUSED(property)
         *location = QString::number(mIndex++);
@@ -44,7 +44,7 @@ public:
         return true;
     }
 
-    bool loadResource(const QString &location, QByteArray *contents, QString *mimeType)
+    bool loadResource(const QString &location, QByteArray *contents, QString *mimeType) override
     {
         Q_UNUSED(location)
         Q_UNUSED(contents)

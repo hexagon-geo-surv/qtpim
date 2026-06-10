@@ -3,6 +3,7 @@
 
 #include "qtimezones_p.h"
 
+#include <QTimeZone>
 #include <QtOrganizer/qorganizer.h>
 
 QTORGANIZER_USE_NAMESPACE
@@ -41,7 +42,7 @@ QDateTime TimeZone::convert(const QDateTime& dateTime) const
         }
     }
     QDateTime retn(dateTime);
-    retn.setTimeSpec(Qt::UTC);
+    retn.setTimeZone(QTimeZone::UTC);
     if (offset >= -86400 && offset <= 86400) // offset must be within -24hours to +24hours
         return retn.addSecs(-offset);
     else

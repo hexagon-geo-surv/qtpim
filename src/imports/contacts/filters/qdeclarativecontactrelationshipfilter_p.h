@@ -35,7 +35,7 @@ class QDeclarativeContactRelationshipFilter : public QDeclarativeContactFilter
 
 public:
 
-    QDeclarativeContactRelationshipFilter(QObject* parent = nullptr)
+    QDeclarativeContactRelationshipFilter(QObject* parent = Q_NULLPTR)
         :QDeclarativeContactFilter(parent)
     {
         connect(this, SIGNAL(valueChanged()), SIGNAL(filterChanged()));
@@ -48,7 +48,7 @@ public:
     void setRelationshipType(const QVariant& v)
     {
         QString rt;
-        if (v.metaType().id() != QMetaType::QString) {
+        if (v.typeId() != QMetaType::QString) {
             switch (v.toInt()) {
             case QDeclarativeContactRelationship::HasMember:
                 rt = QContactRelationship::HasMember();

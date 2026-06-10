@@ -5,6 +5,8 @@
 
 #include <QtOrganizer/qorganizer.h>
 
+#include <type_traits>
+
 //TESTED_COMPONENT=src/organizer
 
 QTORGANIZER_USE_NAMESPACE
@@ -920,12 +922,12 @@ void tst_QOrganizerItemFilter::canonicalizedFilter_data()
     {
         QOrganizerItemDetailRangeFilter qcdrf;
         qcdrf.setDetail(QOrganizerItemDetail::TypeLocation, QOrganizerItemLocation::FieldLabel);
-        qcdrf.setRange(QVariant(QVariant::String), QVariant(QVariant::String)); // null bounds
+        qcdrf.setRange(QVariant(QMetaType(QMetaType::QString)), QVariant(QMetaType(QMetaType::QString))); // null bounds
         qcdrf.setMatchFlags(QOrganizerItemFilter::MatchFixedString);
         QOrganizerItemDetailFieldFilter qcdf;
         qcdf.setDetail(QOrganizerItemDetail::TypeLocation, QOrganizerItemLocation::FieldLabel);
         qcdf.setMatchFlags(QOrganizerItemFilter::MatchFixedString);
-        qcdf.setValue(QVariant(QVariant::String));
+        qcdf.setValue(QVariant(QMetaType(QMetaType::QString)));
         QTest::newRow("Null valued range filter")
                 << static_cast<QOrganizerItemFilter>(qcdrf)
                 << static_cast<QOrganizerItemFilter>(qcdf);
@@ -934,7 +936,7 @@ void tst_QOrganizerItemFilter::canonicalizedFilter_data()
     {
         QOrganizerItemDetailRangeFilter qcdrf;
         qcdrf.setDetail(QOrganizerItemDetail::TypeLocation, QOrganizerItemLocation::FieldLabel);
-        qcdrf.setRange(QVariant(QVariant::String), QStringLiteral("a")); // min is null
+        qcdrf.setRange(QVariant(QMetaType(QMetaType::QString)), QStringLiteral("a")); // min is null
         qcdrf.setMatchFlags(QOrganizerItemFilter::MatchFixedString);
         QTest::newRow("One sided range filter")
                 << static_cast<QOrganizerItemFilter>(qcdrf)
@@ -1107,9 +1109,8 @@ void tst_QOrganizerItemFilter::datastream_data()
 void tst_QOrganizerItemFilter::traits()
 {
     QCOMPARE(sizeof(QOrganizerItemFilter), sizeof(void *));
-    QTypeInfo<QOrganizerItemFilter> ti;
-    QVERIFY(ti.isComplex);
-    QVERIFY(!ti.isPointer);
+    QVERIFY(QTypeInfo<QOrganizerItemFilter>::isComplex);
+    QVERIFY(!std::is_pointer<QOrganizerItemFilter>::value);
 }
 
 void tst_QOrganizerItemFilter::testDebugStreamOut()

@@ -490,7 +490,7 @@ QContactCollectionId QContactMemoryEngine::defaultCollectionId() const
     return collectionId(id);
 }
 
-QContactCollection QContactMemoryEngine::collection(const QContactCollectionId &collectionId, QContactManager::Error *error) const
+QContactCollection QContactMemoryEngine::collection(const QContactCollectionId &collectionId, QContactManager::Error *error)
 {
     if (d->m_idToCollectionHash.contains(collectionId)) {
         *error = QContactManager::NoError;
@@ -501,7 +501,7 @@ QContactCollection QContactMemoryEngine::collection(const QContactCollectionId &
     return QContactCollection();
 }
 
-QList<QContactCollection> QContactMemoryEngine::collections(QContactManager::Error *error) const
+QList<QContactCollection> QContactMemoryEngine::collections(QContactManager::Error *error)
 {
     Q_ASSERT(!d->m_idToCollectionHash.isEmpty());
     *error = QContactManager::NoError;
@@ -881,7 +881,7 @@ void QContactMemoryEngine::partiallySyncDetails(QContact *to, const QContact &fr
     // check details to save
     for (QContactDetail detail : fromDetails) {
         if (!toDetails.contains(detail))
-            to->saveDetail(&detail, QContact::IgnoreAccessConstraints);
+            to->saveDetail(&detail);
     }
 }
 
@@ -921,7 +921,7 @@ QList<QMetaType::Type> QContactMemoryEngine::supportedDataTypes() const
     st.append(QMetaType::QDateTime);
     st.append(QMetaType::QTime);
     st.append(QMetaType::Bool);
-    st.append(QMetaType::Char);
+    st.append(QMetaType::QChar);
     st.append(QMetaType::Int);
     st.append(QMetaType::UInt);
     st.append(QMetaType::LongLong);
@@ -1005,7 +1005,7 @@ bool QContactMemoryEngine::saveContact(QContact *theContact, QContactChangeSet &
         QContactTimestamp ts = theContact->detail(QContactTimestamp::Type);
         ts.setLastModified(QDateTime::currentDateTime());
         QContactManagerEngine::setDetailAccessConstraints(&ts, QContactDetail::ReadOnly | QContactDetail::Irremovable);
-        theContact->saveDetail(&ts, QContact::ReplaceAccessConstraints);
+        theContact->saveDetail(&ts);
 
         // Looks ok, so continue
         d->m_contacts.replace(index, *theContact);
@@ -1045,7 +1045,7 @@ bool QContactMemoryEngine::saveContact(QContact *theContact, QContactChangeSet &
         ts.setLastModified(QDateTime::currentDateTime());
         ts.setCreated(ts.lastModified());
         setDetailAccessConstraints(&ts, QContactDetail::ReadOnly | QContactDetail::Irremovable);
-        theContact->saveDetail(&ts, QContact::ReplaceAccessConstraints);
+        theContact->saveDetail(&ts);
 
         // update the contact item - set its ID
         QContactId newContactId = contactId(QByteArray(reinterpret_cast<const char *>(&d->m_nextContactId), sizeof(quint32)));
@@ -1064,6 +1064,6 @@ bool QContactMemoryEngine::saveContact(QContact *theContact, QContactChangeSet &
     return true;
 }
 
-QT_END_NAMESPACE_CONTACTS
-
 #include "moc_qcontactmemorybackend_p.cpp"
+
+QT_END_NAMESPACE_CONTACTS

@@ -43,7 +43,7 @@ QMap<QString, std::pair<QContactDetail::DetailType, int> > defAndFieldNamesForTy
 
 namespace {
 
-bool validDetailType(const std::pair<QContactDetail::DetailType, int> &pair)
+[[maybe_unused]] bool validDetailType(const std::pair<QContactDetail::DetailType, int> &pair)
 {
     return pair.first != QContactDetail::TypeUndefined;
 }

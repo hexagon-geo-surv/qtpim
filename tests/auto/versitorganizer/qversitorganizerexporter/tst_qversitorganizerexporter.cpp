@@ -4,6 +4,7 @@
 //TESTED_COMPONENT=src/versit
 
 #include "tst_qversitorganizerexporter.h"
+#include <QTimeZone>
 #include <QtTest/QtTest>
 
 QTORGANIZER_USE_NAMESPACE
@@ -78,8 +79,8 @@ void tst_QVersitOrganizerExporter::testExport_data()
 
         QOrganizerEvent event;
         event.setDisplayLabel(QStringLiteral("Bastille Day Party"));
-        event.setStartDateTime(QDateTime(QDate(1997, 7, 14), QTime(17, 0, 0), Qt::UTC));
-        event.setEndDateTime(QDateTime(QDate(1997, 7, 15), QTime(3, 59, 59), Qt::UTC));
+        event.setStartDateTime(QDateTime(QDate(1997, 7, 14), QTime(17, 0, 0), QTimeZone::UTC));
+        event.setEndDateTime(QDateTime(QDate(1997, 7, 15), QTime(3, 59, 59), QTimeZone::UTC));
 
         QOrganizerTodo todo;
         todo.setDisplayLabel(QStringLiteral("Take out the garbage"));
@@ -1413,8 +1414,8 @@ void tst_QVersitOrganizerExporter::testExtendedDetail()
         QCOMPARE(actualProperties.size(), 0);
     } else {
         QCOMPARE(actualProperties.size(), 1);
-        if (static_cast<QMetaType::Type>(extendedDetailData.type()) == QMetaType::Double
-                || static_cast<QMetaType::Type>(extendedDetailData.type()) == QMetaType::Float) {
+        if (extendedDetailData.typeId() == QMetaType::Double
+                || extendedDetailData.typeId() == QMetaType::Float) {
             QCOMPARE(actualProperties.first().name(), expectedProperty.name());
             QStringList actualStringList = actualProperties.first().variantValue().toStringList();
             QCOMPARE(actualStringList.size(), 2);
@@ -1424,7 +1425,7 @@ void tst_QVersitOrganizerExporter::testExtendedDetail()
             QCOMPARE(expectedStringList.size(), 2);
             QString expectedString = expectedStringList.at(1);
             expectedString.replace('[',"").replace(']',"").replace('\n', "");
-            if (static_cast<QMetaType::Type>(extendedDetailData.type()) == QMetaType::Float) {
+            if (extendedDetailData.typeId() == QMetaType::Float) {
                 float actualF = actualString.toFloat();
                 float expectedF = expectedString.toFloat();
                 QCOMPARE(actualStringList.first(), expectedStringList.first()); // "name"

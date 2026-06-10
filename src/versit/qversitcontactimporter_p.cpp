@@ -4,6 +4,7 @@
 #include "qversitcontactimporter_p.h"
 
 #include <QtContacts/qcontactdetails.h>
+#include <QTimeZone>
 
 #include <utility>
 
@@ -264,7 +265,7 @@ bool QVersitContactImporterPrivate::createName(
 
     QVariant variant = property.variantValue();
     if (property.valueType() != QVersitProperty::CompoundType
-            || variant.type() != QVariant::StringList)
+            || variant.typeId() != QMetaType::QStringList)
         return false;
     QStringList values = variant.toStringList();
     QString value(takeFirst(values));
@@ -346,7 +347,7 @@ bool QVersitContactImporterPrivate::createAddress(
 
     QVariant variant = property.variantValue();
     if (property.valueType() != QVersitProperty::CompoundType
-            || variant.type() != QVariant::StringList)
+            || variant.typeId() != QMetaType::QStringList)
         return false;
     QStringList addressParts = variant.toStringList();
     QString value(takeFirst(addressParts));
@@ -434,7 +435,7 @@ void QVersitContactImporterPrivate::setOrganizationNames(
 {
     QVariant variant = property.variantValue();
     if (property.valueType() == QVersitProperty::CompoundType
-        && variant.type() == QVariant::StringList) {
+        && variant.typeId() == QMetaType::QStringList) {
         QStringList values = variant.toStringList();
         QString name(takeFirst(values));
         if (!name.isEmpty())
@@ -491,7 +492,7 @@ bool QVersitContactImporterPrivate::createVersion(
 
     QVariant variant = property.variantValue();
     if (property.valueType() != QVersitProperty::CompoundType
-            || variant.type() != QVariant::StringList)
+            || variant.typeId() != QMetaType::QStringList)
         return false;
     QStringList values = variant.toStringList();
     bool ok;
@@ -592,7 +593,7 @@ bool QVersitContactImporterPrivate::createNicknames(
     Q_UNUSED(contact)
     QVariant variant = property.variantValue();
     if (property.valueType() != QVersitProperty::ListType
-            || variant.type() != QVariant::StringList)
+            || variant.typeId() != QMetaType::QStringList)
         return false;
     QStringList values = variant.toStringList();
     QList<int> contexts = extractContexts(property);
@@ -625,7 +626,7 @@ bool QVersitContactImporterPrivate::createTags(
     Q_UNUSED(contact)
     QVariant variant = property.variantValue();
     if (property.valueType() != QVersitProperty::ListType
-            || variant.type() != QVariant::StringList)
+            || variant.typeId() != QMetaType::QStringList)
         return false;
     QStringList values = variant.toStringList();
     QList<int> contexts = extractContexts(property);
@@ -769,7 +770,7 @@ bool QVersitContactImporterPrivate::createGeoLocation(
     QContactGeoLocation geo;
     QVariant variant = property.variantValue();
     if (property.valueType() != QVersitProperty::CompoundType
-            || variant.type() != QVariant::StringList)
+            || variant.typeId() != QMetaType::QStringList)
         return false;
     QStringList values = variant.toStringList();
     bool ok1;
@@ -802,7 +803,7 @@ bool QVersitContactImporterPrivate::createFamily(
     } else if (property.name() == QStringLiteral("X-CHILDREN")) {
         QVariant variant = property.variantValue();
         if (property.valueType() != QVersitProperty::ListType
-                || variant.type() != QVariant::StringList)
+                || variant.typeId() != QMetaType::QStringList)
             return false;
         QStringList values = variant.toStringList();
         if (values.isEmpty())
@@ -834,7 +835,7 @@ bool QVersitContactImporterPrivate::createFavorite(
     QContactFavorite favorite;
     QVariant variant = property.variantValue();
     if (property.valueType() != QVersitProperty::CompoundType
-            || variant.type() != QVariant::StringList)
+            || variant.typeId() != QMetaType::QStringList)
         return false;
 
     QStringList values = variant.toStringList();
@@ -910,7 +911,7 @@ bool QVersitContactImporterPrivate::createExtendedDetail(
     QContactExtendedDetail extendedDetail;
     const QVariant variant = property.variantValue();
     if (property.valueType() != QVersitProperty::CompoundType
-            || variant.type() != QVariant::StringList)
+            || variant.typeId() != QMetaType::QStringList)
         return false;
 
     QStringList values = variant.toStringList();
@@ -1017,7 +1018,7 @@ QDateTime QVersitContactImporterPrivate::parseDateTime(QString value, bool *just
     }
 
     if (utc)
-        dateTime.setTimeSpec(Qt::UTC);
+        dateTime.setTimeZone(QTimeZone::UTC);
 
     if (justDate)
         *justDate = !hasTime && !utc; // UTC implies a time of midnight
@@ -1037,12 +1038,12 @@ bool QVersitContactImporterPrivate::saveDataFromProperty(const QVersitProperty &
     bool found = false;
     const QString valueParam = property.parameters().value(QStringLiteral("VALUE")).toUpper();
     QVariant variant(property.variantValue());
-    if (variant.type() == QVariant::String
+    if (variant.typeId() == QMetaType::QString
         || valueParam == QStringLiteral("URL")
         || valueParam == QStringLiteral("URI")) {
         *location = property.value();
         found |= !location->isEmpty();
-    } else if (variant.type() == QVariant::ByteArray) {
+    } else if (variant.typeId() == QMetaType::QByteArray) {
         *data = variant.toByteArray();
         if (!data->isEmpty()) {
             found = true;

@@ -6,6 +6,8 @@
 
 #include <QtContacts/qcontacts.h>
 
+#include <type_traits>
+
 //TESTED_COMPONENT=src/contacts
 
 QTCONTACTS_USE_NAMESPACE
@@ -47,7 +49,7 @@ void tst_QContactSortOrder::cleanup()
 void tst_QContactSortOrder::traits()
 {
     QVERIFY(QTypeInfo<QContactSortOrder>::isComplex);
-    QVERIFY(!QTypeInfo<QContactSortOrder>::isPointer);
+    QVERIFY(!std::is_pointer<QContactSortOrder>::value);
     QCOMPARE(sizeof(QContactSortOrder), sizeof(void *));
 }
 

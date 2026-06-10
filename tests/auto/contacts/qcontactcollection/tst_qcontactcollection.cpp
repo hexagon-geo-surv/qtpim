@@ -7,6 +7,8 @@
 
 #include <QtContacts/qcontacts.h>
 
+#include <type_traits>
+
 
 QTCONTACTS_USE_NAMESPACE
 
@@ -338,14 +340,14 @@ void tst_QContactCollection::traits()
 {
     QCOMPARE(sizeof(QContactCollection), sizeof(void *));
     QVERIFY(QTypeInfo<QContactCollection>::isComplex);
-    QVERIFY(!QTypeInfo<QContactCollection>::isPointer);
+    QVERIFY(!std::is_pointer<QContactCollection>::value);
 }
 
 void tst_QContactCollection::idTraits()
 {
     QCOMPARE(sizeof(QContactCollectionId), sizeof(QString) + sizeof(QByteArray));
     QVERIFY(QTypeInfo<QContactCollectionId>::isComplex);
-    QVERIFY(!QTypeInfo<QContactCollectionId>::isPointer);
+    QVERIFY(!std::is_pointer<QContactCollectionId>::value);
 }
 
 QTEST_MAIN(tst_QContactCollection)

@@ -283,7 +283,7 @@ QVariant QVersitProperty::variantValue() const
  */
 QString QVersitProperty::value() const
 {
-    if (d->mValue.type() == QVariant::ByteArray) {
+    if (d->mValue.typeId() == QMetaType::QByteArray) {
         if (d->mParameters.contains(QStringLiteral("CHARSET"))) {
             QByteArray charsetName = d->mParameters.value(QStringLiteral("CHARSET")).toLatin1();
             auto opt = QStringConverter::encodingForName(charsetName.constData());

@@ -66,7 +66,7 @@ public:
     inline bool isValid() const { return !sig.isEmpty(); }
     inline QByteArray signal() const { return sig; }
 
-    int qt_metacall(QMetaObject::Call call, int methodId, void **a)
+    int qt_metacall(QMetaObject::Call call, int methodId, void **a) override
     {
         methodId = QObject::qt_metacall(call, methodId, a);
         if (methodId < 0)
@@ -98,7 +98,7 @@ private:
     {
         QList<QByteArray> params = member.parameterTypes();
         for (int i = 0; i < params.count(); ++i) {
-            int tp = QMetaType::type(params.at(i).constData());
+            int tp = QMetaType::fromName(params.at(i).constData()).id();
             if (tp == QMetaType::Void)
                 qWarning("Don't know how to handle '%s', use qRegisterMetaType to register it.",
                          params.at(i).constData());
@@ -403,7 +403,7 @@ bool tst_QOrganizerItemAsync::compareIgnoringDetailKeys(const QOrganizerItem& ca
 bool tst_QOrganizerItemAsync::detailListContainsDetailIgnoringDetailKeys(const QList<QOrganizerItemDetail>& dets, const QOrganizerItemDetail& det)
 {
     bool foundCurrentDetail = false;
-    for (const QOrganizerItemDetail d2 : dets) {
+    for (const QOrganizerItemDetail &d2 : dets) {
         if (det == d2) {
             foundCurrentDetail = true;
         }
@@ -586,7 +586,7 @@ void tst_QOrganizerItemAsync::itemFetch()
         }
         currRestricted.setId(currFull.id());
         QList<QOrganizerItemDetail> descriptions = currFull.details(QOrganizerItemDetail::TypeDescription);
-        for (const QOrganizerItemDescription& description : descriptions) {
+        for (const QOrganizerItemDescription description : descriptions) {
             QOrganizerItemDescription descr = description;
             if (!descr.isEmpty()) {
                 currRestricted.saveDetail(&descr);
@@ -1231,7 +1231,7 @@ void tst_QOrganizerItemAsync::itemFetchForExport()
         QOrganizerEvent currRestricted; // in prepare model, the item types were "Event"
         currRestricted.setId(currFull.id());
         QList<QOrganizerItemDetail> descriptions = currFull.details(QOrganizerItemDetail::TypeDescription);
-        for (const QOrganizerItemDescription& description : descriptions) {
+        for (const QOrganizerItemDescription description : descriptions) {
             QOrganizerItemDescription descr = description;
             if (!descr.isEmpty())
                 currRestricted.saveDetail(&descr);

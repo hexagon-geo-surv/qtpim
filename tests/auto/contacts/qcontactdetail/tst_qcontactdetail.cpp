@@ -6,6 +6,7 @@
 #include <QtContacts/qcontacts.h>
 
 #include <QSet>
+#include <type_traits>
 
 //TESTED_COMPONENT=src/contacts
 
@@ -510,7 +511,7 @@ void tst_QContactDetail::traits()
 {
     QCOMPARE(sizeof(QContactDetail), sizeof(void *));
     QVERIFY(QTypeInfo<QContactDetail>::isComplex);
-    QVERIFY(!QTypeInfo<QContactDetail>::isPointer);
+    QVERIFY(!std::is_pointer<QContactDetail>::value);
 }
 
 void tst_QContactDetail::keys()

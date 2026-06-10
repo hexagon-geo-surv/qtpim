@@ -408,8 +408,8 @@ static QString urlToLocalFileName(const QUrl& url)
 {
    if (!url.isValid()) {
       return url.toString();
-   } else if (url.scheme() == "qrc") {
-      return url.toString().remove(0, 5).prepend(':');
+   } else if (url.scheme() == QLatin1String("qrc")) {
+      return url.toString().remove(0, 5).prepend(QLatin1Char(':'));
    } else {
       return url.toLocalFile();
    }

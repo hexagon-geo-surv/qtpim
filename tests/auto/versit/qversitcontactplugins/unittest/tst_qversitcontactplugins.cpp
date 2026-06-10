@@ -14,8 +14,8 @@ QTVERSIT_USE_NAMESPACE
 class TestFactory1 : public QVersitContactHandlerFactory
 {
     public:
-        QString name() const { return "factory1"; }
-        QVersitContactHandler* createHandler() const { return NULL; }
+        QString name() const override { return "factory1"; }
+        QVersitContactHandler* createHandler() const override { return NULL; }
 };
 
 class tst_QVersitContactPlugins : public QObject

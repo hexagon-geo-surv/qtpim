@@ -8,7 +8,6 @@
 #include <QtCore/qdatetime.h>
 #include <QtCore/qvariant.h>
 #include <QtCore/qurl.h>
-#include <QtCore/qiodevice.h>
 
 #include <QtContacts/qcontact.h>
 #include <QtContacts/qcontactdetail.h>
@@ -117,19 +116,19 @@ void BackupVCardHandler::propertyProcessed(
         bool* alreadyProcessed,
         QList<QContactDetail>* updatedDetails)
 {
-    Q_UNUSED(document);
-    Q_UNUSED(property);
-    Q_UNUSED(contact);
-    Q_UNUSED(alreadyProcessed);
-    Q_UNUSED(updatedDetails);
+    Q_UNUSED(document)
+    Q_UNUSED(property)
+    Q_UNUSED(contact)
+    Q_UNUSED(alreadyProcessed)
+    Q_UNUSED(updatedDetails)
 }
 
 void BackupVCardHandler::documentProcessed(
         const QVersitDocument& document,
         QContact* contact)
 {
-    Q_UNUSED(document);
-    Q_UNUSED(contact);
+    Q_UNUSED(document)
+    Q_UNUSED(contact)
 }
 
 void BackupVCardHandler::detailProcessed(
@@ -140,9 +139,9 @@ void BackupVCardHandler::detailProcessed(
         QList<QVersitProperty>* toBeRemoved,
         QList<QVersitProperty>* toBeAdded)
 {
-    Q_UNUSED(contact);
-    Q_UNUSED(document);
-    Q_UNUSED(toBeRemoved);
+    Q_UNUSED(contact)
+    Q_UNUSED(document)
+    Q_UNUSED(toBeRemoved)
     if (detail.accessConstraints().testFlag(QContactDetail::ReadOnly))
         return;
     QMap<int, QVariant> fields = detail.values();
@@ -182,41 +181,41 @@ void BackupVCardHandler::detailProcessed(
 void BackupVCardHandler::serializeValue(QVersitProperty* property, const QVariant& value)
 {
     // serialize the value
-    if (value.metaType().id() == QMetaType::QString
-        || value.metaType().id() == QMetaType::QByteArray) {
+    if (value.typeId() == QMetaType::QString
+        || value.typeId() == QMetaType::QByteArray) {
         // store QStrings and QByteArrays as-is
         property->setValue(value);
-    } else if (value.metaType().id() == QMetaType::QDate) {
+    } else if (value.typeId() == QMetaType::QDate) {
         // Store a QDate as a string
         QString valueString(value.toDate().toString(Qt::ISODate));
         property->insertParameter(DatatypeParameter, DatatypeParameterDate);
         property->setValue(valueString);
-    } else if (value.metaType().id() == QMetaType::QTime) {
+    } else if (value.typeId() == QMetaType::QTime) {
         // Store a QTime as a string
         QString valueString(value.toTime().toString(Qt::ISODate));
         property->insertParameter(DatatypeParameter, DatatypeParameterTime);
         property->setValue(valueString);
-    } else if (value.metaType().id() == QMetaType::QDateTime) {
+    } else if (value.typeId() == QMetaType::QDateTime) {
         // Store a QDateTime as a string
         QString valueString(value.toDateTime().toString(Qt::ISODate));
         property->insertParameter(DatatypeParameter, DatatypeParameterDateTime);
         property->setValue(valueString);
-    } else if (value.metaType().id() == QMetaType::Bool) {
+    } else if (value.typeId() == QMetaType::Bool) {
         // Store an int as a string
         QString valueString(QString::number(value.toBool() ? 1 : 0));
         property->insertParameter(DatatypeParameter, DatatypeParameterBool);
         property->setValue(valueString);
-    } else if (value.metaType().id() == QMetaType::Int) {
+    } else if (value.typeId() == QMetaType::Int) {
         // Store an int as a string
         QString valueString(QString::number(value.toInt()));
         property->insertParameter(DatatypeParameter, DatatypeParameterInt);
         property->setValue(valueString);
-    } else if (value.metaType().id() == QMetaType::UInt) {
+    } else if (value.typeId() == QMetaType::UInt) {
         // Store a uint as a string
         QString valueString(QString::number(value.toUInt()));
         property->insertParameter(DatatypeParameter, DatatypeParameterUInt);
         property->setValue(valueString);
-    } else if (value.metaType().id() == QMetaType::QUrl) {
+    } else if (value.typeId() == QMetaType::QUrl) {
         // Store a QUrl as a string
         QString valueString(value.toUrl().toString());
         property->insertParameter(DatatypeParameter, DatatypeParameterUrl);
@@ -235,11 +234,11 @@ void BackupVCardHandler::contactProcessed(
         const QContact& contact,
         QVersitDocument* document)
 {
-    Q_UNUSED(contact);
-    Q_UNUSED(document);
+    Q_UNUSED(contact)
+    Q_UNUSED(document)
     mDetailNumber = 0;
 }
 
-QT_END_NAMESPACE_VERSIT
-
 #include "moc_backupvcardhandler.cpp"
+
+QT_END_NAMESPACE_VERSIT

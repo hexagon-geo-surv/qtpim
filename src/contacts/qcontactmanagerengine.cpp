@@ -651,9 +651,9 @@ bool QContactManagerEngine::isFilterSupported(const QContactFilter& filter) cons
 /*!
   Returns the list of data types supported by this engine.
  */
-QList<QVariant::Type> QContactManagerEngine::supportedDataTypes() const
+QList<QMetaType::Type> QContactManagerEngine::supportedDataTypes() const
 {
-    return QList<QVariant::Type>();
+    return QList<QMetaType::Type>();
 }
 
 /*!
@@ -1112,69 +1112,69 @@ static inline int compareStrings(const QString& left, const QString& right, Qt::
  */
 int QContactManagerEngine::compareVariant(const QVariant& first, const QVariant& second, Qt::CaseSensitivity sensitivity)
 {
-    switch(first.type()) {
-        case QVariant::Int:
+    switch(first.typeId()) {
+        case QMetaType::Int:
             {
                 const int a = first.toInt();
                 const int b = second.toInt();
                 return (a < b) ? -1 : ((a == b) ? 0 : 1);
             }
 
-        case QVariant::LongLong:
+        case QMetaType::LongLong:
             {
                 const qlonglong a = first.toLongLong();
                 const qlonglong b = second.toLongLong();
                 return (a < b) ? -1 : ((a == b) ? 0 : 1);
             }
 
-        case QVariant::Bool:
-        case QVariant::UInt:
+        case QMetaType::Bool:
+        case QMetaType::UInt:
             {
                 const uint a = first.toUInt();
                 const uint b = second.toUInt();
                 return (a < b) ? -1 : ((a == b) ? 0 : 1);
             }
 
-        case QVariant::ULongLong:
+        case QMetaType::ULongLong:
             {
                 const qulonglong a = first.toULongLong();
                 const qulonglong b = second.toULongLong();
                 return (a < b) ? -1 : ((a == b) ? 0 : 1);
             }
 
-        case QVariant::Char: // Needs to do proper string comparison
-        case QVariant::String:
+        case QMetaType::QChar: // Needs to do proper string comparison
+        case QMetaType::QString:
             return compareStrings(first.toString(), second.toString(), sensitivity);
 
-        case QVariant::Double:
+        case QMetaType::Double:
             {
                 const double a = first.toDouble();
                 const double b = second.toDouble();
                 return (a < b) ? -1 : ((a == b) ? 0 : 1);
             }
 
-        case QVariant::DateTime:
+        case QMetaType::QDateTime:
             {
                 const QDateTime a = first.toDateTime();
                 const QDateTime b = second.toDateTime();
                 return (a < b) ? -1 : ((a == b) ? 0 : 1);
             }
 
-        case QVariant::Date:
+        case QMetaType::QDate:
             {
                 const QDate a = first.toDate();
                 const QDate b = second.toDate();
                 return (a < b) ? -1 : ((a == b) ? 0 : 1);
             }
 
-        case QVariant::Time:
+        case QMetaType::QTime:
             {
                 const QTime a = first.toTime();
                 const QTime b = second.toTime();
                 return (a < b) ? -1 : ((a == b) ? 0 : 1);
             }
 
-        case QVariant::StringList:
+        case QMetaType::QStringList:
             {
                 // We don't actually sort on these, I hope
                 // {} < {"aa"} < {"aa","bb"} < {"aa", "cc"} < {"bb"}
@@ -1682,10 +1682,10 @@ int QContactManagerEngine::compareContact(const QContact& a, const QContact& b, 
         bool bIsNull = false;
 
         // treat empty strings as null qvariants.
-        if ((aVal.type() == QVariant::String && aVal.toString().isEmpty()) || aVal.isNull()) {
+        if ((aVal.typeId() == QMetaType::QString && aVal.toString().isEmpty()) || aVal.isNull()) {
             aIsNull = true;
         }
-        if ((bVal.type() == QVariant::String && bVal.toString().isEmpty()) || bVal.isNull()) {
+        if ((bVal.typeId() == QMetaType::QString && bVal.toString().isEmpty()) || bVal.isNull()) {
             bIsNull = true;
         }
 

@@ -3,6 +3,7 @@
 
 #include "qdeclarativeorganizeritemdetail_p.h"
 
+#include <QTimeZone>
 #include <QtQml/qqmlinfo.h>
 #include <QtQml/QJSValue>
 
@@ -648,7 +649,7 @@ void QDeclarativeOrganizerItemParent::setOriginalDate(const QDateTime &date)
 
 QDateTime QDeclarativeOrganizerItemParent::originalDate() const
 {
-    QDateTime retDateTime(m_detail.value(QOrganizerItemParent::FieldOriginalDate).toDate(), QTime(0, 0, 0, 0), Qt::UTC);
+    QDateTime retDateTime(m_detail.value(QOrganizerItemParent::FieldOriginalDate).toDate(), QTime(0, 0, 0, 0), QTimeZone::UTC);
     return retDateTime;
 }
 
@@ -914,7 +915,7 @@ QVariantList QDeclarativeOrganizerItemRecurrence::recurrenceDates() const
     QSet<QDate> dateSet = dateSetVariant.value<QSet <QDate> >();
     QVariantList dates;
     for (QDate date : dateSet) {
-        QDateTime dateTime(date, QTime(0, 0, 0, 0), Qt::UTC);
+        QDateTime dateTime(date, QTime(0, 0, 0, 0), QTimeZone::UTC);
         dates.append(QVariant(dateTime));
     }
     return dates;
@@ -957,7 +958,7 @@ QVariantList QDeclarativeOrganizerItemRecurrence::exceptionDates() const
     QSet<QDate> dateSet = dateSetVariant.value<QSet <QDate> >();
     QVariantList dates;
     for (QDate date : dateSet) {
-        QDateTime dateTime(date, QTime(0, 0, 0, 0), Qt::UTC);
+        QDateTime dateTime(date, QTime(0, 0, 0, 0), QTimeZone::UTC);
         dates.append(QVariant(dateTime));
     }
     return dates;
@@ -2205,7 +2206,7 @@ void QDeclarativeOrganizerEventRsvp::setResponseDeadline(const QDateTime &date)
 
 QDateTime QDeclarativeOrganizerEventRsvp::responseDeadline() const
 {
-    QDateTime retDateTime(m_detail.value<QDate>(QOrganizerEventRsvp::FieldResponseDeadline), QTime(0, 0, 0, 0), Qt::UTC);
+    QDateTime retDateTime(m_detail.value<QDate>(QOrganizerEventRsvp::FieldResponseDeadline), QTime(0, 0, 0, 0), QTimeZone::UTC);
     return retDateTime;
 }
 
@@ -2233,7 +2234,7 @@ void QDeclarativeOrganizerEventRsvp::setResponseDate(const QDateTime &date)
 
 QDateTime QDeclarativeOrganizerEventRsvp::responseDate() const
 {
-    QDateTime retDateTime(m_detail.value<QDate>(QOrganizerEventRsvp::FieldResponseDate), QTime(0, 0, 0, 0), Qt::UTC);
+    QDateTime retDateTime(m_detail.value<QDate>(QOrganizerEventRsvp::FieldResponseDate), QTime(0, 0, 0, 0), QTimeZone::UTC);
     return retDateTime;
 }
 

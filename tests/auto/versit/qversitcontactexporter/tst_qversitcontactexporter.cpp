@@ -4,6 +4,7 @@
 //TESTED_COMPONENT=src/versit
 
 #include "tst_qversitcontactexporter.h"
+#include <QTimeZone>
 #include <QtVersit/qversitcontactexporter.h>
 #include <QtVersit/qversitdocument.h>
 #include <QtVersit/qversitproperty.h>
@@ -27,10 +28,10 @@ public:
 
     bool preProcessDetail(const QContact& contact,
                           const QContactDetail& detail,
-                          QVersitDocument* document)
+                          QVersitDocument* document) override
     {
-        Q_UNUSED(contact);
-        Q_UNUSED(document);
+        Q_UNUSED(contact)
+        Q_UNUSED(document)
         mPreProcessedDetails.append(detail);
         return mPreProcess;
     }
@@ -38,10 +39,10 @@ public:
     bool postProcessDetail(const QContact& contact,
                            const QContactDetail& detail,
                            bool alreadyProcessed,
-                           QVersitDocument* document)
+                           QVersitDocument* document) override
     {
-        Q_UNUSED(contact);
-        Q_UNUSED(document);
+        Q_UNUSED(contact)
+        Q_UNUSED(document)
         if (!alreadyProcessed)
             mUnknownDetails.append(detail);
         else
@@ -79,7 +80,7 @@ public:
                          const QVersitDocument& document,
                          QSet<int>* processedFields,
                          QList<QVersitProperty>* toBeRemoved,
-                         QList<QVersitProperty>* toBeAdded)
+                         QList<QVersitProperty>* toBeAdded) override
     {
         mContact = contact;
         mDetail = detail;
@@ -89,7 +90,7 @@ public:
         mToBeAdded = *toBeAdded;
     }
 
-    void contactProcessed(const QContact& contact, QVersitDocument* document)
+    void contactProcessed(const QContact& contact, QVersitDocument* document) override
     {
         mEndContact = contact;
         mEndDocument = *document;
@@ -115,7 +116,7 @@ public:
     {
     }
 
-    bool loadResource(const QString& location, QByteArray* contents, QString* mimeType)
+    bool loadResource(const QString& location, QByteArray* contents, QString* mimeType) override
     {
         mLocation = location;
         *contents = mSimulatedData;
@@ -124,11 +125,11 @@ public:
         return mLoadSuccess;
     }
 
-    bool saveResource(const QByteArray &contents, const QVersitProperty &property, QString *location)
+    bool saveResource(const QByteArray &contents, const QVersitProperty &property, QString *location) override
     {
-        Q_UNUSED(contents);
-        Q_UNUSED(property);
-        Q_UNUSED(location);
+        Q_UNUSED(contents)
+        Q_UNUSED(property)
+        Q_UNUSED(location)
         return false;
     }
 
@@ -159,13 +160,13 @@ const QString TEST_AUDIO_FILE(QStringLiteral("versitTest001.wav"));
 #define CHECK_VALUE(property,expectedValueType,expectedValue) {\
     QCOMPARE(property.valueType(), expectedValueType); \
     QVariant value = property.variantValue(); \
-    QCOMPARE(value.metaType().id(), QMetaType::QStringList); \
+    QCOMPARE(value.typeId(), QMetaType::QStringList); \
     QCOMPARE(value.toStringList(), expectedValue); \
 }
 #define CHECK_FLOATING_POINT_VALUE(property, expectedValueType, expectedValue, isDouble) {\
     QCOMPARE(property.valueType(), expectedValueType); \
     QVariant value = property.variantValue(); \
-    QCOMPARE(value.metaType().id(), QMetaType::QStringList); \
+    QCOMPARE(value.typeId(), QMetaType::QStringList); \
     QVERIFY(value.toStringList().size() == 2); \
     QVERIFY(expectedValue.size() == 2); \
     QString actualString = value.toStringList().at(1); \
@@ -549,7 +550,7 @@ void tst_QVersitContactExporter::testEncodeRev()
         QDateTime::fromString(
             QStringLiteral("M1d1y200906:01:02"),
             QStringLiteral("'M'M'd'd'y'yyyyhh:mm:ss"));
-    revisionTime.setTimeSpec(Qt::UTC);
+    revisionTime.setTimeZone(QTimeZone::UTC);
     timeStamp.setLastModified(revisionTime);
     // Contexts not allowed in REV property, check that they are not added
     timeStamp.setContexts(QContactDetail::ContextHome);
@@ -577,9 +578,9 @@ void tst_QVersitContactExporter::testEncodeRev()
 
     // Last modified time found, Local Time spec not UTC
     QDateTime localTime;
-    revisionTime.setTimeSpec(Qt::LocalTime);
+    revisionTime.setTimeZone(QTimeZone::LocalTime);
     timeStamp.setLastModified(revisionTime);
-    localTime.setTimeSpec(Qt::LocalTime);
+    localTime.setTimeZone(QTimeZone::LocalTime);
     timeStamp.setCreated(localTime);
     contact.saveDetail(&timeStamp);
     QVERIFY(mExporter->exportContacts(QList<QContact>() << contact, QVersitDocument::VCard30Type));
@@ -797,7 +798,7 @@ void tst_QVersitContactExporter::testEncodeOrganization()
             QStringLiteral("TYPE"), QStringLiteral("JPEG")));
     // Verify value.
     QVariant variantValue = property.variantValue();
-    QVERIFY(variantValue.metaType().id() == QMetaType::QByteArray);
+    QVERIFY(variantValue.typeId() == QMetaType::QByteArray);
     QCOMPARE(variantValue.value<QByteArray>(), mResourceHandler->mSimulatedData);
 
     // Assistant Name Test.
@@ -857,7 +858,7 @@ void tst_QVersitContactExporter::testEncodeAvatar()
     property = findPropertyByName(document, QStringLiteral("PHOTO"));
     QVERIFY(!property.isEmpty());
     QVariant variantValue = property.variantValue();
-    QVERIFY(variantValue.metaType().id() == QMetaType::QByteArray);
+    QVERIFY(variantValue.typeId() == QMetaType::QByteArray);
     QCOMPARE(variantValue.value<QByteArray>(), mResourceHandler->mSimulatedData);
     QVERIFY(property.parameters().contains(QStringLiteral("TYPE"),
                                            QStringLiteral("JPEG")));
@@ -900,7 +901,7 @@ void tst_QVersitContactExporter::testEncodeEmbeddedContent()
     QVERIFY(photoProperty.parameters().contains(QStringLiteral("TYPE"),
                                                 QStringLiteral("JPEG")));
     variantValue = photoProperty.variantValue();
-    QVERIFY(variantValue.metaType().id() == QMetaType::QByteArray);
+    QVERIFY(variantValue.typeId() == QMetaType::QByteArray);
     QCOMPARE(variantValue.value<QByteArray>(), mResourceHandler->mSimulatedData);
 
     // Without a resource handler
@@ -934,7 +935,7 @@ void tst_QVersitContactExporter::testEncodeRingtone()
         QStringLiteral("TYPE"),
         QStringLiteral("WAV")));
     QVariant variantValue = soundProperty.variantValue();
-    QVERIFY(variantValue.metaType().id() == QMetaType::QByteArray);
+    QVERIFY(variantValue.typeId() == QMetaType::QByteArray);
     QCOMPARE(variantValue.value<QByteArray>(), mResourceHandler->mSimulatedData);
 
     // Test url ringtone
@@ -1365,9 +1366,9 @@ void tst_QVersitContactExporter::testEncodeExtendedDetail()
     QVERIFY(!property.isEmpty());
     QCOMPARE(property.parameters().count(), 0);
     QStringList expectedValue = QStringList() << extendedDetailName << extendedDetailDataInProperty;
-    if (extendedDetailData.metaType().id() == QMetaType::Double) {
+    if (extendedDetailData.typeId() == QMetaType::Double) {
         CHECK_FLOATING_POINT_VALUE(property, QVersitProperty::CompoundType, expectedValue, true);
-    } else if (extendedDetailData.metaType().id() == QMetaType::Float) {
+    } else if (extendedDetailData.typeId() == QMetaType::Float) {
         CHECK_FLOATING_POINT_VALUE(property, QVersitProperty::CompoundType, expectedValue, false);
     } else {
         CHECK_VALUE(property, QVersitProperty::CompoundType, expectedValue);

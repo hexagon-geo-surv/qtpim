@@ -89,7 +89,7 @@ void QDeclarativeContactRelationship::setSecond(const QString& secondContactId)
 
 void QDeclarativeContactRelationship::setRelationshipType(const QVariant& relationshipType)
 {
-    if (relationshipType.metaType().id() == QMetaType::Int) {
+    if (relationshipType.typeId() == QMetaType::Int) {
         switch (relationshipType.toInt()) {
         case QDeclarativeContactRelationship::HasMember:
             m_relationship.setRelationshipType(QContactRelationship::HasMember());
@@ -111,7 +111,7 @@ void QDeclarativeContactRelationship::setRelationshipType(const QVariant& relati
             break;
         default:
             //unknown type
-            qmlWarning(this) << tr("unknown relationship type:") << relationshipType;
+            qmlInfo(this) << tr("unknown relationship type:") << relationshipType;
             break;
         }
     } else {
@@ -131,6 +131,6 @@ void QDeclarativeContactRelationship::setRelationship(const QContactRelationship
     emit valueChanged();
 }
 
-QT_END_NAMESPACE
-
 #include "moc_qdeclarativecontactrelationship_p.cpp"
+
+QT_END_NAMESPACE

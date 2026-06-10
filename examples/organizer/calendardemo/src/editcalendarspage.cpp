@@ -99,7 +99,7 @@ void EditCalendarsPage::showPage(QOrganizerManager *manager)
     int index = 0;
     foreach(QOrganizerCollection collection, collections) {
         QString visibleName;
-        if (collection.metaData(QOrganizerCollection::KeyName).canConvert(QVariant::String))
+        if (collection.metaData(QOrganizerCollection::KeyName).canConvert<QString>())
             visibleName = collection.metaData(QOrganizerCollection::KeyName).toString();
         else
             // We currently have no way of stringifying ids

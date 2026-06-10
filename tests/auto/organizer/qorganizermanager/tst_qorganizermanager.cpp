@@ -722,8 +722,8 @@ void tst_QOrganizerManager::add()
                 // any value of the correct type will be accepted
                 bool savedSuccessfully = false;
                 QVariant dummyValue = QVariant(fieldKey); // try to get some unique string data
-                if (currentField.dataType() < static_cast<int>(QVariant::UserType)) {
-                    QVariant::Type type = static_cast<QVariant::Type>(currentField.dataType());
+                if (currentField.dataType() < static_cast<int>(QMetaType::User)) {
+                    QMetaType type = QMetaType(static_cast<QMetaType::Type>(currentField.dataType()));
                     // It is not a user-defined type
                     if (dummyValue.canConvert(type)) {
                         savedSuccessfully = dummyValue.convert(type);
@@ -1314,7 +1314,7 @@ void tst_QOrganizerManager::update()
     QCOMPARE(items.size(), 3);
     bool foundException = false;
     QOrganizerEventOccurrence exception;
-    for (const QOrganizerEventOccurrence& curr : items) {
+    for (const QOrganizerEventOccurrence curr : items) {
         if (curr.startDateTime() == QDateTime(QDate(2010, 10, 21), QTime(8, 0, 0))) {
             exception = curr;
             foundException = true;
@@ -1328,7 +1328,7 @@ void tst_QOrganizerManager::update()
     QCOMPARE(persistentCount, 2); // parent plus one exception
     items = cm->items();
     QCOMPARE(items.size(), 3);
-    for (const QOrganizerEventOccurrence& curr : items) {
+    for (const QOrganizerEventOccurrence curr : items) {
         if (curr.startDateTime() == QDateTime(QDate(2010, 10, 21), QTime(8, 0, 0))) {
             QVERIFY(!curr.id().isNull());
             QCOMPARE(curr.description(), QStringLiteral("different description"));
@@ -1339,7 +1339,7 @@ void tst_QOrganizerManager::update()
 
     /* Save a non-updated occurrence - should still persist as an exceptional occurrence */
     QOrganizerEventOccurrence secondException;
-    for (const QOrganizerEventOccurrence& curr : items) {
+    for (const QOrganizerEventOccurrence curr : items) {
         if (curr.startDateTime() == QDateTime(QDate(2010, 10, 22), QTime(8, 0, 0))) {
             secondException = curr;
             foundException = true;
@@ -1352,7 +1352,7 @@ void tst_QOrganizerManager::update()
     QCOMPARE(persistentCount, 3); // parent plus two exceptions
     items = cm->items();
     QCOMPARE(items.size(), 3);
-    for (const QOrganizerEventOccurrence& curr : items) {
+    for (const QOrganizerEventOccurrence curr : items) {
         if (curr.startDateTime() == QDateTime(QDate(2010, 10, 20), QTime(8, 0, 0))) {
             QVERIFY(curr.id().isNull());  // only the first occurrence is not an exception.
         } else {
@@ -4115,7 +4115,7 @@ void tst_QOrganizerManager::dateRange_data()
 QList<QOrganizerItemDetail> tst_QOrganizerManager::removeAllDefaultDetails(const QList<QOrganizerItemDetail>& details)
 {
     QList<QOrganizerItemDetail> newlist;
-    for (const QOrganizerItemDetail d : details) {
+    for (const QOrganizerItemDetail &d : details) {
         if (d.type() != QOrganizerItemDetail::TypeDisplayLabel
                 && d.type() != QOrganizerItemDetail::TypeItemType
                 && d.type() != QOrganizerItemDetail::TypeTimestamp) {
@@ -4939,7 +4939,7 @@ void tst_QOrganizerManager::testExtendedDetail()
     event = mgr->item(event.id());
     QList<QOrganizerItemDetail> extendedDetails = event.details(QOrganizerItemDetail::TypeExtendedDetail);
     QCOMPARE(extendedDetails.size(), 2);
-    for (const QOrganizerItemExtendedDetail &extendedDetail : extendedDetails) {
+    for (const QOrganizerItemExtendedDetail extendedDetail : extendedDetails) {
         if (extendedDetail.name() == QStringLiteral("basic-list")) {
             QVariantList data = extendedDetail.data().toList();
             QCOMPARE(data.size(), 3);
@@ -4964,7 +4964,7 @@ void tst_QOrganizerManager::testExtendedDetail()
     event = mgr->item(event.id());
     extendedDetails = event.details(QOrganizerItemDetail::TypeExtendedDetail);
     QCOMPARE(extendedDetails.size(), 3);
-    for (const QOrganizerItemExtendedDetail &extendedDetail : extendedDetails) {
+    for (const QOrganizerItemExtendedDetail extendedDetail : extendedDetails) {
         if (extendedDetail.name() == QStringLiteral("basic map")) {
             QVariantMap data = extendedDetail.data().toMap();
             QCOMPARE(data.size(), 3);
@@ -4985,7 +4985,7 @@ void tst_QOrganizerManager::testExtendedDetail()
     event = mgr->item(event.id());
     extendedDetails = event.details(QOrganizerItemDetail::TypeExtendedDetail);
     QCOMPARE(extendedDetails.size(), 4);
-    for (const QOrganizerItemExtendedDetail &extendedDetail : extendedDetails) {
+    for (const QOrganizerItemExtendedDetail extendedDetail : extendedDetails) {
         if (extendedDetail.name() == QStringLiteral("map in list")) {
             QVariantList data = extendedDetail.data().toList();
             QCOMPARE(data.size(), 2);

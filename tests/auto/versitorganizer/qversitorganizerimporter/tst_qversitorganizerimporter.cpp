@@ -5,6 +5,7 @@
 
 #include "tst_qversitorganizerimporter.h"
 #include <QtTest/QtTest>
+#include <QTimeZone>
 
 #if QT_VERSION >= QT_VERSION_CHECK(5, 8, 0)
 #include <cstddef>
@@ -85,8 +86,8 @@ void tst_QVersitOrganizerImporter::testImport_data()
 
         QOrganizerEvent event;
         event.setDisplayLabel(QStringLiteral("Bastille Day Party"));
-        event.setStartDateTime(QDateTime(QDate(1997, 7, 14), QTime(17, 0, 0), Qt::UTC));
-        event.setEndDateTime(QDateTime(QDate(1997, 7, 15), QTime(3, 59, 59), Qt::UTC));
+        event.setStartDateTime(QDateTime(QDate(1997, 7, 14), QTime(17, 0, 0), QTimeZone::UTC));
+        event.setEndDateTime(QDateTime(QDate(1997, 7, 15), QTime(3, 59, 59), QTimeZone::UTC));
 
         QOrganizerTodo todo;
         todo.setDisplayLabel(QStringLiteral("Take out the garbage"));
@@ -865,8 +866,8 @@ void tst_QVersitOrganizerImporter::testImportEventProperties_data()
         modified.setValue(QStringLiteral("20100102T030406Z"));
         properties << modified;
         QOrganizerItemTimestamp timestamp;
-        timestamp.setCreated(QDateTime(QDate(2010, 1, 2), QTime(3, 4, 5), Qt::UTC));
-        timestamp.setLastModified(QDateTime(QDate(2010, 1, 2), QTime(3, 4, 6), Qt::UTC));
+        timestamp.setCreated(QDateTime(QDate(2010, 1, 2), QTime(3, 4, 5), QTimeZone::UTC));
+        timestamp.setLastModified(QDateTime(QDate(2010, 1, 2), QTime(3, 4, 6), QTimeZone::UTC));
         QTest::newRow("created and last modified") << properties
             << (QList<QOrganizerItemDetail>() << timestamp);
     }
@@ -1657,8 +1658,8 @@ void tst_QVersitOrganizerImporter::testExtendedDetail()
         QCOMPARE(actualDetails.size(), 0);
     } else {
         QCOMPARE(actualDetails.size(), 1);
-        if (static_cast<QMetaType::Type>(extendedDetailData.type()) == QMetaType::Double
-                || static_cast<QMetaType::Type>(extendedDetailData.type()) == QMetaType::Float) {
+        if (extendedDetailData.typeId() == QMetaType::Double
+                || extendedDetailData.typeId() == QMetaType::Float) {
             QCOMPARE(actualDetails.first().values().keys(), expectedDetail.values().keys());
             QCOMPARE(actualDetails.first().values().keys().size(), 2); // name + value
             int nameKey = actualDetails.first().values().keys().at(0);
@@ -1666,7 +1667,7 @@ void tst_QVersitOrganizerImporter::testExtendedDetail()
             QCOMPARE(actualDetails.first().value(nameKey), expectedDetail.value(nameKey));
             QVariant actualValue = actualDetails.first().value(valueKey);
             QVariant expectedValue = expectedDetail.value(valueKey);
-            if (static_cast<QMetaType::Type>(extendedDetailData.type()) == QMetaType::Float) {
+            if (extendedDetailData.typeId() == QMetaType::Float) {
                 float actualF = actualValue.value<float>();
                 float expectedF = expectedValue.value<float>();
                 QCOMPARE(actualF, expectedF);
@@ -1923,11 +1924,11 @@ void tst_QVersitOrganizerImporter::testTimeZones_data()
     vtimezone.setComponentType(QStringLiteral("VTIMEZONE"));
     QTest::newRow("utc") << QString() << QVersitDocument(QVersitDocument::ICalendar20Type)
         << QString::fromLatin1("20100102T030405Z")
-        << QDateTime(QDate(2010, 1, 2), QTime(3, 4, 5), Qt::UTC);
+        << QDateTime(QDate(2010, 1, 2), QTime(3, 4, 5), QTimeZone::UTC);
 
     QTest::newRow("floating") << QString() << QVersitDocument(QVersitDocument::ICalendar20Type)
         << QString::fromLatin1("20100102T030405")
-        << QDateTime(QDate(2010, 1, 2), QTime(3, 4, 5), Qt::LocalTime);
+        << QDateTime(QDate(2010, 1, 2), QTime(3, 4, 5), QTimeZone::LocalTime);
 
     {
         QVersitDocument vtimezone(QVersitDocument::ICalendar20Type);
@@ -1959,7 +1960,7 @@ void tst_QVersitOrganizerImporter::testTimeZones_data()
 
         QTest::newRow("no dst") << QString::fromLatin1("Asia/Singapore")
             << vtimezone << QString::fromLatin1("20100102T100405")
-            << QDateTime(QDate(2010, 1, 2), QTime(2, 4, 5), Qt::UTC);
+            << QDateTime(QDate(2010, 1, 2), QTime(2, 4, 5), QTimeZone::UTC);
     }
 
     {
@@ -2014,11 +2015,11 @@ void tst_QVersitOrganizerImporter::testTimeZones_data()
 
         QTest::newRow("dst area in standard time") << QString::fromLatin1("Australia/Sydney")
             << vtimezone << QString::fromLatin1("20100502T100405")
-            << QDateTime(QDate(2010, 5, 2), QTime(0, 4, 5), Qt::UTC);
+            << QDateTime(QDate(2010, 5, 2), QTime(0, 4, 5), QTimeZone::UTC);
 
         QTest::newRow("dst") << QString::fromLatin1("Australia/Sydney")
             << vtimezone << QString::fromLatin1("20100102T100405")
-            << QDateTime(QDate(2010, 1, 1), QTime(23, 4, 5), Qt::UTC);
+            << QDateTime(QDate(2010, 1, 1), QTime(23, 4, 5), QTimeZone::UTC);
     }
 
     {
@@ -2064,11 +2065,11 @@ void tst_QVersitOrganizerImporter::testTimeZones_data()
 
         QTest::newRow("dst specified with rdate - daylight") << QString::fromLatin1("US-Eastern")
             << vtimezone << QString::fromLatin1("19970615T100000")
-            << QDateTime(QDate(1997, 6, 15), QTime(14, 0, 0), Qt::UTC);
+            << QDateTime(QDate(1997, 6, 15), QTime(14, 0, 0), QTimeZone::UTC);
 
         QTest::newRow("dst specified with rdate - standard") << QString::fromLatin1("US-Eastern")
             << vtimezone << QString::fromLatin1("19971215T100000")
-            << QDateTime(QDate(1997, 12, 15), QTime(15, 0, 0), Qt::UTC);
+            << QDateTime(QDate(1997, 12, 15), QTime(15, 0, 0), QTimeZone::UTC);
     }
 }
 

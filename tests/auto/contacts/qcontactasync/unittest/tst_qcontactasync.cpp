@@ -72,7 +72,7 @@ public:
     inline bool isValid() const { return !sig.isEmpty(); }
     inline QByteArray signal() const { return sig; }
 
-    int qt_metacall(QMetaObject::Call call, int methodId, void **a)
+    int qt_metacall(QMetaObject::Call call, int methodId, void **a) override
     {
         methodId = QObject::qt_metacall(call, methodId, a);
         if (methodId < 0)
@@ -104,7 +104,7 @@ private:
     {
         QList<QByteArray> params = member.parameterTypes();
         for (int i = 0; i < params.count(); ++i) {
-            int tp = QMetaType::type(params.at(i).constData());
+            int tp = QMetaType::fromName(params.at(i).constData()).id();
             if (tp == QMetaType::Void)
                 qWarning("Don't know how to handle '%s', use qRegisterMetaType to register it.",
                          params.at(i).constData());
@@ -697,11 +697,9 @@ void tst_QContactAsync::contactFetchByIdWithEmptyIds()
 
     QList<QContact> contacts = cfr.contacts();
     QCOMPARE(contacts.size(), expectedCount);
-    int contactIndex = 0;
-    for (const QContactId id : contactIds) {
+    for (int contactIndex = 0; contactIndex < contactIds.size(); ++contactIndex) {
             QCOMPARE(contacts.at(contactIndex), QContact());
             QCOMPARE(cfr.errorMap().value(contactIndex),QContactManager::DoesNotExistError);
-        contactIndex++;
     }
 }
 
@@ -716,7 +714,7 @@ void tst_QContactAsync::contactFetchByIdMixingEmptyIds()
     // List of ids contains few empty ones among good ones.
     int expectedCount = cm->contactIds().size();
     QList<QContactId> contactIds;
-    for (const QContactId id : cm->contactIds()) {
+    for (const QContactId &id : cm->contactIds()) {
         contactIds.append(QContactId());
         expectedCount ++;
         contactIds.append(id);
@@ -747,7 +745,7 @@ void tst_QContactAsync::contactFetchByIdMixingEmptyIds()
     QList<QContact> contacts = cfr.contacts();
     QCOMPARE(contacts.size(), expectedCount);
     int contactIndex = 0;
-    for (const QContactId id : contactIds) {
+    for (const QContactId &id : contactIds) {
         if (id == QContactId()) {
             QCOMPARE(contacts.at(contactIndex), QContact());
             QCOMPARE(cfr.errorMap().value(contactIndex),QContactManager::DoesNotExistError);
@@ -769,7 +767,7 @@ void tst_QContactAsync::contactFetchByIdWithNonExistingButValidIds()
     // List of ids contains few empty ones among good ones.
     int expectedCount = 0;
     QList<QContactId> contactIds;
-    for (const QContactId id : cm->contactIds()) {
+    for (const QContactId &id : cm->contactIds()) {
         QVERIFY(cm->removeContact(id));
         contactIds.append(id);
         expectedCount ++;
@@ -797,11 +795,9 @@ void tst_QContactAsync::contactFetchByIdWithNonExistingButValidIds()
 
     QList<QContact> contacts = cfr.contacts();
     QCOMPARE(contacts.size(), expectedCount);
-    int contactIndex = 0;
-    for (const QContactId id : contactIds) {
+    for (int contactIndex = 0; contactIndex < contactIds.size(); ++contactIndex) {
         QCOMPARE(contacts.at(contactIndex), QContact());
         QCOMPARE(cfr.errorMap().value(contactIndex),QContactManager::DoesNotExistError);
-        contactIndex++;
     }
 }
 

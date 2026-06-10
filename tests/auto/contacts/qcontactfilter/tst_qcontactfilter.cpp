@@ -5,6 +5,8 @@
 
 #include <QtContacts/qcontacts.h>
 
+#include <type_traits>
+
 //TESTED_COMPONENT=src/contacts
 
 QTCONTACTS_USE_NAMESPACE
@@ -923,12 +925,12 @@ void tst_QContactFilter::canonicalizedFilter_data()
     {
         QContactDetailRangeFilter qcdrf;
         qcdrf.setDetailType(QContactName::Type, QContactName::FieldFirstName);
-        qcdrf.setRange(QVariant(QVariant::String), QVariant(QVariant::String)); // null bounds
+        qcdrf.setRange(QVariant(QMetaType(QMetaType::QString)), QVariant(QMetaType(QMetaType::QString))); // null bounds
         qcdrf.setMatchFlags(QContactFilter::MatchFixedString);
         QContactDetailFilter qcdf;
         qcdf.setDetailType(QContactName::Type, QContactName::FieldFirstName);
         qcdf.setMatchFlags(QContactFilter::MatchFixedString);
-        qcdf.setValue(QVariant(QVariant::String));
+        qcdf.setValue(QVariant(QMetaType(QMetaType::QString)));
         QTest::newRow("Null valued range filter")
                 << static_cast<QContactFilter>(qcdrf)
                 << static_cast<QContactFilter>(qcdf);
@@ -937,7 +939,7 @@ void tst_QContactFilter::canonicalizedFilter_data()
     {
         QContactDetailRangeFilter qcdrf;
         qcdrf.setDetailType(QContactName::Type, QContactName::FieldFirstName);
-        qcdrf.setRange(QVariant(QVariant::String), QStringLiteral("a")); // min is null
+        qcdrf.setRange(QVariant(QMetaType(QMetaType::QString)), QStringLiteral("a")); // min is null
         qcdrf.setMatchFlags(QContactFilter::MatchFixedString);
         QTest::newRow("One sided range filter")
                 << static_cast<QContactFilter>(qcdrf)
@@ -1346,7 +1348,7 @@ void tst_QContactFilter::traits()
 {
     QCOMPARE(sizeof(QContactFilter), sizeof(void *));
     QVERIFY(QTypeInfo<QContactFilter>::isComplex);
-    QVERIFY(!QTypeInfo<QContactFilter>::isPointer);
+    QVERIFY(!std::is_pointer<QContactFilter>::value);
 
     QCOMPARE(sizeof(QContactDetailFilter), sizeof(void*));
     QCOMPARE(sizeof(QContactChangeLogFilter), sizeof(void*));

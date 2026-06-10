@@ -5,6 +5,8 @@
 #include <QtContacts/qcontacts.h>
 #include <QSet>
 
+#include <type_traits>
+
 //TESTED_COMPONENT=src/contacts
 
 QTCONTACTS_USE_NAMESPACE
@@ -663,14 +665,14 @@ void tst_QContact::traits()
 {
     QCOMPARE(sizeof(QContact), sizeof(void *));
     QVERIFY(QTypeInfo<QContact>::isComplex);
-    QVERIFY(!QTypeInfo<QContact>::isPointer);
+    QVERIFY(!std::is_pointer<QContact>::value);
 }
 
 void tst_QContact::idTraits()
 {
     QCOMPARE(sizeof(QContactId), 6*sizeof(void *));
     QVERIFY(QTypeInfo<QContactId>::isComplex);
-    QVERIFY(!QTypeInfo<QContactId>::isPointer);
+    QVERIFY(!std::is_pointer<QContactId>::value);
 }
 
 void tst_QContact::equality()

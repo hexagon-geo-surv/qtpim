@@ -6,6 +6,8 @@
 
 #include <QtOrganizer/qorganizer.h>
 
+#include <type_traits>
+
 //TESTED_COMPONENT=src/organizer
 
 QTORGANIZER_USE_NAMESPACE
@@ -46,9 +48,8 @@ void tst_QOrganizerItemSortOrder::cleanup()
 
 void tst_QOrganizerItemSortOrder::traits()
 {
-    QTypeInfo<QOrganizerItemSortOrder> ti;
-    QVERIFY(ti.isComplex);
-    QVERIFY(!ti.isPointer);
+    QVERIFY(QTypeInfo<QOrganizerItemSortOrder>::isComplex);
+    QVERIFY(!std::is_pointer<QOrganizerItemSortOrder>::value);
 }
 
 void tst_QOrganizerItemSortOrder::sortObject()

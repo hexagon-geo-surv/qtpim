@@ -8,6 +8,8 @@
 #include <QtOrganizer/qorganizer.h>
 #include <QtOrganizer/qorganizeritemid.h>
 
+#include <type_traits>
+
 //TESTED_COMPONENT=src/organizer
 
 QTORGANIZER_USE_NAMESPACE
@@ -882,14 +884,14 @@ void tst_QOrganizerItem::traits()
 {
     QCOMPARE(sizeof(QOrganizerItem), sizeof(void *));
     QVERIFY(QTypeInfo<QOrganizerItem>::isComplex);
-    QVERIFY(!QTypeInfo<QOrganizerItem>::isPointer);
+    QVERIFY(!std::is_pointer<QOrganizerItem>::value);
 }
 
 void tst_QOrganizerItem::idTraits()
 {
     QCOMPARE(sizeof(QOrganizerItemId), sizeof(QString) + sizeof(QByteArray));
     QVERIFY(QTypeInfo<QOrganizerItemId>::isComplex);
-    QVERIFY(!QTypeInfo<QOrganizerItemId>::isPointer);
+    QVERIFY(!std::is_pointer<QOrganizerItemId>::value);
 }
 
 void tst_QOrganizerItem::event()
