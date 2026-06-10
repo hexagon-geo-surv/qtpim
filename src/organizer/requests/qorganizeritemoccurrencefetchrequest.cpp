@@ -159,6 +159,7 @@ QOrganizerItemFetchHint QOrganizerItemOccurrenceFetchRequest::fetchHint() const
     return d->m_fetchHint;
 }
 
+
 QT_END_NAMESPACE_ORGANIZER
 
 #include "moc_qorganizeritemoccurrencefetchrequest.cpp"

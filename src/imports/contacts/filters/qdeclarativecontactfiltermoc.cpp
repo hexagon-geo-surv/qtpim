@@ -3,6 +3,11 @@
 
 #include "qdeclarativecontactfilters_p.h"
 
+QT_BEGIN_NAMESPACE
+
+
+QT_END_NAMESPACE
+
 #include "moc_qdeclarativecontactactionfilter_p.cpp"
 #include "moc_qdeclarativecontactchangelogfilter_p.cpp"
 #include "moc_qdeclarativecontactcollectionfilter_p.cpp"

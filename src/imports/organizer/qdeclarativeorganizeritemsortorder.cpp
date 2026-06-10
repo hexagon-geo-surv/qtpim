@@ -141,6 +141,7 @@ QOrganizerItemSortOrder QDeclarativeOrganizerItemSortOrder::sortOrder()
     return d;
 }
 
+
 QT_END_NAMESPACE
 
 #include "moc_qdeclarativeorganizeritemsortorder_p.cpp"

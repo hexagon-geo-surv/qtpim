@@ -385,6 +385,6 @@ void PartialSaveRequestController::partiallyCopyDetails(QContact* to, const QCon
     }
 }
 
-#include "moc_qcontactmanagerenginev2wrapper_p.cpp"
-
 QT_END_NAMESPACE_CONTACTS
+
+#include "moc_qcontactmanagerenginev2wrapper_p.cpp"

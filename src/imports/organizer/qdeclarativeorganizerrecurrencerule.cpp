@@ -325,6 +325,7 @@ void QDeclarativeOrganizerRecurrenceRule::setRule(const QOrganizerRecurrenceRule
     m_rule = rule;
 }
 
-#include "moc_qdeclarativeorganizerrecurrencerule_p.cpp"
 
 QT_END_NAMESPACE
+
+#include "moc_qdeclarativeorganizerrecurrencerule_p.cpp"

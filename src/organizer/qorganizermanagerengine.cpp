@@ -2143,6 +2143,6 @@ void QOrganizerManagerEngine::updateCollectionSaveRequest(QOrganizerCollectionSa
 #endif
 }
 
-#include "moc_qorganizermanagerengine.cpp"
-
 QT_END_NAMESPACE_ORGANIZER
+
+#include "moc_qorganizermanagerengine.cpp"

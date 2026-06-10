@@ -2454,6 +2454,7 @@ QDeclarativeOrganizerItemDetail *QDeclarativeOrganizerItemDetailFactory::createI
     return itemDetail;
 }
 
-#include "moc_qdeclarativeorganizeritemdetail_p.cpp"
 
 QT_END_NAMESPACE
+
+#include "moc_qdeclarativeorganizeritemdetail_p.cpp"

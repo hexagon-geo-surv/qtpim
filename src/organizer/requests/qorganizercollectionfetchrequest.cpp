@@ -42,6 +42,7 @@ QList<QOrganizerCollection> QOrganizerCollectionFetchRequest::collections() cons
     return d->m_collections;
 }
 
+
 QT_END_NAMESPACE_ORGANIZER
 
 #include "moc_qorganizercollectionfetchrequest.cpp"

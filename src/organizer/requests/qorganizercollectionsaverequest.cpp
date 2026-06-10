@@ -72,6 +72,7 @@ QMap<int, QOrganizerManager::Error> QOrganizerCollectionSaveRequest::errorMap() 
     return d->m_errors;
 }
 
+
 QT_END_NAMESPACE_ORGANIZER
 
 #include "moc_qorganizercollectionsaverequest.cpp"

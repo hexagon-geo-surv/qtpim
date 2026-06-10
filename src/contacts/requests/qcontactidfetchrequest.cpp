@@ -83,6 +83,7 @@ QList<QContactId> QContactIdFetchRequest::ids() const
     return d->m_ids;
 }
 
+
 QT_END_NAMESPACE_CONTACTS
 
 #include "moc_qcontactidfetchrequest.cpp"

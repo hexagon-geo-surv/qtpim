@@ -42,6 +42,7 @@ QList<QContactCollection> QContactCollectionFetchRequest::collections() const
     return d->m_collections;
 }
 
+
 QT_END_NAMESPACE_CONTACTS
 
 #include "moc_qcontactcollectionfetchrequest.cpp"

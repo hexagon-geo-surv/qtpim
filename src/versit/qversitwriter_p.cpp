@@ -175,5 +175,6 @@ QVersitDocument::VersitType QVersitWriterPrivate::documentType() const
     return mType;
 }
 
-#include "moc_qversitwriter_p.cpp"
 QT_END_NAMESPACE_VERSIT
+
+#include "moc_qversitwriter_p.cpp"

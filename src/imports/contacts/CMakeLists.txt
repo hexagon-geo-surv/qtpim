@@ -20,7 +20,7 @@ qt_internal_add_qml_module(declarative_contacts
         qdeclarativecontactrelationship.cpp
         qdeclarativecontactrelationshipmodel.cpp
         qdeclarativecontactsortorder.cpp
-        details/qdeclarativecontactmoc_p.cpp
+
         filters/qdeclarativecontactfiltermoc.cpp
         details/qdeclarativecontactaddress_p.h
         details/qdeclarativecontactanniversary_p.h

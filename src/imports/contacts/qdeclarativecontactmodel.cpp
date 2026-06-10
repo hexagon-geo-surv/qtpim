@@ -500,7 +500,6 @@ void QDeclarativeContactModel::importContacts(const QUrl& url, const QStringList
   \li "Sync"  exports contacts in sync mode, currently, this is the same as passing in an empty list, and is generally what you want.
   \li "Backup" exports contacts in backup mode, this will add non-standard properties to the generated vCard
               to try to save every detail of the contacts. Only use this if the vCard is going to be imported using the backup profile.
-#include "moc_qdeclarativecontactmodel_p.cpp"
   \endlist
 
   \sa QVersitContactHandlerFactory
@@ -1539,6 +1538,7 @@ int QDeclarativeContactModel::contactIndex(const QDeclarativeContact* contact)
     return d->m_contacts.size();
 }
 
-#include "moc_qdeclarativecontactmodel_p.cpp"
 
 QT_END_NAMESPACE
+
+#include "moc_qdeclarativecontactmodel_p.cpp"

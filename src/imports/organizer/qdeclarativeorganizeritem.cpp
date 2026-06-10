@@ -84,12 +84,11 @@ QDeclarativeOrganizerItemType::ItemType QDeclarativeOrganizerItem::itemType() co
  */
 QQmlListProperty<QDeclarativeOrganizerItemDetail> QDeclarativeOrganizerItem::itemDetails()
 {
-    return { this,
-             nullptr,
-             &QDeclarativeOrganizerItem::_q_detail_append,
-             &QDeclarativeOrganizerItem::_q_detail_count,
-             &QDeclarativeOrganizerItem::_q_detail_at,
-             &QDeclarativeOrganizerItem::_q_detail_clear };
+    return QQmlListProperty<QDeclarativeOrganizerItemDetail>(this, 0,
+                                                                     &QDeclarativeOrganizerItem::_q_detail_append,
+                                                                     &QDeclarativeOrganizerItem::_q_detail_count,
+                                                                     &QDeclarativeOrganizerItem::_q_detail_at,
+                                                                     &QDeclarativeOrganizerItem::_q_detail_clear);
 }
 
 /*!
@@ -610,12 +609,11 @@ void QDeclarativeOrganizerEvent::clearDetails()
  */
 QQmlListProperty<QDeclarativeOrganizerEventAttendee> QDeclarativeOrganizerEvent::attendees()
 {
-    return { this,
-             nullptr,
-             &QDeclarativeOrganizerEvent::_q_attendee_append,
-             &QDeclarativeOrganizerEvent::_q_attendee_count,
-             &QDeclarativeOrganizerEvent::_q_attendee_at,
-             &QDeclarativeOrganizerEvent::_q_attendee_clear };
+    return QQmlListProperty<QDeclarativeOrganizerEventAttendee>(this, 0,
+                                                                     &QDeclarativeOrganizerEvent::_q_attendee_append,
+                                                                     &QDeclarativeOrganizerEvent::_q_attendee_count,
+                                                                     &QDeclarativeOrganizerEvent::_q_attendee_at,
+                                                                     &QDeclarativeOrganizerEvent::_q_attendee_clear);
 }
 
 // call-back functions for list property
@@ -679,7 +677,7 @@ void QDeclarativeOrganizerEvent::_q_attendee_clear(QQmlListProperty<QDeclarative
 qsizetype QDeclarativeOrganizerEvent::_q_attendee_count(QQmlListProperty<QDeclarativeOrganizerEventAttendee> *property)
 {
     QDeclarativeOrganizerEvent *object = qobject_cast<QDeclarativeOrganizerEvent *>(property->object);
-    qsizetype ret = 0;
+    int ret = 0;
     if (object) {
         for (QDeclarativeOrganizerItemDetail *detail : object->m_details) {
             if (QDeclarativeOrganizerItemDetail::EventAttendee == detail->type())
@@ -1938,6 +1936,7 @@ QString QDeclarativeOrganizerTodoOccurrence::parentId() const
     }
     return QString();
 }
+
 
 QT_END_NAMESPACE
 

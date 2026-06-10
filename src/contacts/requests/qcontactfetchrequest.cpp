@@ -113,6 +113,7 @@ QList<QContact> QContactFetchRequest::contacts() const
     return d->m_contacts;
 }
 
+
 QT_END_NAMESPACE_CONTACTS
 
 #include "moc_qcontactfetchrequest.cpp"

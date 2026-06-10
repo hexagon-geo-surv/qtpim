@@ -131,6 +131,7 @@ void QDeclarativeContactRelationship::setRelationship(const QContactRelationship
     emit valueChanged();
 }
 
-#include "moc_qdeclarativecontactrelationship_p.cpp"
 
 QT_END_NAMESPACE
+
+#include "moc_qdeclarativecontactrelationship_p.cpp"

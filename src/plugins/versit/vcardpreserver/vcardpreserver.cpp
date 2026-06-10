@@ -163,6 +163,7 @@ void VCardPreserver::contactProcessed(const QContact& contact,
     Q_UNUSED(document)
 }
 
-#include "moc_vcardpreserver.cpp"
 
 QT_END_NAMESPACE_VERSIT
+
+#include "moc_vcardpreserver.cpp"

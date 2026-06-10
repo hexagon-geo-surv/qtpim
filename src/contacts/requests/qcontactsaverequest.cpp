@@ -122,6 +122,7 @@ QList<QContactDetail::DetailType> QContactSaveRequest::typeMask() const
     return d->m_typeMask;
 }
 
+
 QT_END_NAMESPACE_CONTACTS
 
 #include "moc_qcontactsaverequest.cpp"

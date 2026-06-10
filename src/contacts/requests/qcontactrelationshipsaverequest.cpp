@@ -80,6 +80,7 @@ QMap<int, QContactManager::Error> QContactRelationshipSaveRequest::errorMap() co
     return d->m_errors;
 }
 
+
 QT_END_NAMESPACE_CONTACTS
 
 #include "moc_qcontactrelationshipsaverequest.cpp"

@@ -409,6 +409,7 @@ QList<QOrganizerItemType::ItemType> QOrganizerItemSkeletonEngine::supportedItemT
     return ret;
 }
 
-#include "moc_qorganizerskeleton_p.cpp"
 
 QT_END_NAMESPACE_ORGANIZER
+
+#include "moc_qorganizerskeleton_p.cpp"

@@ -342,12 +342,12 @@ QT_BEGIN_NAMESPACE
 
 QQmlListProperty<QDeclarativeContactFilter> QDeclarativeContactCompoundFilter::filters()
 {
-    return { this,
-             nullptr, // opaque data parameter
-             &filters_append,
-             &filters_count,
-             &filters_at,
-             &filters_clear };
+    return QQmlListProperty<QDeclarativeContactFilter>(this,
+                                                          0, // opaque data parameter
+                                                          filters_append,
+                                                          filters_count,
+                                                          filters_at,
+                                                          filters_clear);
 }
 
 void QDeclarativeContactCompoundFilter::filters_append(QQmlListProperty<QDeclarativeContactFilter>* prop, QDeclarativeContactFilter* filter)
@@ -380,6 +380,7 @@ void QDeclarativeContactCompoundFilter::filters_clear(QQmlListProperty<QDeclarat
         emit compoundFilter->filterChanged();
     }
 }
+
 
 QT_END_NAMESPACE
 

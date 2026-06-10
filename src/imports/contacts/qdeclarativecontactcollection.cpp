@@ -194,6 +194,7 @@ void QDeclarativeContactCollection::setCollection(const QContactCollection &coll
     d = collection;
 }
 
+
 QT_END_NAMESPACE
 
 #include "moc_qdeclarativecontactcollection_p.cpp"
