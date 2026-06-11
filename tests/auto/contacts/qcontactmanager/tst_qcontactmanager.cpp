@@ -22,10 +22,12 @@ QTVERSIT_USE_NAMESPACE
 
 QTCONTACTS_USE_NAMESPACE
 
+QT_BEGIN_NAMESPACE
 inline size_t qHash(const QMetaMethod &method, size_t seed = 0) noexcept
 {
     return qHash(method.methodIndex(), seed);
 }
+QT_END_NAMESPACE
 
 #define QCONTACTMANAGER_REMOVE_VERSIONS_FROM_URI(params)  params.remove(QString::fromLatin1(QTCONTACTS_VERSION_NAME)); \
                                                           params.remove(QString::fromLatin1(QTCONTACTS_IMPLEMENTATION_VERSION_NAME))
