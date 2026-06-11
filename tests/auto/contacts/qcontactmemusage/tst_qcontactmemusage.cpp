@@ -1,7 +1,10 @@
 // Copyright (C) 2026 The Qt Company Ltd.
 // SPDX-License-Identifier: LicenseRef-Qt-Commercial OR GPL-3.0-only
 
-#include <malloc.h>
+#include <cstdlib>
+#if __has_include(<malloc.h>) // glibc-only; provides __malloc_hook used below
+#  include <malloc.h>
+#endif
 #include <QtTest/QtTest>
 
 #include <QtContacts/qcontacts.h>
