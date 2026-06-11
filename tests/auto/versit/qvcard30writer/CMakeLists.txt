@@ -11,5 +11,5 @@ qt_internal_add_test(tst_qvcard30writer
         Qt6::VersitPrivate
     DEFINES
         QT_ASCII_CAST_WARNINGS
-        QT_DISABLE_DEPRECATED_BEFORE=0
+        QT_DISABLE_DEPRECATED_BEFORE=0x050000
 )

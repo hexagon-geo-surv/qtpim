@@ -9,7 +9,7 @@ qt_internal_add_test(tst_qorganizermanagerdetails
         Qt6::Organizer
         Qt6::Test
     DEFINES
-        QT_DISABLE_DEPRECATED_BEFORE=0
+        QT_DISABLE_DEPRECATED_BEFORE=0x050000
     INCLUDE_DIRECTORIES
         ${CMAKE_CURRENT_SOURCE_DIR}/..
 )

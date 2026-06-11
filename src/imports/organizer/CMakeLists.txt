@@ -29,7 +29,7 @@ qt_internal_add_qml_module(declarative_organizer
         qdeclarativeorganizerrecurrencerule_p.h
 )
 
-target_compile_definitions(declarative_organizer PRIVATE QT_DISABLE_DEPRECATED_BEFORE=0)
+target_compile_definitions(declarative_organizer PRIVATE QT_DISABLE_DEPRECATED_BEFORE=0x050000)
 target_link_libraries(declarative_organizer PRIVATE
     Qt6::Gui
     Qt6::Organizer

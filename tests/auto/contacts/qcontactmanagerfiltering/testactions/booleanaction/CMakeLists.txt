@@ -11,7 +11,7 @@ qt_internal_add_plugin(contacts_booleanaction
 target_compile_definitions(contacts_booleanaction PRIVATE
     ACTIONPLUGINTARGET=contacts_booleanaction
     ACTIONPLUGINNAME=BooleanAction
-    QT_DISABLE_DEPRECATED_BEFORE=0
+    QT_DISABLE_DEPRECATED_BEFORE=0x050000
 )
 target_link_libraries(contacts_booleanaction PRIVATE
     Qt6::Contacts

@@ -8,5 +8,5 @@ qt_internal_add_plugin(contacts_testotherdummy
     SOURCES
         dummyotherplugin.cpp
 )
-target_compile_definitions(contacts_testotherdummy PRIVATE QT_DISABLE_DEPRECATED_BEFORE=0)
+target_compile_definitions(contacts_testotherdummy PRIVATE QT_DISABLE_DEPRECATED_BEFORE=0x050000)
 target_link_libraries(contacts_testotherdummy PRIVATE Qt6::Contacts)

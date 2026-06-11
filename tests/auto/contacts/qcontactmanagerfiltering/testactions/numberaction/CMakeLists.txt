@@ -11,7 +11,7 @@ qt_internal_add_plugin(contacts_numberaction
 target_compile_definitions(contacts_numberaction PRIVATE
     ACTIONPLUGINTARGET=contacts_numberaction
     ACTIONPLUGINNAME=NumberAction
-    QT_DISABLE_DEPRECATED_BEFORE=0
+    QT_DISABLE_DEPRECATED_BEFORE=0x050000
 )
 target_link_libraries(contacts_numberaction PRIVATE
     Qt6::Contacts

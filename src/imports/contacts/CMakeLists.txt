@@ -76,7 +76,7 @@ qt_internal_add_qml_module(declarative_contacts
         contacts.qrc
 )
 
-target_compile_definitions(declarative_contacts PRIVATE QT_DISABLE_DEPRECATED_BEFORE=0)
+target_compile_definitions(declarative_contacts PRIVATE QT_DISABLE_DEPRECATED_BEFORE=0x050000)
 target_link_libraries(declarative_contacts PRIVATE Qt6::Contacts Qt6::Gui Qt6::Qml Qt6::Versit)
 # QT_LEAN_HEADERS=2 suppresses the transitive include of qtyperevision.h from
 # qversionnumber.h, but qqmlprivate.h uses QTypeRevision without including it

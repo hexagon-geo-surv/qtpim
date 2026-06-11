@@ -12,6 +12,6 @@ qt_internal_add_plugin(contacts_maliciousplugin
 target_compile_definitions(contacts_maliciousplugin PRIVATE
     MALICIOUSPLUGINTARGET=contacts_maliciousplugin
     MALICIOUSPLUGINNAME=maliciousplugin
-    QT_DISABLE_DEPRECATED_BEFORE=0
+    QT_DISABLE_DEPRECATED_BEFORE=0x050000
 )
 target_link_libraries(contacts_maliciousplugin PRIVATE Qt6::Contacts Qt6::Test)

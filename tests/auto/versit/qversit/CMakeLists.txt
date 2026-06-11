@@ -14,5 +14,5 @@ qt_internal_add_test(tst_qversit
         Qt6::VersitPrivate
     DEFINES
         "TESTDATA_DIR=\"${CMAKE_CURRENT_SOURCE_DIR}/\""
-        QT_DISABLE_DEPRECATED_BEFORE=0
+        QT_DISABLE_DEPRECATED_BEFORE=0x050000
 )

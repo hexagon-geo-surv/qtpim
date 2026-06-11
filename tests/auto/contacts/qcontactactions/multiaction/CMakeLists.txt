@@ -12,7 +12,7 @@ qt_internal_add_plugin(contacts_multiaction
 target_compile_definitions(contacts_multiaction PRIVATE
     ACTIONPLUGINTARGET=contacts_multiaction
     ACTIONPLUGINNAME=MultiAction
-    QT_DISABLE_DEPRECATED_BEFORE=0
+    QT_DISABLE_DEPRECATED_BEFORE=0x050000
 )
 target_link_libraries(contacts_multiaction PRIVATE
     Qt6::Contacts

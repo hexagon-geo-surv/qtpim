@@ -10,5 +10,5 @@ qt_internal_add_test(tst_qversitwriter
         Qt6::Versit
         Qt6::VersitPrivate
     DEFINES
-        QT_DISABLE_DEPRECATED_BEFORE=0
+        QT_DISABLE_DEPRECATED_BEFORE=0x050000
 )

@@ -9,5 +9,5 @@ qt_internal_add_test(tst_qversitdocument
         Qt6::Test
         Qt6::Versit
     DEFINES
-        QT_DISABLE_DEPRECATED_BEFORE=0
+        QT_DISABLE_DEPRECATED_BEFORE=0x050000
 )

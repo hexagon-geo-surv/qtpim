@@ -11,7 +11,7 @@ qt_internal_add_plugin(contacts_phonenumberaction
 target_compile_definitions(contacts_phonenumberaction PRIVATE
     ACTIONPLUGINTARGET=contacts_phonenumberaction
     ACTIONPLUGINNAME=PhoneNumberAction
-    QT_DISABLE_DEPRECATED_BEFORE=0
+    QT_DISABLE_DEPRECATED_BEFORE=0x050000
 )
 target_link_libraries(contacts_phonenumberaction PRIVATE
     Qt6::Contacts

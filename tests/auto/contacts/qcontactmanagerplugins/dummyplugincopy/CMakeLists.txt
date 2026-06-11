@@ -12,6 +12,6 @@ qt_internal_add_plugin(contacts_testdummycopy
 target_compile_definitions(contacts_testdummycopy PRIVATE
     DUMMYPLUGINTARGET=contacts_testdummycopy
     DUMMYPLUGINNAME=testdummy
-    QT_DISABLE_DEPRECATED_BEFORE=0
+    QT_DISABLE_DEPRECATED_BEFORE=0x050000
 )
 target_link_libraries(contacts_testdummycopy PRIVATE Qt6::Contacts)

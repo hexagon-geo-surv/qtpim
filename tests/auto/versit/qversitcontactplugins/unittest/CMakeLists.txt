@@ -9,7 +9,7 @@ qt_internal_add_test(tst_qversitcontactplugins
         Qt6::Test
         Qt6::Versit
     DEFINES
-        QT_DISABLE_DEPRECATED_BEFORE=0
+        QT_DISABLE_DEPRECATED_BEFORE=0x050000
 )
 
 add_dependencies(tst_qversitcontactplugins

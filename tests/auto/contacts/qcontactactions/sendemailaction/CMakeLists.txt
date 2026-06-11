@@ -12,7 +12,7 @@ qt_internal_add_plugin(contacts_sendemailaction
 target_compile_definitions(contacts_sendemailaction PRIVATE
     ACTIONPLUGINTARGET=contacts_sendemailaction
     ACTIONPLUGINNAME=SendEmailAction
-    QT_DISABLE_DEPRECATED_BEFORE=0
+    QT_DISABLE_DEPRECATED_BEFORE=0x050000
 )
 target_link_libraries(contacts_sendemailaction PRIVATE
     Qt6::Contacts
