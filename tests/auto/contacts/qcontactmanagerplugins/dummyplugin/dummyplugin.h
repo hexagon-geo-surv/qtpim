@@ -29,6 +29,13 @@ public:
     bool saveContact(QContact* contact, bool batch, QContactManager::Error* error);
     bool removeContact(const QContactId& contactId, bool batch, QContactManager::Error* error);
 
+    // The non-virtual helpers above share their names with QContactManagerEngine
+    // virtuals of different signatures; re-expose the base versions so Clang does
+    // not flag them as hidden under -Woverloaded-virtual.
+    using QContactManagerEngine::contacts;
+    using QContactManagerEngine::saveContact;
+    using QContactManagerEngine::removeContact;
+
     /* Capabilities reporting */
     QStringList capabilities() const;
     QStringList fastFilterableDefinitions() const;
