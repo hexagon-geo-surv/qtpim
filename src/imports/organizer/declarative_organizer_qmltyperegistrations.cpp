@@ -10,12 +10,12 @@
 
 QT_BEGIN_NAMESPACE
 void qtorganizer_qml_register_types(const char *uri);
-QT_END_NAMESPACE
 
 Q_QMLTYPE_EXPORT void qml_register_types_QtOrganizer()
 {
-    QT_PREPEND_NAMESPACE(qtorganizer_qml_register_types)("QtOrganizer");
+    qtorganizer_qml_register_types("QtOrganizer");
     qmlRegisterModule("QtOrganizer", 5, 0);
 }
 
 static const QQmlModuleRegistration QtOrganizerRegistration("QtOrganizer", qml_register_types_QtOrganizer);
+QT_END_NAMESPACE
