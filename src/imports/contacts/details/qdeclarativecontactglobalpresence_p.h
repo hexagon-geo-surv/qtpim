@@ -17,6 +17,7 @@
 //
 
 #include <QtContacts/qcontactglobalpresence.h>
+#include <QtCore/qurl.h>
 
 #include "qdeclarativecontactdetail_p.h"
 #include "qdeclarativecontactpresence_p.h"

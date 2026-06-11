@@ -4,6 +4,7 @@
 #include "qcontactdetails.h"
 
 #include <QtCore/qfile.h>
+#include <QtCore/qurl.h>
 
 #include "qcontactmanager.h"
 #include "qcontactfilter.h"

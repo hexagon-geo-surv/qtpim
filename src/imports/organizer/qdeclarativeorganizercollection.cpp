@@ -3,6 +3,8 @@
 
 #include "qdeclarativeorganizercollection_p.h"
 
+#include <QtCore/qurl.h>
+
 QTORGANIZER_USE_NAMESPACE
 
 QT_BEGIN_NAMESPACE

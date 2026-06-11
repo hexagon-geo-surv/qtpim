@@ -5,6 +5,7 @@
 #include "qversitorganizerexporter_p.h"
 
 #include <QtCore/qdebug.h>
+#include <QtCore/qurl.h>
 
 #include <utility>
 

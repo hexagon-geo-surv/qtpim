@@ -4,6 +4,7 @@
 #include "qdeclarativeorganizeritemdetail_p.h"
 
 #include <QTimeZone>
+#include <QtCore/qurl.h>
 #include <QtQml/qqmlinfo.h>
 #include <QtQml/QJSValue>
 

@@ -5,6 +5,7 @@
 
 #include <QtContacts/qcontactdetails.h>
 #include <QTimeZone>
+#include <QtCore/qurl.h>
 
 #include <utility>
 

@@ -3,6 +3,8 @@
 
 #include "qdeclarativecontactcollection_p.h"
 
+#include <QtCore/qurl.h>
+
 QTCONTACTS_USE_NAMESPACE
 
 QT_BEGIN_NAMESPACE

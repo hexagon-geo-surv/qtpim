@@ -8,6 +8,7 @@
 #include <QtCore/qdebug.h>
 #endif
 #include <QtCore/qstringconverter.h>
+#include <QtCore/qurl.h>
 
 #include "qversitdocument.h"
 

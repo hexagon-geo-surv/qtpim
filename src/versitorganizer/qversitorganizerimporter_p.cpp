@@ -4,6 +4,7 @@
 #include "qversitorganizerimporter_p.h"
 
 #include <QTimeZone>
+#include <QtCore/qurl.h>
 #include <QtOrganizer/qorganizer.h>
 
 #include <QtVersit/qversitdocument.h>

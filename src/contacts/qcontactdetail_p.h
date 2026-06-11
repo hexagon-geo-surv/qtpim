@@ -20,6 +20,7 @@
 #include <QList>
 #include <QString>
 #include <QVariant>
+#include <QUrl>
 #include <QDateTime>
 #include <QAtomicInt>
 #include <QSharedData>

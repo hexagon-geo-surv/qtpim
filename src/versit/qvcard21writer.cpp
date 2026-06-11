@@ -5,6 +5,7 @@
 
 #include <QtCore/qregularexpression.h>
 #include <QtCore/qstringconverter.h>
+#include <QtCore/qurl.h>
 #include <QtCore/qvariant.h>
 
 #include "qversitproperty.h"
