@@ -128,6 +128,15 @@ public:
     virtual bool saveRelationships(QList<QContactRelationship> *relationships, QMap<int, QContactManager::Error> *errorMap, QContactManager::Error *error) override;
     virtual bool removeRelationships(const QList<QContactRelationship> &relationships, QMap<int, QContactManager::Error> *errorMap, QContactManager::Error *error) override;
 
+    // Keep the base-class single-item and partial-save overloads visible: this
+    // engine declares same-named helpers taking a QContactChangeSet (below),
+    // which would otherwise hide the QContactManagerEngine virtuals.
+    using QContactManagerEngine::saveContact;
+    using QContactManagerEngine::removeContact;
+    using QContactManagerEngine::saveContacts;
+    using QContactManagerEngine::saveRelationship;
+    using QContactManagerEngine::removeRelationship;
+
     // collections
     QContactCollectionId defaultCollectionId() const override;
     QContactCollection collection(const QContactCollectionId &collectionId, QContactManager::Error *error) override;
