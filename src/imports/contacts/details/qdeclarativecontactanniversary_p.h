@@ -36,6 +36,10 @@ class QDeclarativeContactAnniversary : public QDeclarativeContactDetail
     Q_ENUMS(FieldType)
     Q_ENUMS(AnniversarySubType)
 public:
+    // The 'event' QML property getter below would otherwise hide the inherited
+    // QObject::event(QEvent *) virtual, which Clang flags as -Woverloaded-virtual.
+    using QObject::event;
+
     enum FieldType {
         CalendarId = QContactAnniversary::FieldCalendarId,
         OriginalDate = QContactAnniversary::FieldOriginalDate,
