@@ -30,7 +30,7 @@ class QVersitOrganizerExporterPrivate;
 class Q_VERSIT_ORGANIZER_EXPORT QVersitOrganizerExporterDetailHandler
 {
 public:
-    virtual ~QVersitOrganizerExporterDetailHandler() {}
+    virtual ~QVersitOrganizerExporterDetailHandler();
     virtual void detailProcessed(const QOrganizerItem& item,
                                  const QOrganizerItemDetail& detail,
                                  const QVersitDocument& document,

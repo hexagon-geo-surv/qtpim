@@ -5,6 +5,10 @@
 
 QT_BEGIN_NAMESPACE_VERSITORGANIZER
 
+// Out-of-line destructors to anchor the vtables (avoids -Wweak-vtables).
+QVersitOrganizerHandlerFactory::~QVersitOrganizerHandlerFactory() = default;
+QVersitOrganizerHandler::~QVersitOrganizerHandler() = default;
+
 /*!
   \class QVersitOrganizerHandler
   \brief The QVersitOrganizerHandler class is a union of the

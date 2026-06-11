@@ -6,6 +6,10 @@
 
 QT_BEGIN_NAMESPACE_VERSIT
 
+// Out-of-line destructors to anchor the vtables (avoids -Wweak-vtables).
+QVersitContactExporterDetailHandler::~QVersitContactExporterDetailHandler() = default;
+QVersitContactExporterDetailHandlerV2::~QVersitContactExporterDetailHandlerV2() = default;
+
 /*!
   \deprecated
   \class QVersitContactExporterDetailHandler

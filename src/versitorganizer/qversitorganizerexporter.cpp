@@ -13,6 +13,9 @@ QTVERSIT_USE_NAMESPACE
 
 QT_BEGIN_NAMESPACE_VERSITORGANIZER
 
+// Out-of-line destructor to anchor the vtable (avoids -Wweak-vtables).
+QVersitOrganizerExporterDetailHandler::~QVersitOrganizerExporterDetailHandler() = default;
+
 /*!
   \class QVersitOrganizerExporter
   \brief The QVersitOrganizerExporter class converts \l {QOrganizerItem}{QOrganizerItems} into

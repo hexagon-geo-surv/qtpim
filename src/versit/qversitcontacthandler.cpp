@@ -5,6 +5,10 @@
 
 QT_BEGIN_NAMESPACE_VERSIT
 
+// Out-of-line destructors to anchor the vtables (avoids -Wweak-vtables).
+QVersitContactHandlerFactoryInterface::~QVersitContactHandlerFactoryInterface() = default;
+QVersitContactHandler::~QVersitContactHandler() = default;
+
 /*!
   \internal
  */

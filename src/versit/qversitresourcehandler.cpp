@@ -12,6 +12,9 @@
 
 QT_BEGIN_NAMESPACE_VERSIT
 
+// Out-of-line destructor to anchor the vtable (avoids -Wweak-vtables).
+QVersitResourceHandler::~QVersitResourceHandler() = default;
+
 /*!
   \class QVersitResourceHandler
   \brief The QVersitResourceHandler class is an interface for clients wishing to implement custom

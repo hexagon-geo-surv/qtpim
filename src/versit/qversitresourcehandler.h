@@ -18,7 +18,7 @@ class QVersitProperty;
 class Q_VERSIT_EXPORT QVersitResourceHandler
 {
 public:
-    virtual ~QVersitResourceHandler() {}
+    virtual ~QVersitResourceHandler();
     virtual bool loadResource(const QString& location, QByteArray* contents, QString* mimeType) = 0;
     virtual bool saveResource(const QByteArray& contents, const QVersitProperty& property,
                               QString* location) = 0;

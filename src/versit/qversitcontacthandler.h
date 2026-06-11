@@ -18,6 +18,7 @@ class QVersitContactHandler;
 
 struct Q_VERSIT_EXPORT QVersitContactHandlerFactoryInterface : public QFactoryInterface
 {
+    virtual ~QVersitContactHandlerFactoryInterface();
     virtual QSet<QString> profiles() const =0;
     virtual QString name() const = 0;
     virtual int index() const = 0;
@@ -52,7 +53,7 @@ class Q_VERSIT_EXPORT QVersitContactHandler : public QVersitContactImporterPrope
                                               public QVersitContactExporterDetailHandlerV2
 {
 public:
-    virtual ~QVersitContactHandler() {}
+    virtual ~QVersitContactHandler();
 };
 QT_END_NAMESPACE_VERSIT
 

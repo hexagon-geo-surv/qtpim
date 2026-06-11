@@ -11,6 +11,10 @@
 
 QT_BEGIN_NAMESPACE_VERSITORGANIZER
 
+// Out-of-line destructor to anchor the vtable (avoids -Wweak-vtables);
+// QVersitTimeZoneHandler has no dedicated translation unit of its own.
+QVersitTimeZoneHandler::~QVersitTimeZoneHandler() = default;
+
 /*!
    A less-than function for factory indices (see QVersitOrganizerHandlerFactory::index()).
    Positive values come first (ascendingly), then zero, then negative values (ascendingly).

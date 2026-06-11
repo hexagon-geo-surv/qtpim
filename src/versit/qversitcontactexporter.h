@@ -26,7 +26,7 @@ class QVersitContactExporterPrivate;
 class Q_VERSIT_EXPORT QVersitContactExporterDetailHandler
 {
 public:
-    virtual ~QVersitContactExporterDetailHandler() {}
+    virtual ~QVersitContactExporterDetailHandler();
     virtual bool preProcessDetail(const QContact& contact,
                                   const QContactDetail& detail,
                                   QVersitDocument* document) = 0;
@@ -40,7 +40,7 @@ public:
 class Q_VERSIT_EXPORT QVersitContactExporterDetailHandlerV2
 {
 public:
-    virtual ~QVersitContactExporterDetailHandlerV2() {}
+    virtual ~QVersitContactExporterDetailHandlerV2();
 
     virtual void detailProcessed(const QContact& contact,
                                  const QContactDetail& detail,

@@ -6,6 +6,10 @@
 
 QT_BEGIN_NAMESPACE_VERSIT
 
+// Out-of-line destructors to anchor the vtables (avoids -Wweak-vtables).
+QVersitContactImporterPropertyHandler::~QVersitContactImporterPropertyHandler() = default;
+QVersitContactImporterPropertyHandlerV2::~QVersitContactImporterPropertyHandlerV2() = default;
+
 /*!
   \deprecated
   \class QVersitContactImporterPropertyHandler

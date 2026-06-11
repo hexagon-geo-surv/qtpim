@@ -15,7 +15,7 @@ QT_BEGIN_NAMESPACE_VERSITORGANIZER
 class Q_VERSIT_ORGANIZER_EXPORT QVersitTimeZoneHandler
 {
 public:
-    virtual ~QVersitTimeZoneHandler() {}
+    virtual ~QVersitTimeZoneHandler();
 
     /*!
       \fn QDateTime QVersitTimeZoneHandler::convertTimeZoneToUtc(const QDateTime& datetime, const QString& timeZoneName);

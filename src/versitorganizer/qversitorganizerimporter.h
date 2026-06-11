@@ -30,7 +30,7 @@ class QVersitOrganizerImporterPrivate;
 class Q_VERSIT_ORGANIZER_EXPORT QVersitOrganizerImporterPropertyHandler
 {
 public:
-    virtual ~QVersitOrganizerImporterPropertyHandler() {}
+    virtual ~QVersitOrganizerImporterPropertyHandler();
     virtual void propertyProcessed(const QVersitDocument& document,
                                    const QVersitProperty& property,
                                    const QOrganizerItem& item,

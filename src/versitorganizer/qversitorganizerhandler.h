@@ -19,7 +19,7 @@ class QVersitOrganizerHandler;
 class Q_VERSIT_ORGANIZER_EXPORT QVersitOrganizerHandlerFactory
 {
 public:
-    virtual ~QVersitOrganizerHandlerFactory() {}
+    virtual ~QVersitOrganizerHandlerFactory();
     virtual QSet<QString> profiles() const { return QSet<QString>(); }
     virtual QString name() const = 0;
     virtual int index() const { return 0; }
@@ -33,7 +33,7 @@ class Q_VERSIT_ORGANIZER_EXPORT QVersitOrganizerHandler : public QVersitOrganize
                                                 public QVersitOrganizerExporterDetailHandler
 {
 public:
-    virtual ~QVersitOrganizerHandler() {}
+    virtual ~QVersitOrganizerHandler();
 };
 
 QT_END_NAMESPACE_VERSITORGANIZER
