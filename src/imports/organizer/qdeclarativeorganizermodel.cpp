@@ -561,7 +561,7 @@ void QDeclarativeOrganizerModel::setManager(const QString& managerName)
     connect(d->m_manager, &QOrganizerManager::collectionsChanged, &d->m_fetchCollectionsTimer, static_cast<void (QTimer::*)(void)>(&QTimer::start));
     connect(d->m_manager, &QOrganizerManager::collectionsRemoved, &d->m_fetchCollectionsTimer, static_cast<void (QTimer::*)(void)>(&QTimer::start));
     connect(d->m_manager, &QOrganizerManager::dataChanged, &d->m_updateTimer, static_cast<void (QTimer::*)(void)>(&QTimer::start));
-    connect(d->m_manager, SIGNAL(itemsModified(QList<std::pair<QtOrganizer::QOrganizerItemId,QtOrganizer::QOrganizerManager::Operation> >)), this, SLOT(onItemsModified(QList<std::pair<QtOrganizer::QOrganizerItemId,QtOrganizer::QOrganizerManager::Operation> >)));
+    connect(d->m_manager, &QOrganizerManager::itemsModified, this, &QDeclarativeOrganizerModel::onItemsModified);
 
     const QOrganizerManager::Error managerError = d->m_manager->error();
     if (QOrganizerManager::NoError != managerError && d->m_error != managerError) {
