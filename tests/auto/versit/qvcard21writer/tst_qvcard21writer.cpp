@@ -253,13 +253,12 @@ void tst_QVCard21Writer::testEncodeParameters_data()
     parameters.insert(QStringLiteral("TYPE"), QStringLiteral("PAGER"));
     parameters.insert(QStringLiteral("TYPE"), QStringLiteral("HOME"));
     parameters.insert(QStringLiteral("TYPE"), QStringLiteral("WORK"));
-    // Ensure CELL and FAX are at the front because they are "more important" and some vCard
-    // parsers may ignore everything after the first TYPE
-    // Ensure WORK and HOME come next.
-    // Besides these conditions, there are no other ordering constraints.  The data here is simply
-    // what the writer produces (as dictated by its internal data structures).
+    // CELL and FAX come first because they are "more important" and some vCard parsers may ignore
+    // everything after the first TYPE; WORK and HOME come next.  Within each of these rank groups
+    // (and among the remaining values) the writer orders lexically, so the output is deterministic
+    // regardless of the hash-dependent order in which the values are stored.
     QTest::newRow("TYPE parameters order") << parameters
-        << QByteArray(";FAX;CELL;WORK;HOME;PAGER;BBS;VIDEO;CAR;MODEM;VOICE");
+        << QByteArray(";CELL;FAX;HOME;WORK;BBS;CAR;MODEM;PAGER;VIDEO;VOICE");
 }
 
 void tst_QVCard21Writer::testEncodeGroupsAndName()

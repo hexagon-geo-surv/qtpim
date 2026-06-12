@@ -169,7 +169,13 @@ int sortIndexOfTypeValue(const QString& type) {
 }
 
 bool typeValueLessThan(const QString& a, const QString& b) {
-    return sortIndexOfTypeValue(a) < sortIndexOfTypeValue(b);
+    const int rankA = sortIndexOfTypeValue(a);
+    const int rankB = sortIndexOfTypeValue(b);
+    if (rankA != rankB)
+        return rankA < rankB;
+    // Within the same rank, order lexically so the result is deterministic
+    // regardless of the (hash-dependent) order in which the values arrive.
+    return a < b;
 }
 
 /*! Ensure CELL and FAX are at the front because they are "more important" and some vCard
