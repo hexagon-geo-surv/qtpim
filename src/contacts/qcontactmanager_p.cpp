@@ -49,7 +49,7 @@ static void qContactsCleanEngines()
         aliveManagers << QPointer<QContactManager>(manager);
     }
 
-    for (QPointer<QContactManager> manager : aliveManagers) {
+    for (const QPointer<QContactManager> &manager : std::as_const(aliveManagers)) {
         if (!manager) {
             // deleting engine of one manager, could cause deleting next manager in list (aggregation case)
             continue;
@@ -105,7 +105,7 @@ void QContactManagerPrivate::createEngine(const QString &managerName, const QMap
     m_lastError = QContactManager::NoError;
 
     while (!found) {
-        for (QContactManagerEngineFactory *f : factories) {
+        for (QContactManagerEngineFactory *f : std::as_const(factories)) {
             QList<int> versions = f->supportedImplementationVersions();
             if (implementationVersion == -1 ||//no given implementation version required
                     versions.isEmpty() || //the manager engine factory does not report any version
@@ -219,7 +219,7 @@ void QContactManagerPrivate::loadFactoriesMetadata()
         m_pluginPaths = m_metaData;
         QString currentManagerName;
         /* Now discover the dynamic plugins */
-        for (const QJsonObject &metaDataObject : metaData) {
+        for (const QJsonObject &metaDataObject : std::as_const(metaData)) {
             // Qt 6 CBOR-encoded metadata uses integer keys; "4" = MetaData
             currentManagerName = metaDataObject.value(QStringLiteral("4")).toObject().value(QStringLiteral("Keys")).toArray().at(0).toString();
 

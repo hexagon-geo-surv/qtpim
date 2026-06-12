@@ -1491,7 +1491,7 @@ bool QContactManagerEngine::testFilter(const QContactFilter &filter, const QCont
                 allRelationships = contact.relationships();
 
                 // now check to see if we have a match.
-                for (const QContactRelationship &rel : allRelationships) {
+                for (const QContactRelationship &rel : std::as_const(allRelationships)) {
                     // perform the matching.
                     if (rf.relatedContactRole() == QContactRelationship::Second) { // this is the role of the related contact; ie, to match, contact must be the first in the relationship.
                         if ((rf.relationshipType().isEmpty() || rel.relationshipType() == rf.relationshipType())
@@ -1751,7 +1751,7 @@ QList<QContactId> QContactManagerEngine::sortContacts(const QList<QContact>& cs,
         std::stable_sort(sortedContacts.begin(), sortedContacts.end(), lessThan);
     }
 
-    for (const QContact &c : sortedContacts) {
+    for (const QContact &c : std::as_const(sortedContacts)) {
         sortedIds.append(c.id());
     }
     return sortedIds;
@@ -2320,7 +2320,7 @@ bool QContactManagerEngine::saveContacts(QList<QContact> *contacts, const QList<
 
             for (QContactDetail::DetailType type : mask) {
                 QList<QContactDetail> details = c.details(type);
-                for (QContactDetail detail : details) {
+                for (QContactDetail detail : std::as_const(details)) {
                     contactToSave.saveDetail(&detail);
                 }
             }

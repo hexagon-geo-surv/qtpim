@@ -143,7 +143,7 @@ QDebug operator<<(QDebug dbg, const QVersitProperty& property)
     QString name = property.name();
     QMultiHash<QString,QString> parameters = property.parameters();
     dbg.nospace() << "QVersitProperty(";
-    for (const QString& group : groups) {
+    for (const QString& group : std::as_const(groups)) {
         dbg.nospace() << group << '.';
     }
     dbg.nospace() << name;

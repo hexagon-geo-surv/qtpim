@@ -379,7 +379,7 @@ void PartialSaveRequestController::partiallyCopyDetails(QContact* to, const QCon
                                                         const QSet<QContactDetail::DetailType>& mask) {
     for (QContactDetail::DetailType type : mask) {
         QList<QContactDetail> details = from.details(type);
-        for (QContactDetail detail : details) {
+        for (QContactDetail detail : std::as_const(details)) {
             to->saveDetail(&detail);
         }
     }

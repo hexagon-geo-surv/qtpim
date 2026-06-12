@@ -111,7 +111,7 @@ QList<QOrganizerItemId> QOrganizerItemSkeletonEngine::itemIds(const QOrganizerIt
     QList<QOrganizerItem> partiallyFilteredItems; // = ..., your code here.. [TODO]
     QList<QOrganizerItem> ret;
 
-    for (const QOrganizerItem& item : partiallyFilteredItems) {
+    for (const QOrganizerItem& item : std::as_const(partiallyFilteredItems)) {
         if (QOrganizerManagerEngine::isItemBetweenDates(item, startDateTime, endDateTime) && QOrganizerManagerEngine::testFilter(filter, item)) {
             QOrganizerManagerEngine::addSorted(&ret, item, sortOrders);
         }
@@ -149,7 +149,7 @@ QList<QOrganizerItem> QOrganizerItemSkeletonEngine::items(const QOrganizerItemFi
     QList<QOrganizerItem> partiallyFilteredItems; // = ..., your code here.. [TODO]
     QList<QOrganizerItem> ret;
 
-    for (const QOrganizerItem& item : partiallyFilteredItems) {
+    for (const QOrganizerItem& item : std::as_const(partiallyFilteredItems)) {
         if (QOrganizerManagerEngine::isItemBetweenDates(item, startDateTime, endDateTime) && QOrganizerManagerEngine::testFilter(filter, item)) {
             QOrganizerManagerEngine::addSorted(&ret, item, sortOrders);
         }

@@ -81,13 +81,13 @@ public:
 
     void emitSharedSignals(QContactChangeSet *cs)
     {
-        for (QContactManagerEngine *engine : m_sharedEngines)
+        for (QContactManagerEngine *engine : std::as_const(m_sharedEngines))
             cs->emitSignals(engine);
     }
 
     void emitSharedSignals(QContactCollectionChangeSet *cs)
     {
-        for (QContactManagerEngine *engine : m_sharedEngines)
+        for (QContactManagerEngine *engine : std::as_const(m_sharedEngines))
             cs->emitSignals(engine);
     }
 

@@ -196,7 +196,7 @@ void QOrganizerItemChangeSet::insertChangedItems(const QList<QOrganizerItemId> &
     }
 
     // These items are all now modified
-    for (const QOrganizerItemId &id : itemIds)
+    for (const QOrganizerItemId &id : std::as_const(itemIds))
         d->m_modifiedItems.append(std::make_pair(id, QOrganizerManager::Change));
 }
 

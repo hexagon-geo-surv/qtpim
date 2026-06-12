@@ -1017,7 +1017,7 @@ QMultiHash<QString,QString> QVersitReaderPrivate::extractVCard30PropertyParams(
         removeBackSlashEscaping(&name);
         QString values = paramValue(param, encoding);
         QStringList valueList = splitValue(values, QLatin1Char(','), Qt::SkipEmptyParts, true);
-        for (QString value : valueList) {
+        for (QString value : std::as_const(valueList)) {
             removeBackSlashEscaping(&value);
             result.insert(name, value);
         }

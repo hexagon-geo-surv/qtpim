@@ -151,7 +151,7 @@ QString QDeclarativeOrganizerItem::description() const
 
 void QDeclarativeOrganizerItem::setDescription(const QString &description)
 {
-    for (QDeclarativeOrganizerItemDetail *detail : m_details) {
+    for (QDeclarativeOrganizerItemDetail *detail : std::as_const(m_details)) {
         if (QDeclarativeOrganizerItemDetail::Description == detail->type()) {
             QDeclarativeOrganizerItemDescription *desc = static_cast<QDeclarativeOrganizerItemDescription *>(detail);
             if (desc->description() != description) {
@@ -186,7 +186,7 @@ QString QDeclarativeOrganizerItem::displayLabel() const
 
 void QDeclarativeOrganizerItem::setDisplayLabel(const QString &label)
 {
-    for (QDeclarativeOrganizerItemDetail *detail : m_details) {
+    for (QDeclarativeOrganizerItemDetail *detail : std::as_const(m_details)) {
         if (QDeclarativeOrganizerItemDetail::DisplayLabel == detail->type()) {
             QDeclarativeOrganizerItemDisplayLabel *displayLabel = static_cast<QDeclarativeOrganizerItemDisplayLabel *>(detail);
             if (displayLabel->label() != label) {
@@ -221,7 +221,7 @@ QString QDeclarativeOrganizerItem::guid() const
 
 void QDeclarativeOrganizerItem::setGuid(const QString &guid)
 {
-    for (QDeclarativeOrganizerItemDetail *detail : m_details) {
+    for (QDeclarativeOrganizerItemDetail *detail : std::as_const(m_details)) {
         if (QDeclarativeOrganizerItemDetail::Guid == detail->type()) {
             QDeclarativeOrganizerItemGuid *itemGuid = static_cast<QDeclarativeOrganizerItemGuid *>(detail);
             if (itemGuid->guid() != guid) {
@@ -250,7 +250,7 @@ void QDeclarativeOrganizerItem::setGuid(const QString &guid)
  */
 QDeclarativeOrganizerItemDetail *QDeclarativeOrganizerItem::detail(int type)
 {
-    for (QDeclarativeOrganizerItemDetail *detail : m_details) {
+    for (QDeclarativeOrganizerItemDetail *detail : std::as_const(m_details)) {
         if (type == detail->type()) {
             QDeclarativeOrganizerItemDetail *itemDetail = QDeclarativeOrganizerItemDetailFactory::createItemDetail(detail->type());
             QQmlEngine::setObjectOwnership(itemDetail, QQmlEngine::JavaScriptOwnership);
@@ -271,7 +271,7 @@ QDeclarativeOrganizerItemDetail *QDeclarativeOrganizerItem::detail(int type)
 QVariantList QDeclarativeOrganizerItem::details(int type)
 {
     QVariantList list;
-    for (QDeclarativeOrganizerItemDetail *detail : m_details) {
+    for (QDeclarativeOrganizerItemDetail *detail : std::as_const(m_details)) {
         if (type == detail->type()) {
             QDeclarativeOrganizerItemDetail *itemDetail = QDeclarativeOrganizerItemDetailFactory::createItemDetail(detail->type());
             QQmlEngine::setObjectOwnership(itemDetail, QQmlEngine::JavaScriptOwnership);
@@ -344,11 +344,11 @@ void QDeclarativeOrganizerItem::setItem(const QOrganizerItem &item)
     m_id = item.id();
     m_collectionId = item.collectionId();
 
-    for (QDeclarativeOrganizerItemDetail *detail : m_details)
+    for (QDeclarativeOrganizerItemDetail *detail : std::as_const(m_details))
         delete detail;
     m_details.clear();
     QList<QOrganizerItemDetail> details(item.details());
-    for (const QOrganizerItemDetail &detail : details) {
+    for (const QOrganizerItemDetail &detail : std::as_const(details)) {
         QDeclarativeOrganizerItemDetail *itemDetail = QDeclarativeOrganizerItemDetailFactory::createItemDetail(static_cast<QDeclarativeOrganizerItemDetail::DetailType>(detail.type()));
         itemDetail->setDetail(detail);
         m_details.append(itemDetail);
@@ -459,7 +459,7 @@ void QDeclarativeOrganizerItem::_q_detail_clear(QQmlListProperty<QDeclarativeOrg
 {
     QDeclarativeOrganizerItem *object = qobject_cast<QDeclarativeOrganizerItem *>(property->object);
     if (object) {
-        for (QDeclarativeOrganizerItemDetail *obj : object->m_details)
+        for (QDeclarativeOrganizerItemDetail *obj : std::as_const(object->m_details))
             delete obj;
         object->m_details.clear();
     }
@@ -488,7 +488,7 @@ bool QDeclarativeOrganizerItem::_q_removeDetail(QDeclarativeOrganizerItemDetail 
     int key = detail->detail().key();
     int i = 0;
     bool removed = false;
-    for (QDeclarativeOrganizerItemDetail *itemDetail : m_details) {
+    for (QDeclarativeOrganizerItemDetail *itemDetail : std::as_const(m_details)) {
         if (key == itemDetail->detail().key()) {
             delete itemDetail;
             m_details.removeAt(i);
@@ -509,7 +509,7 @@ bool QDeclarativeOrganizerItem::_q_setDetail(QDeclarativeOrganizerItemDetail *de
 
     bool found(false);
     int key = detail->detail().key();
-    for (QDeclarativeOrganizerItemDetail *itemDetail : m_details) {
+    for (QDeclarativeOrganizerItemDetail *itemDetail : std::as_const(m_details)) {
         if (key == itemDetail->detail().key()) {
             itemDetail->setDetail(detail->detail());
             found = true;
@@ -531,7 +531,7 @@ bool QDeclarativeOrganizerItem::_q_clearDetails()
 {
     bool ret = false;
     if (!m_details.empty()) {
-        for (QDeclarativeOrganizerItemDetail *detail : m_details)
+        for (QDeclarativeOrganizerItemDetail *detail : std::as_const(m_details))
             delete detail;
         m_details.clear();
         m_modified = true;
@@ -635,7 +635,7 @@ QDeclarativeOrganizerEventAttendee *QDeclarativeOrganizerEvent::_q_attendee_at(Q
     QDeclarativeOrganizerEvent *object = qobject_cast<QDeclarativeOrganizerEvent *>(property->object);
     QDeclarativeOrganizerEventAttendee *ret = 0;
     qsizetype i = 0;
-    for (QDeclarativeOrganizerItemDetail *detail : object->m_details) {
+    for (QDeclarativeOrganizerItemDetail *detail : std::as_const(object->m_details)) {
         if (QDeclarativeOrganizerItemDetail::EventAttendee == detail->type()) {
             if (i == index) {
                 ret = qobject_cast<QDeclarativeOrganizerEventAttendee *>(detail);
@@ -657,7 +657,7 @@ void QDeclarativeOrganizerEvent::_q_attendee_clear(QQmlListProperty<QDeclarative
     if (object) {
         int i = 0;
         bool removed = false;
-        for (QDeclarativeOrganizerItemDetail *obj : object->m_details) {
+        for (QDeclarativeOrganizerItemDetail *obj : std::as_const(object->m_details)) {
             if (obj->type() == QDeclarativeOrganizerItemDetail::EventAttendee) {
                 delete obj;
                 object->m_details.removeAt(i);
@@ -679,7 +679,7 @@ qsizetype QDeclarativeOrganizerEvent::_q_attendee_count(QQmlListProperty<QDeclar
     QDeclarativeOrganizerEvent *object = qobject_cast<QDeclarativeOrganizerEvent *>(property->object);
     int ret = 0;
     if (object) {
-        for (QDeclarativeOrganizerItemDetail *detail : object->m_details) {
+        for (QDeclarativeOrganizerItemDetail *detail : std::as_const(object->m_details)) {
             if (QDeclarativeOrganizerItemDetail::EventAttendee == detail->type())
                 ++ret;
         }
@@ -696,7 +696,7 @@ qsizetype QDeclarativeOrganizerEvent::_q_attendee_count(QQmlListProperty<QDeclar
  */
 void QDeclarativeOrganizerEvent::setAllDay(bool allDay)
 {
-    for (QDeclarativeOrganizerItemDetail *detail : m_details) {
+    for (QDeclarativeOrganizerItemDetail *detail : std::as_const(m_details)) {
         if (QDeclarativeOrganizerItemDetail::EventTime == detail->type()) {
             QDeclarativeOrganizerEventTime *eventTime = static_cast<QDeclarativeOrganizerEventTime *>(detail);
             if (eventTime->isAllDay() != allDay) {
@@ -731,7 +731,7 @@ bool QDeclarativeOrganizerEvent::isAllDay() const
  */
 void QDeclarativeOrganizerEvent::setStartDateTime(const QDateTime &datetime)
 {
-    for (QDeclarativeOrganizerItemDetail *detail : m_details) {
+    for (QDeclarativeOrganizerItemDetail *detail : std::as_const(m_details)) {
         if (QDeclarativeOrganizerItemDetail::EventTime == detail->type()) {
             QDeclarativeOrganizerEventTime *eventTime = static_cast<QDeclarativeOrganizerEventTime *>(detail);
             if (eventTime->startDateTime() != datetime) {
@@ -766,7 +766,7 @@ QDateTime QDeclarativeOrganizerEvent::startDateTime() const
  */
 void QDeclarativeOrganizerEvent::setEndDateTime(const QDateTime& datetime)
 {
-    for (QDeclarativeOrganizerItemDetail *detail : m_details) {
+    for (QDeclarativeOrganizerItemDetail *detail : std::as_const(m_details)) {
         if (QDeclarativeOrganizerItemDetail::EventTime == detail->type()) {
             QDeclarativeOrganizerEventTime *eventTime = static_cast<QDeclarativeOrganizerEventTime *>(detail);
             if (eventTime->endDateTime() != datetime) {
@@ -813,7 +813,7 @@ QDateTime QDeclarativeOrganizerEvent::endDateTime() const
  */
 void QDeclarativeOrganizerEvent::setPriority(QDeclarativeOrganizerItemPriority::Priority priority)
 {
-    for (QDeclarativeOrganizerItemDetail *detail : m_details) {
+    for (QDeclarativeOrganizerItemDetail *detail : std::as_const(m_details)) {
         if (QDeclarativeOrganizerItemDetail::Priority == detail->type()) {
             QDeclarativeOrganizerItemPriority *itemPriority = static_cast<QDeclarativeOrganizerItemPriority *>(detail);
             if (itemPriority->priority() != priority) {
@@ -849,7 +849,7 @@ QDeclarativeOrganizerItemPriority::Priority QDeclarativeOrganizerEvent::priority
 
 void QDeclarativeOrganizerEvent::setLocation(const QString &location)
 {
-    for (QDeclarativeOrganizerItemDetail *detail : m_details) {
+    for (QDeclarativeOrganizerItemDetail *detail : std::as_const(m_details)) {
         if (QDeclarativeOrganizerItemDetail::Location == detail->type()) {
             QDeclarativeOrganizerItemLocation *itemLocation = static_cast<QDeclarativeOrganizerItemLocation *>(detail);
             if (itemLocation->label() != location) {
@@ -884,7 +884,7 @@ QString QDeclarativeOrganizerEvent::location() const
   */
 QDeclarativeOrganizerItemRecurrence *QDeclarativeOrganizerEvent::recurrence()
 {
-    for (QDeclarativeOrganizerItemDetail *detail : m_details) {
+    for (QDeclarativeOrganizerItemDetail *detail : std::as_const(m_details)) {
         if (QDeclarativeOrganizerItemDetail::Recurrence == detail->type())
             return static_cast<QDeclarativeOrganizerItemRecurrence *>(detail);
     }
@@ -930,7 +930,7 @@ QDeclarativeOrganizerEventOccurrence::QDeclarativeOrganizerEventOccurrence(QObje
  */
 void QDeclarativeOrganizerEventOccurrence::setOriginalDate(const QDateTime &date)
 {
-    for (QDeclarativeOrganizerItemDetail *detail : m_details) {
+    for (QDeclarativeOrganizerItemDetail *detail : std::as_const(m_details)) {
         if (QDeclarativeOrganizerItemDetail::Parent == detail->type()) {
             QDeclarativeOrganizerItemParent *parent = static_cast<QDeclarativeOrganizerItemParent *>(detail);
             if (parent->originalDate() != date) {
@@ -965,7 +965,7 @@ QDateTime QDeclarativeOrganizerEventOccurrence::originalDate() const
  */
 void QDeclarativeOrganizerEventOccurrence::setStartDateTime(const QDateTime &datetime)
 {
-    for (QDeclarativeOrganizerItemDetail *detail : m_details) {
+    for (QDeclarativeOrganizerItemDetail *detail : std::as_const(m_details)) {
         if (QDeclarativeOrganizerItemDetail::EventTime == detail->type()) {
             QDeclarativeOrganizerEventTime *eventTime = static_cast<QDeclarativeOrganizerEventTime *>(detail);
             if (eventTime->startDateTime() != datetime) {
@@ -1000,7 +1000,7 @@ QDateTime QDeclarativeOrganizerEventOccurrence::startDateTime() const
  */
 void QDeclarativeOrganizerEventOccurrence::setEndDateTime(const QDateTime &datetime)
 {
-    for (QDeclarativeOrganizerItemDetail *detail : m_details) {
+    for (QDeclarativeOrganizerItemDetail *detail : std::as_const(m_details)) {
         if (QDeclarativeOrganizerItemDetail::EventTime == detail->type()) {
             QDeclarativeOrganizerEventTime *eventTime = static_cast<QDeclarativeOrganizerEventTime *>(detail);
             if (eventTime->endDateTime() != datetime) {
@@ -1047,7 +1047,7 @@ QDateTime QDeclarativeOrganizerEventOccurrence::endDateTime() const
  */
 void QDeclarativeOrganizerEventOccurrence::setPriority(QDeclarativeOrganizerItemPriority::Priority priority)
 {
-    for (QDeclarativeOrganizerItemDetail *detail : m_details) {
+    for (QDeclarativeOrganizerItemDetail *detail : std::as_const(m_details)) {
         if (QDeclarativeOrganizerItemDetail::Priority == detail->type()) {
             QDeclarativeOrganizerItemPriority *itemPriority = static_cast<QDeclarativeOrganizerItemPriority *>(detail);
             if (itemPriority->priority() != priority) {
@@ -1082,7 +1082,7 @@ QDeclarativeOrganizerItemPriority::Priority QDeclarativeOrganizerEventOccurrence
  */
 void QDeclarativeOrganizerEventOccurrence::setLocation(const QString &location)
 {
-    for (QDeclarativeOrganizerItemDetail *detail : m_details) {
+    for (QDeclarativeOrganizerItemDetail *detail : std::as_const(m_details)) {
         if (QDeclarativeOrganizerItemDetail::Location == detail->type()) {
             QDeclarativeOrganizerItemLocation *itemLocation = static_cast<QDeclarativeOrganizerItemLocation *>(detail);
             if (itemLocation->label() != location) {
@@ -1117,7 +1117,7 @@ QString QDeclarativeOrganizerEventOccurrence::location() const
  */
 void QDeclarativeOrganizerEventOccurrence::setParentId(const QString &parentId)
 {
-    for (QDeclarativeOrganizerItemDetail *detail : m_details) {
+    for (QDeclarativeOrganizerItemDetail *detail : std::as_const(m_details)) {
         if (QDeclarativeOrganizerItemDetail::Parent == detail->type()) {
             QDeclarativeOrganizerItemParent *parent = static_cast<QDeclarativeOrganizerItemParent *>(detail);
             if (parent->parentId() != parentId) {
@@ -1154,7 +1154,7 @@ QString QDeclarativeOrganizerEventOccurrence::parentId() const
  */
 void QDeclarativeOrganizerEventOccurrence::setAllDay(bool allDay)
 {
-    for (QDeclarativeOrganizerItemDetail *detail : m_details) {
+    for (QDeclarativeOrganizerItemDetail *detail : std::as_const(m_details)) {
         if (QDeclarativeOrganizerItemDetail::EventTime == detail->type()) {
             QDeclarativeOrganizerEventTime *eventTime = static_cast<QDeclarativeOrganizerEventTime *>(detail);
             if (eventTime->isAllDay() != allDay) {
@@ -1215,7 +1215,7 @@ QDeclarativeOrganizerJournal::QDeclarativeOrganizerJournal(QObject *parent)
  */
 void QDeclarativeOrganizerJournal::setDateTime(const QDateTime &dateTime)
 {
-    for (QDeclarativeOrganizerItemDetail *detail : m_details) {
+    for (QDeclarativeOrganizerItemDetail *detail : std::as_const(m_details)) {
         if (QDeclarativeOrganizerItemDetail::JournalTime == detail->type()) {
             QDeclarativeOrganizerJournalTime *journalTime = static_cast<QDeclarativeOrganizerJournalTime *>(detail);
             if (journalTime->entryDateTime() != dateTime) {
@@ -1306,7 +1306,7 @@ QDeclarativeOrganizerTodo::QDeclarativeOrganizerTodo(QObject *parent)
  */
 void QDeclarativeOrganizerTodo::setAllDay(bool allDay)
 {
-    for (QDeclarativeOrganizerItemDetail *detail : m_details) {
+    for (QDeclarativeOrganizerItemDetail *detail : std::as_const(m_details)) {
         if (QDeclarativeOrganizerItemDetail::TodoTime == detail->type()) {
             QDeclarativeOrganizerTodoTime *todoTime = static_cast<QDeclarativeOrganizerTodoTime *>(detail);
             if (todoTime->isAllDay() != allDay) {
@@ -1341,7 +1341,7 @@ bool QDeclarativeOrganizerTodo::isAllDay() const
  */
 void QDeclarativeOrganizerTodo::setPercentageComplete(int percentageComplete)
 {
-    for (QDeclarativeOrganizerItemDetail *detail : m_details) {
+    for (QDeclarativeOrganizerItemDetail *detail : std::as_const(m_details)) {
         if (QDeclarativeOrganizerItemDetail::TodoProgress == detail->type()) {
             QDeclarativeOrganizerTodoProgress *todoProgress = static_cast<QDeclarativeOrganizerTodoProgress *>(detail);
             if (todoProgress->percentageComplete() != percentageComplete) {
@@ -1376,7 +1376,7 @@ int QDeclarativeOrganizerTodo::percentageComplete() const
  */
 void QDeclarativeOrganizerTodo::setStartDateTime(const QDateTime &dateTime)
 {
-    for (QDeclarativeOrganizerItemDetail *detail : m_details) {
+    for (QDeclarativeOrganizerItemDetail *detail : std::as_const(m_details)) {
         if (QDeclarativeOrganizerItemDetail::TodoTime == detail->type()) {
             QDeclarativeOrganizerTodoTime *todoTime = static_cast<QDeclarativeOrganizerTodoTime *>(detail);
             if (todoTime->startDateTime() != dateTime) {
@@ -1411,7 +1411,7 @@ QDateTime QDeclarativeOrganizerTodo::startDateTime() const
  */
 void QDeclarativeOrganizerTodo::setDueDateTime(const QDateTime &dateTime)
 {
-    for (QDeclarativeOrganizerItemDetail *detail : m_details) {
+    for (QDeclarativeOrganizerItemDetail *detail : std::as_const(m_details)) {
         if (QDeclarativeOrganizerItemDetail::TodoTime == detail->type()) {
             QDeclarativeOrganizerTodoTime *todoTime = static_cast<QDeclarativeOrganizerTodoTime *>(detail);
             if (todoTime->dueDateTime() != dateTime) {
@@ -1446,7 +1446,7 @@ QDateTime QDeclarativeOrganizerTodo::dueDateTime() const
  */
 void QDeclarativeOrganizerTodo::setFinishedDateTime(const QDateTime &dateTime)
 {
-    for (QDeclarativeOrganizerItemDetail *detail : m_details) {
+    for (QDeclarativeOrganizerItemDetail *detail : std::as_const(m_details)) {
         if (QDeclarativeOrganizerItemDetail::TodoProgress == detail->type()) {
             QDeclarativeOrganizerTodoProgress *todoProgress = static_cast<QDeclarativeOrganizerTodoProgress *>(detail);
             if (todoProgress->finishedDateTime() != dateTime) {
@@ -1493,7 +1493,7 @@ QDateTime QDeclarativeOrganizerTodo::finishedDateTime() const
  */
 void QDeclarativeOrganizerTodo::setPriority(QDeclarativeOrganizerItemPriority::Priority priority)
 {
-    for (QDeclarativeOrganizerItemDetail *detail : m_details) {
+    for (QDeclarativeOrganizerItemDetail *detail : std::as_const(m_details)) {
         if (QDeclarativeOrganizerItemDetail::Priority == detail->type()) {
             QDeclarativeOrganizerItemPriority *itemPriority = static_cast<QDeclarativeOrganizerItemPriority *>(detail);
             if (itemPriority->priority() != priority) {
@@ -1533,7 +1533,7 @@ QDeclarativeOrganizerItemPriority::Priority QDeclarativeOrganizerTodo::priority(
  */
 void QDeclarativeOrganizerTodo::setStatus(QDeclarativeOrganizerTodoProgress::StatusType status)
 {
-    for (QDeclarativeOrganizerItemDetail *detail : m_details) {
+    for (QDeclarativeOrganizerItemDetail *detail : std::as_const(m_details)) {
         if (QDeclarativeOrganizerItemDetail::TodoProgress == detail->type()) {
             QDeclarativeOrganizerTodoProgress *todoProgress = static_cast<QDeclarativeOrganizerTodoProgress *>(detail);
             if (todoProgress->status() != status) {
@@ -1568,7 +1568,7 @@ QDeclarativeOrganizerTodoProgress::StatusType QDeclarativeOrganizerTodo::status(
  */
 QDeclarativeOrganizerItemRecurrence* QDeclarativeOrganizerTodo::recurrence()
 {
-    for (QDeclarativeOrganizerItemDetail *detail : m_details) {
+    for (QDeclarativeOrganizerItemDetail *detail : std::as_const(m_details)) {
         if (QDeclarativeOrganizerItemDetail::Recurrence == detail->type())
             return static_cast<QDeclarativeOrganizerItemRecurrence *>(detail);
     }
@@ -1613,7 +1613,7 @@ QDeclarativeOrganizerTodoOccurrence::QDeclarativeOrganizerTodoOccurrence(QObject
  */
 void QDeclarativeOrganizerTodoOccurrence::setAllDay(bool allDay)
 {
-    for (QDeclarativeOrganizerItemDetail *detail : m_details) {
+    for (QDeclarativeOrganizerItemDetail *detail : std::as_const(m_details)) {
         if (QDeclarativeOrganizerItemDetail::TodoTime == detail->type()) {
             QDeclarativeOrganizerTodoTime *todoTime = static_cast<QDeclarativeOrganizerTodoTime *>(detail);
             if (todoTime->isAllDay() != allDay) {
@@ -1648,7 +1648,7 @@ bool QDeclarativeOrganizerTodoOccurrence::isAllDay() const
  */
 void QDeclarativeOrganizerTodoOccurrence::setPercentageComplete(int percentageComplete)
 {
-    for (QDeclarativeOrganizerItemDetail *detail : m_details) {
+    for (QDeclarativeOrganizerItemDetail *detail : std::as_const(m_details)) {
         if (QDeclarativeOrganizerItemDetail::TodoProgress == detail->type()) {
             QDeclarativeOrganizerTodoProgress *todoProgress = static_cast<QDeclarativeOrganizerTodoProgress *>(detail);
             if (todoProgress->percentageComplete() != percentageComplete) {
@@ -1683,7 +1683,7 @@ int QDeclarativeOrganizerTodoOccurrence::percentageComplete() const
  */
 void QDeclarativeOrganizerTodoOccurrence::setOriginalDate(const QDateTime &date)
 {
-    for (QDeclarativeOrganizerItemDetail *detail : m_details) {
+    for (QDeclarativeOrganizerItemDetail *detail : std::as_const(m_details)) {
         if (QDeclarativeOrganizerItemDetail::Parent == detail->type()) {
             QDeclarativeOrganizerItemParent *parent = static_cast<QDeclarativeOrganizerItemParent *>(detail);
             if (parent->originalDate() != date) {
@@ -1718,7 +1718,7 @@ QDateTime QDeclarativeOrganizerTodoOccurrence::originalDate() const
  */
 void QDeclarativeOrganizerTodoOccurrence::setStartDateTime(const QDateTime &dateTime)
 {
-    for (QDeclarativeOrganizerItemDetail *detail : m_details) {
+    for (QDeclarativeOrganizerItemDetail *detail : std::as_const(m_details)) {
         if (QDeclarativeOrganizerItemDetail::TodoTime == detail->type()) {
             QDeclarativeOrganizerTodoTime *todoTime = static_cast<QDeclarativeOrganizerTodoTime *>(detail);
             if (todoTime->startDateTime() != dateTime) {
@@ -1752,7 +1752,7 @@ QDateTime QDeclarativeOrganizerTodoOccurrence::startDateTime() const
  */
 void QDeclarativeOrganizerTodoOccurrence::setDueDateTime(const QDateTime &dateTime)
 {
-    for (QDeclarativeOrganizerItemDetail *detail : m_details) {
+    for (QDeclarativeOrganizerItemDetail *detail : std::as_const(m_details)) {
         if (QDeclarativeOrganizerItemDetail::TodoTime == detail->type()) {
             QDeclarativeOrganizerTodoTime *todoTime = static_cast<QDeclarativeOrganizerTodoTime *>(detail);
             if (todoTime->dueDateTime() != dateTime) {
@@ -1787,7 +1787,7 @@ QDateTime QDeclarativeOrganizerTodoOccurrence::dueDateTime() const
  */
 void QDeclarativeOrganizerTodoOccurrence::setFinishedDateTime(const QDateTime &dateTime)
 {
-    for (QDeclarativeOrganizerItemDetail *detail : m_details) {
+    for (QDeclarativeOrganizerItemDetail *detail : std::as_const(m_details)) {
         if (QDeclarativeOrganizerItemDetail::TodoProgress == detail->type()) {
             QDeclarativeOrganizerTodoProgress *todoProgress = static_cast<QDeclarativeOrganizerTodoProgress *>(detail);
             if (todoProgress->finishedDateTime() != dateTime) {
@@ -1834,7 +1834,7 @@ QDateTime QDeclarativeOrganizerTodoOccurrence::finishedDateTime() const
  */
 void QDeclarativeOrganizerTodoOccurrence::setPriority(QDeclarativeOrganizerItemPriority::Priority priority)
 {
-    for (QDeclarativeOrganizerItemDetail *detail : m_details) {
+    for (QDeclarativeOrganizerItemDetail *detail : std::as_const(m_details)) {
         if (QDeclarativeOrganizerItemDetail::Priority == detail->type()) {
             QDeclarativeOrganizerItemPriority *itemPriority = static_cast<QDeclarativeOrganizerItemPriority *>(detail);
             if (itemPriority->priority() != priority) {
@@ -1874,7 +1874,7 @@ QDeclarativeOrganizerItemPriority::Priority QDeclarativeOrganizerTodoOccurrence:
  */
 void QDeclarativeOrganizerTodoOccurrence::setStatus(QDeclarativeOrganizerTodoProgress::StatusType status)
 {
-    for (QDeclarativeOrganizerItemDetail *detail : m_details) {
+    for (QDeclarativeOrganizerItemDetail *detail : std::as_const(m_details)) {
         if (QDeclarativeOrganizerItemDetail::TodoProgress == detail->type()) {
             QDeclarativeOrganizerTodoProgress *todoProgress = static_cast<QDeclarativeOrganizerTodoProgress *>(detail);
             if (todoProgress->status() != status) {
@@ -1909,7 +1909,7 @@ QDeclarativeOrganizerTodoProgress::StatusType QDeclarativeOrganizerTodoOccurrenc
  */
 void QDeclarativeOrganizerTodoOccurrence::setParentId(const QString &parentId)
 {
-    for (QDeclarativeOrganizerItemDetail *detail : m_details) {
+    for (QDeclarativeOrganizerItemDetail *detail : std::as_const(m_details)) {
         if (QDeclarativeOrganizerItemDetail::Parent == detail->type()) {
             QDeclarativeOrganizerItemParent *parent = static_cast<QDeclarativeOrganizerItemParent *>(detail);
             if (parent->parentId() != parentId) {

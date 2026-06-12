@@ -657,7 +657,7 @@ QList<QContactActionDescriptor> QContact::availableActions(const QString& servic
 {
     QList<QContactActionDescriptor> ret;
     QList<QContactActionDescriptor> allds = QContactActionManager::instance()->availableActions(*this);
-    for (const QContactActionDescriptor &d : allds) {
+    for (const QContactActionDescriptor &d : std::as_const(allds)) {
         if (serviceName.isEmpty() || d.serviceName() == serviceName) {
             ret.append(d);
         }

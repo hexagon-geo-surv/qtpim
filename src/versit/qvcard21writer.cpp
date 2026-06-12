@@ -65,7 +65,7 @@ void QVCard21Writer::encodeVersitProperty(const QVersitProperty& property)
         bool forceUtf8 = requiresUtf8(values);
 
         bool first = true;
-        for (QString value : values) {
+        for (QString value : std::as_const(values)) {
             if (!(value.isEmpty() && property.valueType() == QVersitProperty::ListType)) {
                 encodeVersitValue(parameters, value, forceUtf8);
                 if (!first) {
@@ -187,13 +187,13 @@ void QVCard21Writer::encodeParameters(const QMultiHash<QString,QString>& paramet
     // Sort the parameter names to yield deterministic ordering
     QList<QString> names = parameters.uniqueKeys();
     std::sort(names.begin(), names.end());
-    for (const QString& name : names) {
+    for (const QString& name : std::as_const(names)) {
         QStringList values = parameters.values(name);
         if (name == QStringLiteral("TYPE")) {
             // TYPE parameters should be sorted
             sortTypeValues(&values);
         }
-        for (const QString& value : values) {
+        for (const QString& value : std::as_const(values)) {
             writeString(QStringLiteral(";"));
             if (name.length() > 0 && name != QStringLiteral("TYPE")) {
                 writeString(name);

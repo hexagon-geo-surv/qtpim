@@ -59,12 +59,12 @@ public:
 
     void emitSharedSignals(QOrganizerCollectionChangeSet *cs)
     {
-        for (QOrganizerManagerEngine *engine : m_sharedEngines)
+        for (QOrganizerManagerEngine *engine : std::as_const(m_sharedEngines))
             cs->emitSignals(engine);
     }
     void emitSharedSignals(QOrganizerItemChangeSet* cs)
     {
-        for (QOrganizerManagerEngine *engine : m_sharedEngines)
+        for (QOrganizerManagerEngine *engine : std::as_const(m_sharedEngines))
             cs->emitSignals(engine);
     }
 

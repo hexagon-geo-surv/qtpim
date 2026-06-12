@@ -2095,7 +2095,7 @@ void tst_QContactManager::changeSet()
     changeSet.insertChangedContact(id, QList<QContactDetail::DetailType>());
     changeSet.insertChangedContacts(QList<QContactId>() << id, QList<QContactDetail::DetailType>());
     QCOMPARE(changeSet.changedContacts().size(), 1); // set, should only be added once.
-    QCOMPARE(changeSet.changedContacts().first().second.size(), 1); // only one changed contact ID
+    QCOMPARE(changeSet.changedContacts().constFirst().second.size(), 1); // only one changed contact ID
     QVERIFY(!changeSet.addedContacts().isEmpty());
     QVERIFY(!changeSet.changedContacts().isEmpty());
     QVERIFY(changeSet.removedContacts().isEmpty());
@@ -2123,7 +2123,7 @@ void tst_QContactManager::changeSet()
     QList<QContactId> l1, l2;
     // Bind to a named local: a range-for over the operator<< chain would dangle, as
     // operator<< returns a reference to the (non-extended) temporary (before C++23).
-    const QList<int> ns = QList<int>() << 1 << 1 << 1 << 2 << 2 << 3 << 3 << 4 << 4 << 4 << 5 << 10 << 9 << 8 << 8 << 8 << 7 << 7 << 6;
+    const QList<int> ns{1, 1, 1, 2, 2, 3, 3, 4, 4, 4, 5, 10, 9, 8, 8, 8, 7, 7, 6};
     for (int n : ns) {
         ((QRandomGenerator::global()->bounded(2)) ? l1 : l2).append(makeId("a", n));
     }
@@ -2134,7 +2134,7 @@ void tst_QContactManager::changeSet()
     const QSet<QContactId> expectedSet = QSet<QContactId>(l1.cbegin(), l1.cend()) | QSet<QContactId>(l2.cbegin(), l2.cend());
     QList<QContactId> expected(expectedSet.cbegin(), expectedSet.cend());
     std::sort(expected.begin(), expected.end());
-    QCOMPARE(changeSet.changedContacts().first().second, expected);
+    QCOMPARE(changeSet.changedContacts().constFirst().second, expected);
 
     changeSet.insertRemovedContacts(QList<QContactId>() << id);
     QVERIFY(changeSet.removedContacts().contains(id));
@@ -3246,7 +3246,7 @@ void tst_QContactManager::removeCollection()
     // check if the correct collection was removed
     QList<QContactCollection> collectionsAfterRemoval = cm->collections();
     QCOMPARE(collections.count() - 1, collectionsAfterRemoval.count());
-    for (const QContactCollection &col : collectionsAfterRemoval) {
+    for (const QContactCollection &col : std::as_const(collectionsAfterRemoval)) {
         collections.removeAll(col);
     }
     QCOMPARE(collections.count(), 1);

@@ -42,7 +42,7 @@ QVersitOrganizerImporterPrivate::QVersitOrganizerImporterPrivate(const QString& 
 
 QVersitOrganizerImporterPrivate::~QVersitOrganizerImporterPrivate()
 {
-    for (QVersitOrganizerHandler* pluginHandler : mPluginPropertyHandlers) {
+    for (QVersitOrganizerHandler* pluginHandler : std::as_const(mPluginPropertyHandlers)) {
         delete pluginHandler;
     }
 }
@@ -85,7 +85,7 @@ bool QVersitOrganizerImporterPrivate::importDocument(
             }
     }
     // run plugin handlers
-    for (QVersitOrganizerImporterPropertyHandler* handler : mPluginPropertyHandlers) {
+    for (QVersitOrganizerImporterPropertyHandler* handler : std::as_const(mPluginPropertyHandlers)) {
         handler->subDocumentProcessed(topLevel, subDocument, item);
     }
     // run property handlers
@@ -162,7 +162,7 @@ void QVersitOrganizerImporterPrivate::importProperty(
     }
 
     // run plugin handlers
-    for (QVersitOrganizerImporterPropertyHandler* handler : mPluginPropertyHandlers) {
+    for (QVersitOrganizerImporterPropertyHandler* handler : std::as_const(mPluginPropertyHandlers)) {
         handler->propertyProcessed(document, property, *item, &success, &updatedDetails);
     }
     // run the handler, if set
@@ -170,7 +170,7 @@ void QVersitOrganizerImporterPrivate::importProperty(
         mPropertyHandler->propertyProcessed(document, property, *item, &success, &updatedDetails);
     }
 
-    for (QOrganizerItemDetail detail : updatedDetails) {
+    for (QOrganizerItemDetail detail : std::as_const(updatedDetails)) {
         item->saveDetail(&detail);
     }
 }
@@ -724,7 +724,7 @@ bool QVersitOrganizerImporterPrivate::parseRecurRule(const QString& str, QOrgani
         return false;
     }
 
-    for (const QString& part : parts) {
+    for (const QString& part : std::as_const(parts)) {
         QStringList keyValue = part.split(QLatin1Char('='));
         if (keyValue.size() != 2)
             return false;
@@ -764,7 +764,7 @@ void QVersitOrganizerImporterPrivate::parseRecurFragment(const QString& key, con
     } else if (key == QStringLiteral("BYDAY")) {
         QSet<Qt::DayOfWeek> days;
         QStringList dayParts = value.split(QLatin1Char(','));
-        for (QString dayStr : dayParts) {
+        for (QString dayStr : std::as_const(dayParts)) {
             if (dayStr.length() < 2) {
                 // bad day specifier
                 continue;
@@ -800,7 +800,7 @@ void QVersitOrganizerImporterPrivate::parseRecurFragment(const QString& key, con
     } else if (key == QStringLiteral("BYMONTH")) {
         QSet<QOrganizerRecurrenceRule::Month> months;
         QStringList monthParts = value.split(QLatin1Char(','));
-        for (const QString& monthPart : monthParts) {
+        for (const QString& monthPart : std::as_const(monthParts)) {
             bool ok;
             int month = monthPart.toInt(&ok);
             if (ok && month >= 1 && month <= 12) {
@@ -836,7 +836,7 @@ QSet<int> QVersitOrganizerImporterPrivate::parseInts(const QString& str, int min
 {
     QSet<int> values;
     QStringList parts = str.split(QLatin1Char(','));
-    for (const QString& part : parts) {
+    for (const QString& part : std::as_const(parts)) {
         bool ok;
         int value = part.toInt(&ok);
         if (ok && value >= min && value <= max && value != 0) {
@@ -904,7 +904,7 @@ bool QVersitOrganizerImporterPrivate::parseDates(const QString& str, QSet<QDate>
     if (parts.size() == 0)
         return false;
 
-    for (const QString& part : parts) {
+    for (const QString& part : std::as_const(parts)) {
         QDate date = parseDate(part);
         if (date.isValid())
             *dates << date;

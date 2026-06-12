@@ -267,7 +267,7 @@ QDataStream& operator>>(QDataStream& in, QContactFetchHint& hint)
         quint32 optimizations;
         QSize dimensions;
         in >> detailTypeHintsHelper >> relationshipTypeHints >> optimizations >> dimensions;
-        for (quint32 hintType : detailTypeHintsHelper)
+        for (quint32 hintType : std::as_const(detailTypeHintsHelper))
             detailTypeHints.append(QContactDetail::DetailType(hintType));
 
         hint.setDetailTypesHint(detailTypeHints);

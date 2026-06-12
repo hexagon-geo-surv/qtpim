@@ -43,7 +43,7 @@ QVersitOrganizerExporterPrivate::QVersitOrganizerExporterPrivate(const QString& 
 
 QVersitOrganizerExporterPrivate::~QVersitOrganizerExporterPrivate()
 {
-    for (QVersitOrganizerHandler* pluginHandler : mPluginDetailHandlers) {
+    for (QVersitOrganizerHandler* pluginHandler : std::as_const(mPluginDetailHandlers)) {
         delete pluginHandler;
     }
 }
@@ -74,12 +74,12 @@ bool QVersitOrganizerExporterPrivate::exportItem(
         *error = QVersitOrganizerExporter::EmptyOrganizerError;
         return false;
     }
-    for (const QOrganizerItemDetail& detail : allDetails) {
+    for (const QOrganizerItemDetail& detail : std::as_const(allDetails)) {
         exportDetail(item, detail, document);
     }
 
     // run plugin handlers
-    for (QVersitOrganizerExporterDetailHandler* handler : mPluginDetailHandlers) {
+    for (QVersitOrganizerExporterDetailHandler* handler : std::as_const(mPluginDetailHandlers)) {
         handler->itemProcessed(item, document);
     }
     // run the handler, if set
@@ -136,7 +136,7 @@ void QVersitOrganizerExporterPrivate::exportDetail(
     }
 
     // run the plugin handler
-    for (QVersitOrganizerExporterDetailHandler* handler : mPluginDetailHandlers) {
+    for (QVersitOrganizerExporterDetailHandler* handler : std::as_const(mPluginDetailHandlers)) {
         handler->detailProcessed(item, detail, *document,
                                  &processedFields, &removedProperties, &generatedProperties);
     }
@@ -294,13 +294,13 @@ void QVersitOrganizerExporterPrivate::encodeRecurrence(
     QSet<QDate> rdates = recurrence.recurrenceDates();
     QSet<QDate> exdates = recurrence.exceptionDates();
     if (!rrules.isEmpty()) {
-        for (const QOrganizerRecurrenceRule& rrule : rrules) {
+        for (const QOrganizerRecurrenceRule& rrule : std::as_const(rrules)) {
             encodeRecurRule(QStringLiteral("RRULE"), rrule, generatedProperties);
         }
         *processedFields << QOrganizerItemRecurrence::FieldRecurrenceRules;
     }
     if (!exrules.isEmpty()) {
-        for (const QOrganizerRecurrenceRule& exrule : exrules) {
+        for (const QOrganizerRecurrenceRule& exrule : std::as_const(exrules)) {
             encodeRecurRule(QStringLiteral("EXRULE"), exrule, generatedProperties);
         }
         *processedFields << QOrganizerItemRecurrence::FieldExceptionRules;
@@ -358,7 +358,7 @@ void QVersitOrganizerExporterPrivate::encodeRecurRule(
         bool firstDay = true;
         QList<Qt::DayOfWeek> daysOfWeek(rule.daysOfWeek().cbegin(), rule.daysOfWeek().cend());
         std::sort(daysOfWeek.begin(), daysOfWeek.end());
-        for (Qt::DayOfWeek day : daysOfWeek) {
+        for (Qt::DayOfWeek day : std::as_const(daysOfWeek)) {
             if (!firstDay)
                 value.append(QStringLiteral(","));
             firstDay = false;
@@ -383,7 +383,7 @@ void QVersitOrganizerExporterPrivate::encodeRecurRule(
         QList<QOrganizerRecurrenceRule::Month> months(
                 rule.monthsOfYear().cbegin(), rule.monthsOfYear().cend());
         std::sort(months.begin(), months.end());
-        for (QOrganizerRecurrenceRule::Month month : months) {
+        for (QOrganizerRecurrenceRule::Month month : std::as_const(months)) {
             if (!firstMonth)
                 value.append(QStringLiteral(","));
             firstMonth = false;
@@ -409,7 +409,7 @@ void QVersitOrganizerExporterPrivate::appendInts(QString* str, const QSet<int>& 
     bool first = true;
     QList<int> intList(ints.cbegin(), ints.cend());
     std::sort(intList.begin(), intList.end());
-    for (int n : intList) {
+    for (int n : std::as_const(intList)) {
         if (!first)
             str->append(QStringLiteral(","));
         first = false;
@@ -458,7 +458,7 @@ void QVersitOrganizerExporterPrivate::encodeRecurDates(
 
     QList<QDate> dateList(dates.cbegin(), dates.cend());
     std::sort(dateList.begin(), dateList.end());
-    for (const QDate& dt : dateList) {
+    for (const QDate& dt : std::as_const(dateList)) {
         QString str;
         if (dt.isValid()) {
             str = dt.toString(QStringLiteral("yyyyMMdd"));

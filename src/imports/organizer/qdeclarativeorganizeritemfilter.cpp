@@ -296,7 +296,7 @@ void QDeclarativeOrganizerItemCollectionFilter::setIds(const QStringList &ids)
         }
     }
 
-    for (const QString &id : m_ids) {
+    for (const QString &id : std::as_const(m_ids)) {
         if (!ids.contains(id)) {
             m_ids = ids;
             emit valueChanged();
@@ -774,7 +774,7 @@ void QDeclarativeOrganizerItemIdFilter::setIds(const QStringList &ids)
         }
     }
 
-    for (const QString& id : m_ids) {
+    for (const QString& id : std::as_const(m_ids)) {
         if (!ids.contains(id)) {
             m_ids = ids;
             emit valueChanged();

@@ -237,7 +237,7 @@ void QVersitContactImporterPrivate::importProperty(
         mPropertyHandler2->propertyProcessed(document, property, *contact, &success, &updatedDetails);
     }
 
-    for (QContactDetail detail : updatedDetails) {
+    for (QContactDetail detail : std::as_const(updatedDetails)) {
         contact->saveDetail(&detail);
     }
 

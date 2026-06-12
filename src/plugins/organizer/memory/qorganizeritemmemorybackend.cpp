@@ -252,12 +252,12 @@ QList<QOrganizerItem> QOrganizerItemMemoryEngine::internalItemOccurrences(const 
         // Dates are interpreted as local time, but realPeriodStart is UTC
         const QDate localStartDate(realPeriodStart.toLocalTime().date());
         QSet<QOrganizerRecurrenceRule> xrules = recur.exceptionRules();
-        for (const QOrganizerRecurrenceRule& xrule : xrules) {
+        for (const QOrganizerRecurrenceRule& xrule : std::as_const(xrules)) {
             if (xrule.frequency() != QOrganizerRecurrenceRule::Invalid
                     && ((xrule.limitType() != QOrganizerRecurrenceRule::DateLimit) || (xrule.limitDate() >= localStartDate))) {
                 // we cannot skip it, since it applies in the given time period.
                 QList<QDateTime> xdatetimes = generateDateTimes(initialDateTime, xrule, realPeriodStart, realPeriodEnd, 50); // max count of 50 is arbitrary...
-                for (const QDateTime& xdatetime : xdatetimes)
+                for (const QDateTime& xdatetime : std::as_const(xdatetimes))
                     xdates += xdatetime.toLocalTime().date();
             }
         }
@@ -277,12 +277,12 @@ QList<QOrganizerItem> QOrganizerItemMemoryEngine::internalItemOccurrences(const 
     if (realPeriodStart.isValid()) {
         const QDate localStartDate(realPeriodStart.toLocalTime().date());
         QSet<QOrganizerRecurrenceRule> rrules = recur.recurrenceRules();
-        for (const QOrganizerRecurrenceRule& rrule : rrules) {
+        for (const QOrganizerRecurrenceRule& rrule : std::as_const(rrules)) {
             if (rrule.frequency() != QOrganizerRecurrenceRule::Invalid
                     && ((rrule.limitType() != QOrganizerRecurrenceRule::DateLimit) || (rrule.limitDate() >= localStartDate))) {
                 // we cannot skip it, since it applies in the given time period.
                 QList<QDateTime> rdatetimes = generateDateTimes(initialDateTime, rrule, realPeriodStart, realPeriodEnd, 50); // max count of 50 is arbitrary...
-                for (const QDateTime& rdatetime : rdatetimes)
+                for (const QDateTime& rdatetime : std::as_const(rdatetimes))
                     rdateMap.insert(rdatetime, 0);
             }
         }
@@ -298,7 +298,7 @@ QList<QOrganizerItem> QOrganizerItemMemoryEngine::internalItemOccurrences(const 
     }
 
     // now for each rdate which isn't also an xdate
-    for (const QDateTime& rdate : rdates) {
+    for (const QDateTime& rdate : std::as_const(rdates)) {
         if (rdate >= realPeriodStart && rdate <= realPeriodEnd) {
             const QDate localRDate(rdate.toLocalTime().date());
             if (!xdates.contains(localRDate)) {
@@ -319,7 +319,7 @@ QList<QOrganizerItem> QOrganizerItemMemoryEngine::internalItemOccurrences(const 
     if (sortItems) {
         // should we always sort if a maxCount is given?
         QMultiMap<QDateTime, QOrganizerItem> defaultSorted;
-        for (QOrganizerItem item : retn)
+        for (const QOrganizerItem &item : std::as_const(retn))
             QOrganizerManagerEngine::addDefaultSorted(&defaultSorted, item);
 
         retn = defaultSorted.values();
@@ -462,7 +462,7 @@ void QOrganizerItemMemoryEngine::addItemRecurrences(QList<QOrganizerItem>& sorte
 
     QList<QOrganizerItem> recItems = internalItemOccurrences(c, startDate, endDate, forExport ? 1 : 50, false, false, 0, &error); // XXX TODO: why maxcount of 50?
     if (filter.type() == QOrganizerItemFilter::DefaultFilter) {
-        for (const QOrganizerItem& oi : recItems) {
+        for (const QOrganizerItem& oi : std::as_const(recItems)) {
             QOrganizerManagerEngine::addSorted(&sorted, forExport ? c : oi, sortOrders);
             if (forExport)
                 parentsAdded->insert(c.id());
@@ -552,7 +552,7 @@ bool QOrganizerItemMemoryEngine::storeItem(QOrganizerItem* theOrganizerItem, QOr
                             occurrenceIds.removeOne(occurrenceId);
                     }
                 }
-                for (const QOrganizerItemId &occurrenceId : occurrenceIds)
+                for (const QOrganizerItemId &occurrenceId : std::as_const(occurrenceIds))
                     removeItem(occurrenceId, changeSet, &occurrenceError);
             }
         }
@@ -671,7 +671,7 @@ bool QOrganizerItemMemoryEngine::fixOccurrenceReferences(QOrganizerItem* theItem
             } else {
                 // guid set but not parentId
                 // find an item with the given guid
-                for (const QOrganizerItem& item : d->m_idToItemHash) {
+                for (const QOrganizerItem& item : std::as_const(d->m_idToItemHash)) {
                     if (item.guid() == guid) {
                         parentId = item.id();
                         break;
@@ -832,7 +832,7 @@ bool QOrganizerItemMemoryEngine::saveItems(QList<QOrganizerItem> *items, const Q
                 // QOrganizerItemPrivate::removeOnly() is not exported, so we can only do this...
                 for (QOrganizerItemDetail::DetailType mask : detailMask) {
                     QList<QOrganizerItemDetail> details(itemToSave.details(mask));
-                    for (QOrganizerItemDetail detail : details)
+                    for (QOrganizerItemDetail detail : std::as_const(details))
                         itemToSave.removeDetail(&detail);
                 }
             } else if (errorMap->contains(i)) {
@@ -850,7 +850,7 @@ bool QOrganizerItemMemoryEngine::saveItems(QList<QOrganizerItem> *items, const Q
             // but that would duplicate the checks for display label etc
             for (QOrganizerItemDetail::DetailType name : detailMask) {
                 QList<QOrganizerItemDetail> details = item.details(name);
-                for (QOrganizerItemDetail detail : details)
+                for (QOrganizerItemDetail detail : std::as_const(details))
                     itemToSave.saveDetail(&detail);
             }
             savedToOriginalMap.append(i);
@@ -899,7 +899,7 @@ bool QOrganizerItemMemoryEngine::removeItem(const QOrganizerItemId& organizerite
 
     // if it is a parent item, remove any children.
     QList<QOrganizerItemId> childrenIds = d->m_parentIdToChildIdHash.values(organizeritemId);
-    for (const QOrganizerItemId& childId : childrenIds) {
+    for (const QOrganizerItemId& childId : std::as_const(childrenIds)) {
         // remove the child occurrence from our lists.
         d->m_idToItemHash.remove(childId);
         d->m_itemsInCollectionsHash.remove(d->m_itemsInCollectionsHash.key(childId), childId);

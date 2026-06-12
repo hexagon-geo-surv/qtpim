@@ -193,7 +193,7 @@ QList<QContactId> QContactMemoryEngine::contactIds(const QContactFilter &filter,
 
         /* Extract the ids */
         QList<QContactId> ids;
-        for (const QContact &c : clist)
+        for (const QContact &c : std::as_const(clist))
             ids.append(c.id());
 
         return ids;
@@ -874,12 +874,12 @@ void QContactMemoryEngine::partiallySyncDetails(QContact *to, const QContact &fr
         toDetails.append(to->details(type));
     }
     // check details to remove
-    for (QContactDetail detail : toDetails) {
+    for (QContactDetail detail : std::as_const(toDetails)) {
         if (!fromDetails.contains(detail))
             to->removeDetail(&detail);
     }
     // check details to save
-    for (QContactDetail detail : fromDetails) {
+    for (QContactDetail detail : std::as_const(fromDetails)) {
         if (!toDetails.contains(detail))
             to->saveDetail(&detail);
     }

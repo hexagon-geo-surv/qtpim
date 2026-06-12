@@ -81,7 +81,7 @@ void QVCard30Writer::encodeVersitProperty(const QVersitProperty& property)
             separator = QStringLiteral(",");
         }
         bool first = true;
-        for (QString value : values) {
+        for (QString value : std::as_const(values)) {
             if (!(value.isEmpty() && property.valueType() == QVersitProperty::ListType)) {
                 if (!first) {
                     renderedValue += separator;
@@ -115,7 +115,7 @@ void QVCard30Writer::encodeParameters(const QMultiHash<QString,QString>& paramet
     // Sort the parameter names to yield deterministic ordering
     QList<QString> names = parameters.uniqueKeys();
     std::sort(names.begin(), names.end());
-    for (QString nameString : names) {
+    for (QString nameString : std::as_const(names)) {
         writeString(QStringLiteral(";"));
         QStringList values = parameters.values(nameString);
         backSlashEscape(&nameString);
