@@ -126,6 +126,11 @@ bool QVCard21Writer::requiresUtf8(const QStringList& values) {
         if (mCodecIsAscii && containsNonAscii(value)) {
             return true;
         }
+        // otherwise, if the configured codec cannot represent the value (e.g. Latin-1 and a
+        // character > U+00FF), encode it as UTF-8
+        if (!mCodecIsAscii && !codecCanEncode(value)) {
+            return true;
+        }
     }
     return false;
 }
@@ -138,7 +143,10 @@ void QVCard21Writer::encodeVersitValue(QMultiHash<QString,QString>& parameters, 
     // Add the CHARSET parameter, if necessary and encode in UTF-8 later
     if (forceUtf8
             // if codec is ASCII and there is a character > U+007F in value, encode it as UTF-8
-            || (mCodecIsAscii && containsNonAscii(value))) {
+            || (mCodecIsAscii && containsNonAscii(value))
+            // if the configured codec cannot represent the value (e.g. Latin-1 and a
+            // character > U+00FF), encode it as UTF-8
+            || (!mCodecIsAscii && !codecCanEncode(value))) {
         parameters.replace(QStringLiteral("CHARSET"), QStringLiteral("UTF-8"));
         value = QString::fromLatin1(encodeUtf8(value));
     }

@@ -67,6 +67,22 @@ void QVersitDocumentWriter::setAsciiCodec()
 }
 
 /*!
+  Returns true if and only if the configured codec can encode \a value without data loss.
+  Some single-byte codecs (e.g. Latin-1) silently replace unrepresentable characters rather
+  than reporting an error, so a round-trip comparison is used to detect such loss.
+ */
+bool QVersitDocumentWriter::codecCanEncode(const QString& value) const
+{
+    QStringEncoder encoder(mEncoding);
+    const QByteArray encoded = encoder.encode(value);
+    if (encoder.hasError())
+        return false;
+    QStringDecoder decoder(mEncoding);
+    const QString roundTrip = decoder.decode(encoded);
+    return !decoder.hasError() && roundTrip == value;
+}
+
+/*!
   Sets the device to write to.
   */
 void QVersitDocumentWriter::setDevice(QIODevice *device)

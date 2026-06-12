@@ -49,6 +49,8 @@ public:
     void writeStringQp(const QString& value);
     void writeCrlf();
 
+    bool codecCanEncode(const QString& value) const;
+
 protected:
     QVersitDocument::VersitType mType;
     QIODevice* mDevice;
