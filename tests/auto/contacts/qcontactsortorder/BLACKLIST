@@ -1,0 +1,7 @@
+# Case-sensitive comparison relies on QString::localeAwareCompare(), which needs
+# ICU collation to order lower-case before upper-case. QNX has no ICU, so the
+# comparison falls back to code-point order and the sign is reversed.
+[compareContact:asc, cs]
+qnx
+[compareContact:desc, cs]
+qnx

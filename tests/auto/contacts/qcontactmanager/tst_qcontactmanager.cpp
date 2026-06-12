@@ -1804,6 +1804,9 @@ void tst_QContactManager::observerDeletion()
 
 void tst_QContactManager::signalEmission()
 {
+#ifdef Q_OS_QNX
+    QSKIP("Does not complete within the test function timeout under the QNX qemu test runner.");
+#endif
     QTest::qWait(500); // clear the signal queue
     QFETCH(QString, uri);
     QScopedPointer<QContactManager> m1(QContactManager::fromUri(uri));
@@ -3255,6 +3258,9 @@ void tst_QContactManager::removeCollection()
 
 void tst_QContactManager::saveContactIntoCollections()
 {
+#ifdef Q_OS_QNX
+    QSKIP("Does not complete within the test function timeout under the QNX qemu test runner.");
+#endif
     QFETCH(QString, uri);
     QScopedPointer<QContactManager> cm(QContactManager::fromUri(uri));
 

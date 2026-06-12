@@ -1,0 +1,5 @@
+# The versit handler plugins are not loaded on the QNX target.
+[testImporterPlugins]
+qnx
+[testExporterPlugins]
+qnx

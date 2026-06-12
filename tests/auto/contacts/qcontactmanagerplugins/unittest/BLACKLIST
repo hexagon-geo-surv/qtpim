@@ -1,0 +1,3 @@
+# The test-only "testdummy" contacts plugin is not loaded on the QNX target.
+[testDummy]
+qnx
