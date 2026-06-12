@@ -25,20 +25,20 @@
 
 QT_BEGIN_NAMESPACE_ORGANIZER
 
-class QOrganizerCollectionData : public QSharedData
+class QOrganizerCollectionPrivate : public QSharedData
 {
 public:
-    QOrganizerCollectionData()
+    QOrganizerCollectionPrivate()
         : QSharedData()
     {
     }
 
-    QOrganizerCollectionData(const QOrganizerCollectionData &other)
+    QOrganizerCollectionPrivate(const QOrganizerCollectionPrivate &other)
         : QSharedData(other), m_metaData(other.m_metaData), m_id(other.m_id)
     {
     }
 
-    ~QOrganizerCollectionData()
+    ~QOrganizerCollectionPrivate()
     {
     }
 

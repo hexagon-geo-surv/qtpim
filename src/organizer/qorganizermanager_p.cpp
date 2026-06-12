@@ -16,10 +16,10 @@
 
 QT_BEGIN_NAMESPACE_ORGANIZER
 
-QMultiHash<QString, QOrganizerManagerEngineFactory *> QOrganizerManagerData::m_engines;
-bool QOrganizerManagerData::m_discovered;
-bool QOrganizerManagerData::m_discoveredStatic;
-QStringList QOrganizerManagerData::m_pluginPaths;
+QMultiHash<QString, QOrganizerManagerEngineFactory *> QOrganizerManagerPrivate::m_engines;
+bool QOrganizerManagerPrivate::m_discovered;
+bool QOrganizerManagerPrivate::m_discoveredStatic;
+QStringList QOrganizerManagerPrivate::m_pluginPaths;
 
 #ifndef QT_NO_LIBRARY
 Q_GLOBAL_STATIC_WITH_ARGS(QFactoryLoader, loader, (QT_ORGANIZER_MANAGER_ENGINE_INTERFACE, QLatin1String("/organizer")))
@@ -27,14 +27,14 @@ Q_GLOBAL_STATIC_WITH_ARGS(QFactoryLoader, loader, (QT_ORGANIZER_MANAGER_ENGINE_I
 
 static void qOrganizerItemsCleanEngines()
 {
-    QOrganizerManagerData::m_discovered = false;
-    QList<QOrganizerManagerEngineFactory *> factories = QOrganizerManagerData::m_engines.values();
+    QOrganizerManagerPrivate::m_discovered = false;
+    QList<QOrganizerManagerEngineFactory *> factories = QOrganizerManagerPrivate::m_engines.values();
     for (int i=0; i < factories.count(); i++)
         delete factories.at(i);
-    QOrganizerManagerData::m_engines.clear();
+    QOrganizerManagerPrivate::m_engines.clear();
 }
 
-void QOrganizerManagerData::createEngine(const QString &managerName, const QMap<QString, QString> &parameters)
+void QOrganizerManagerPrivate::createEngine(const QString &managerName, const QMap<QString, QString> &parameters)
 {
     m_engine = 0;
 
@@ -76,7 +76,7 @@ void QOrganizerManagerData::createEngine(const QString &managerName, const QMap<
     }
 }
 
-void QOrganizerManagerData::loadStaticFactories()
+void QOrganizerManagerPrivate::loadStaticFactories()
 {
     if (!m_discoveredStatic) {
 #if !defined QT_NO_DEBUG
@@ -113,7 +113,7 @@ void QOrganizerManagerData::loadStaticFactories()
 }
 
 /* Plugin loader */
-void QOrganizerManagerData::loadFactories()
+void QOrganizerManagerPrivate::loadFactories()
 {
 #if !defined QT_NO_DEBUG
     const bool showDebug = qgetenv("QT_DEBUG_PLUGINS").toInt() > 0;
@@ -158,19 +158,19 @@ void QOrganizerManagerData::loadFactories()
     }
 }
 
-void QOrganizerManagerData::registerObserver(QOrganizerItemObserver *observer)
+void QOrganizerManagerPrivate::registerObserver(QOrganizerItemObserver *observer)
 {
     m_observerForItem.insert(observer->itemId(), observer);
 }
 
-void QOrganizerManagerData::unregisterObserver(QOrganizerItemObserver *observer)
+void QOrganizerManagerPrivate::unregisterObserver(QOrganizerItemObserver *observer)
 {
     QOrganizerItemId key = m_observerForItem.key(observer);
     if (!key.isNull())
         m_observerForItem.remove(key, observer);
 }
 
-void QOrganizerManagerData::_q_itemsUpdated(const QList<QOrganizerItemId> &ids, const QList<QOrganizerItemDetail::DetailType> &typesChanged)
+void QOrganizerManagerPrivate::handleItemsChanged(const QList<QOrganizerItemId> &ids, const QList<QOrganizerItemDetail::DetailType> &typesChanged)
 {
     for (const QOrganizerItemId &id : ids) {
         const QList<QOrganizerItemObserver *> observers = m_observerForItem.values(id);
@@ -179,7 +179,7 @@ void QOrganizerManagerData::_q_itemsUpdated(const QList<QOrganizerItemId> &ids, 
     }
 }
 
-void QOrganizerManagerData::_q_itemsDeleted(const QList<QOrganizerItemId> &ids)
+void QOrganizerManagerPrivate::handleItemsRemoved(const QList<QOrganizerItemId> &ids)
 {
     for (const QOrganizerItemId &id : ids) {
         const QList<QOrganizerItemObserver *> observers = m_observerForItem.values(id);
@@ -188,15 +188,10 @@ void QOrganizerManagerData::_q_itemsDeleted(const QList<QOrganizerItemId> &ids)
     }
 }
 
-QOrganizerManagerData *QOrganizerManagerData::get(const QOrganizerManager *manager)
-{
-    return manager->d;
-}
-
-QOrganizerManagerEngine *QOrganizerManagerData::engine(const QOrganizerManager *manager)
+QOrganizerManagerEngine *QOrganizerManagerPrivate::engine(const QOrganizerManager *manager)
 {
     if (manager)
-        return manager->d->m_engine;
+        return get(manager)->m_engine;
     return 0;
 }
 
@@ -277,7 +272,7 @@ static inline QByteArray unescapeColon(const QByteArray &param)
     \a managerName, \a params and \a managerUri and \a localId.
     Returns true if the parts could be parsed successfully, false otherwise.
 */
-bool QOrganizerManagerData::parseUri(const QString &uriString, QString *managerName, QMap<QString, QString> *params, bool strict)
+bool QOrganizerManagerPrivate::parseUri(const QString &uriString, QString *managerName, QMap<QString, QString> *params, bool strict)
 {
     // Format: qtorganizer:<managerid>:<key>=<value>&<key>=<value>
     // we assume that the prefix, managerid, and params cannot contain `:', `=', or `&'
@@ -332,7 +327,7 @@ bool QOrganizerManagerData::parseUri(const QString &uriString, QString *managerN
     If \a localId is non-null, the generated ID string is suitable for
     passing to QOrganizerCollectionId::fromString() or QOrganizerItemId::fromString().
 */
-QString QOrganizerManagerData::buildUri(const QString &managerName, const QMap<QString, QString> &params)
+QString QOrganizerManagerPrivate::buildUri(const QString &managerName, const QMap<QString, QString> &params)
 {
     // Format: qtorganizer:<managerid>:<key>=<value>&<key>=<value>
     // if the prefix, managerid, param keys, or param values contain `:', `=', or `&',
@@ -356,7 +351,7 @@ QString QOrganizerManagerData::buildUri(const QString &managerName, const QMap<Q
     \a managerName, \a params, \a managerUri and \a localId.
     Returns true if the parts could be parsed successfully, false otherwise.
 */
-bool QOrganizerManagerData::parseIdData(const QByteArray &idData, QString *managerName, QMap<QString, QString> *params, QString *managerUri, QByteArray *localId)
+bool QOrganizerManagerPrivate::parseIdData(const QByteArray &idData, QString *managerName, QMap<QString, QString> *params, QString *managerUri, QByteArray *localId)
 {
     // Format: <managerUri>:<localId>
     int splitIndex = idData.lastIndexOf(':');
@@ -381,7 +376,7 @@ bool QOrganizerManagerData::parseIdData(const QByteArray &idData, QString *manag
     If \a localId is non-null, the generated ID string is suitable for
     passing to QOrganizerCollectionId::fromString() or QOrganizerItemId::fromString().
 */
-QByteArray QOrganizerManagerData::buildIdData(const QString &managerUri, const QByteArray &localId)
+QByteArray QOrganizerManagerPrivate::buildIdData(const QString &managerUri, const QByteArray &localId)
 {
     // Format: <managerUri>:<localId>
     // localId cannot contain ':' so it must be escaped
@@ -397,7 +392,7 @@ QByteArray QOrganizerManagerData::buildIdData(const QString &managerUri, const Q
     If \a localId is non-null, the generated ID string is suitable for
     passing to QOrganizerCollectionId::fromString() or QOrganizerItemId::fromString().
 */
-QByteArray QOrganizerManagerData::buildIdData(const QString &managerName, const QMap<QString, QString> &params, const QByteArray &localId)
+QByteArray QOrganizerManagerPrivate::buildIdData(const QString &managerName, const QMap<QString, QString> &params, const QByteArray &localId)
 {
     return buildIdData(buildUri(managerName, params), localId);
 }
@@ -407,7 +402,7 @@ QByteArray QOrganizerManagerData::buildIdData(const QString &managerName, const 
     This instance should be preferred when constructing ID objects in order to promote
     data sharing of the URI string.
 */
-QString QOrganizerManagerData::cachedUri(const QString &managerUri)
+QString QOrganizerManagerPrivate::cachedUri(const QString &managerUri)
 {
     static QStringList managerUris;
 

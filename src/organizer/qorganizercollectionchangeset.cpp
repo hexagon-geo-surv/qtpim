@@ -22,7 +22,7 @@ QT_BEGIN_NAMESPACE_ORGANIZER
     Constructs a new change set.
  */
 QOrganizerCollectionChangeSet::QOrganizerCollectionChangeSet()
-    : d(new QOrganizerCollectionChangeSetData)
+    : d(new QOrganizerCollectionChangeSetPrivate)
 {
 }
 

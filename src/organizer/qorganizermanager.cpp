@@ -4,6 +4,8 @@
 #include "qorganizermanager.h"
 #include "qorganizermanager_p.h"
 
+#include <QtCore/private/qobject_p.h>
+
 QT_BEGIN_NAMESPACE_ORGANIZER
 
 /*!
@@ -164,8 +166,8 @@ QStringList QOrganizerManager::availableManagers()
 {
     QStringList ret;
     ret << QStringLiteral("invalid");
-    QOrganizerManagerData::loadFactories();
-    ret.append(QOrganizerManagerData::m_engines.keys());
+    QOrganizerManagerPrivate::loadFactories();
+    ret.append(QOrganizerManagerPrivate::m_engines.keys());
 
     // now swizzle the default engine to pole position
 #if defined(Q_ORGANIZER_DEFAULT_ENGINE)
@@ -183,7 +185,7 @@ QStringList QOrganizerManager::availableManagers()
  */
 bool QOrganizerManager::parseUri(const QString &uri, QString *managerName, QMap<QString, QString> *params)
 {
-    return QOrganizerManagerData::parseUri(uri, managerName, params, false);
+    return QOrganizerManagerPrivate::parseUri(uri, managerName, params, false);
 }
 
 /*!
@@ -192,7 +194,7 @@ bool QOrganizerManager::parseUri(const QString &uri, QString *managerName, QMap<
  */
 QString QOrganizerManager::buildUri(const QString &managerName, const QMap<QString, QString> &params)
 {
-    return QOrganizerManagerData::buildUri(managerName, params);
+    return QOrganizerManagerPrivate::buildUri(managerName, params);
 }
 
 /*!
@@ -220,7 +222,7 @@ QOrganizerManager *QOrganizerManager::fromUri(const QString &uri, QObject *paren
     platform will be created.
  */
 QOrganizerManager::QOrganizerManager(QObject *parent)
-    : QObject(parent), d(new QOrganizerManagerData)
+    : QObject(*new QOrganizerManagerPrivate, parent)
 {
     createEngine(QString(), QMap<QString, QString>());
 }
@@ -234,13 +236,14 @@ QOrganizerManager::QOrganizerManager(QObject *parent)
     does not exist, an invalid backend is created.
  */
 QOrganizerManager::QOrganizerManager(const QString &managerName, const QMap<QString, QString> &parameters, QObject *parent)
-    : QObject(parent), d(new QOrganizerManagerData)
+    : QObject(*new QOrganizerManagerPrivate, parent)
 {
     createEngine(managerName, parameters);
 }
 
 void QOrganizerManager::createEngine(const QString &managerName, const QMap<QString, QString> &parameters)
 {
+    Q_D(QOrganizerManager);
     d->createEngine(managerName, parameters);
 
     connect(d->m_engine, &QOrganizerManagerEngine::dataChanged,
@@ -261,13 +264,10 @@ void QOrganizerManager::createEngine(const QString &managerName, const QMap<QStr
             this, &QOrganizerManager::collectionsRemoved);
     connect(d->m_engine, &QOrganizerManagerEngine::collectionsModified,
             this, &QOrganizerManager::collectionsModified);
-    // These target Q_PRIVATE_SLOTs, which cannot be referenced by member-function
-    // pointer, so the string-based form is used with fully-qualified parameter types
-    // to match the moc-generated (and now fully-qualified) signal/slot signatures.
-    connect(d->m_engine, SIGNAL(itemsChanged(QList<QtOrganizer::QOrganizerItemId>,QList<QtOrganizer::QOrganizerItemDetail::DetailType>)),
-            this, SLOT(_q_itemsUpdated(QList<QtOrganizer::QOrganizerItemId>,QList<QtOrganizer::QOrganizerItemDetail::DetailType>)));
-    connect(d->m_engine, SIGNAL(itemsRemoved(QList<QtOrganizer::QOrganizerItemId>)),
-            this, SLOT(_q_itemsDeleted(QList<QtOrganizer::QOrganizerItemId>)));
+    QObjectPrivate::connect(d->m_engine, &QOrganizerManagerEngine::itemsChanged,
+                            d, &QOrganizerManagerPrivate::handleItemsChanged);
+    QObjectPrivate::connect(d->m_engine, &QOrganizerManagerEngine::itemsRemoved,
+                            d, &QOrganizerManagerPrivate::handleItemsRemoved);
 }
 
 /*!
@@ -275,7 +275,6 @@ void QOrganizerManager::createEngine(const QString &managerName, const QMap<QStr
  */
 QOrganizerManager::~QOrganizerManager()
 {
-    delete d;
 }
 
 /*!
@@ -310,6 +309,7 @@ QOrganizerManager::~QOrganizerManager()
  */
 QOrganizerManager::Error QOrganizerManager::error() const
 {
+    Q_D(const QOrganizerManager);
     return d->m_lastError;
 }
 
@@ -326,6 +326,7 @@ QOrganizerManager::Error QOrganizerManager::error() const
  */
 QMap<int, QOrganizerManager::Error> QOrganizerManager::errorMap() const
 {
+    Q_D(const QOrganizerManager);
     return d->m_lastErrorMap;
 }
 
@@ -354,6 +355,7 @@ QList<QOrganizerItem> QOrganizerManager::itemOccurrences(const QOrganizerItem &p
                                                          const QOrganizerItemFetchHint &fetchHint)
 {
     QOrganizerManagerSyncOpErrorHolder h(this);
+    Q_D(QOrganizerManager);
     return d->m_engine->itemOccurrences(parentItem, startDateTime, endDateTime, maxCount, fetchHint, &h.error);
 }
 
@@ -374,6 +376,7 @@ QList<QOrganizerItemId> QOrganizerManager::itemIds(const QDateTime &startDateTim
                                                    const QOrganizerItemFilter &filter, const QList<QOrganizerItemSortOrder> &sortOrders)
 {
     QOrganizerManagerSyncOpErrorHolder h(this);
+    Q_D(QOrganizerManager);
     return d->m_engine->itemIds(filter, startDateTime, endDateTime, sortOrders, &h.error);
 }
 
@@ -407,6 +410,7 @@ QList<QOrganizerItem> QOrganizerManager::items(const QDateTime &startDateTime, c
                                                const QOrganizerItemFetchHint &fetchHint)
 {
     QOrganizerManagerSyncOpErrorHolder h(this);
+    Q_D(QOrganizerManager);
     return d->m_engine->items(filter, startDateTime, endDateTime, maxCount, sortOrders, fetchHint, &h.error);
 }
 
@@ -439,6 +443,7 @@ QList<QOrganizerItem> QOrganizerManager::itemsForExport(const QDateTime &startDa
                                                         const QOrganizerItemFetchHint &fetchHint)
 {
     QOrganizerManagerSyncOpErrorHolder h(this);
+    Q_D(QOrganizerManager);
     return d->m_engine->itemsForExport(startDateTime, endDateTime, filter, sortOrders, fetchHint, &h.error);
 }
 
@@ -462,6 +467,7 @@ QList<QOrganizerItem> QOrganizerManager::itemsForExport(const QDateTime &startDa
  */
 QList<QOrganizerItem> QOrganizerManager::items(const QList<QOrganizerItemId> &itemIds, const QOrganizerItemFetchHint &fetchHint)
 {
+    Q_D(QOrganizerManager);
     QOrganizerManagerSyncOpErrorHolder h(this);
     return d->m_engine->items(itemIds, fetchHint, &h.errorMap, &h.error);
 }
@@ -562,6 +568,7 @@ bool QOrganizerManager::removeItem(const QOrganizerItem *item)
  */
 bool QOrganizerManager::saveItems(QList<QOrganizerItem>* items, const QList<QOrganizerItemDetail::DetailType> &detailMask)
 {
+    Q_D(QOrganizerManager);
     QOrganizerManagerSyncOpErrorHolder h(this);
     if (!items) {
         h.error = QOrganizerManager::BadArgumentError;
@@ -582,6 +589,7 @@ bool QOrganizerManager::saveItems(QList<QOrganizerItem>* items, const QList<QOrg
  */
 bool QOrganizerManager::removeItems(const QList<QOrganizerItemId> &itemIds)
 {
+    Q_D(QOrganizerManager);
     QOrganizerManagerSyncOpErrorHolder h(this);
     if (itemIds.isEmpty()) {
         h.error = QOrganizerManager::BadArgumentError;
@@ -612,6 +620,7 @@ bool QOrganizerManager::removeItems(const QList<QOrganizerItemId> &itemIds)
 
 bool QOrganizerManager::removeItems(const QList<QOrganizerItem> *items)
 {
+    Q_D(QOrganizerManager);
     QOrganizerManagerSyncOpErrorHolder h(this);
     if (items->isEmpty()) {
         h.error = QOrganizerManager::BadArgumentError;
@@ -627,6 +636,7 @@ bool QOrganizerManager::removeItems(const QList<QOrganizerItem> *items)
  */
 QOrganizerCollectionId QOrganizerManager::defaultCollectionId() const
 {
+    Q_D(const QOrganizerManager);
     return d->m_engine->defaultCollectionId();
 }
 
@@ -635,6 +645,7 @@ QOrganizerCollectionId QOrganizerManager::defaultCollectionId() const
  */
 QOrganizerCollection QOrganizerManager::collection(const QOrganizerCollectionId& collectionId) const
 {
+    Q_D(QOrganizerManager);
     QOrganizerManagerSyncOpErrorHolder h(this);
     return d->m_engine->collection(collectionId, &h.error);
 }
@@ -644,6 +655,7 @@ QOrganizerCollection QOrganizerManager::collection(const QOrganizerCollectionId&
  */
 QList<QOrganizerCollection> QOrganizerManager::collections() const
 {
+    Q_D(QOrganizerManager);
     QOrganizerManagerSyncOpErrorHolder h(this);
     return d->m_engine->collections(&h.error);
 }
@@ -663,6 +675,7 @@ QList<QOrganizerCollection> QOrganizerManager::collections() const
  */
 bool QOrganizerManager::saveCollection(QOrganizerCollection* collection)
 {
+    Q_D(QOrganizerManager);
     QOrganizerManagerSyncOpErrorHolder h(this);
     if (collection) {
         return d->m_engine->saveCollection(collection, &h.error);
@@ -684,6 +697,7 @@ bool QOrganizerManager::saveCollection(QOrganizerCollection* collection)
  */
 bool QOrganizerManager::removeCollection(const QOrganizerCollectionId &collectionId)
 {
+    Q_D(QOrganizerManager);
     QOrganizerManagerSyncOpErrorHolder h(this);
     return d->m_engine->removeCollection(collectionId, &h.error);
 }
@@ -693,6 +707,7 @@ bool QOrganizerManager::removeCollection(const QOrganizerCollectionId &collectio
  */
 QList<QOrganizerItemFilter::FilterType> QOrganizerManager::supportedFilters() const
 {
+    Q_D(const QOrganizerManager);
     return d->m_engine->supportedFilters();
 }
 
@@ -701,6 +716,7 @@ QList<QOrganizerItemFilter::FilterType> QOrganizerManager::supportedFilters() co
  */
 QList<QOrganizerItemDetail::DetailType> QOrganizerManager::supportedItemDetails(QOrganizerItemType::ItemType itemType) const
 {
+    Q_D(const QOrganizerManager);
     return d->m_engine->supportedItemDetails(itemType);
 }
 
@@ -709,6 +725,7 @@ QList<QOrganizerItemDetail::DetailType> QOrganizerManager::supportedItemDetails(
  */
 QList<QOrganizerItemType::ItemType> QOrganizerManager::supportedItemTypes() const
 {
+    Q_D(const QOrganizerManager);
     return d->m_engine->supportedItemTypes();
 }
 
@@ -717,6 +734,7 @@ QList<QOrganizerItemType::ItemType> QOrganizerManager::supportedItemTypes() cons
 */
 QString QOrganizerManager::managerName() const
 {
+    Q_D(const QOrganizerManager);
     return d->m_engine->managerName();
 }
 
@@ -728,6 +746,7 @@ QString QOrganizerManager::managerName() const
 */
 QMap<QString, QString> QOrganizerManager::managerParameters() const
 {
+    Q_D(const QOrganizerManager);
     return d->m_engine->managerParameters();
 }
 
@@ -746,6 +765,7 @@ int QOrganizerManager::managerVersion() const
  */
 QString QOrganizerManager::managerUri() const
 {
+    Q_D(const QOrganizerManager);
     return d->m_engine->managerUri();
 }
 

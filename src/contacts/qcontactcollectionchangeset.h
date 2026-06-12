@@ -18,7 +18,7 @@ QT_BEGIN_NAMESPACE_CONTACTS
 
 class QContactManagerEngine;
 
-class QContactCollectionChangeSetData;
+class QContactCollectionChangeSetPrivate;
 class Q_CONTACTS_EXPORT QContactCollectionChangeSet
 {
 public:
@@ -54,7 +54,7 @@ public:
     void emitSignals(QContactManagerEngine *engine) const;
 
 private:
-    QSharedDataPointer<QContactCollectionChangeSetData> d;
+    QSharedDataPointer<QContactCollectionChangeSetPrivate> d;
 };
 
 QT_END_NAMESPACE_CONTACTS

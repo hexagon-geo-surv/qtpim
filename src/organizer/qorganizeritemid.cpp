@@ -126,7 +126,7 @@ QString QOrganizerItemId::toString() const
     if (!isNull()) {
         // Ensure the localId component has a valid string representation by hex encoding
         const QByteArray encodedLocalId(m_localId.toHex());
-        return QString::fromUtf8(QOrganizerManagerData::buildIdData(m_managerUri, encodedLocalId));
+        return QString::fromUtf8(QOrganizerManagerPrivate::buildIdData(m_managerUri, encodedLocalId));
     }
 
     return QString();
@@ -143,7 +143,7 @@ QOrganizerItemId QOrganizerItemId::fromString(const QString &idString)
     QString managerUri;
     QByteArray localId;
 
-    if (QOrganizerManagerData::parseIdData(idString.toUtf8(), 0, 0, &managerUri, &localId)) {
+    if (QOrganizerManagerPrivate::parseIdData(idString.toUtf8(), 0, 0, &managerUri, &localId)) {
         // The localId component must be decoded from hex
         return QOrganizerItemId(managerUri, QByteArray::fromHex(localId));
     }
@@ -159,7 +159,7 @@ QOrganizerItemId QOrganizerItemId::fromString(const QString &idString)
 QByteArray QOrganizerItemId::toByteArray() const
 {
     if (!isNull())
-        return QOrganizerManagerData::buildIdData(m_managerUri, m_localId);
+        return QOrganizerManagerPrivate::buildIdData(m_managerUri, m_localId);
 
     return QByteArray();
 }
@@ -175,7 +175,7 @@ QOrganizerItemId QOrganizerItemId::fromByteArray(const QByteArray &idData)
     QString managerUri;
     QByteArray localId;
 
-    if (QOrganizerManagerData::parseIdData(idData, 0, 0, &managerUri, &localId))
+    if (QOrganizerManagerPrivate::parseIdData(idData, 0, 0, &managerUri, &localId))
         return QOrganizerItemId(managerUri, localId);
 
     return QOrganizerItemId();

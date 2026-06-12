@@ -36,10 +36,10 @@ public:
     QString managerName() const override;
 };
 
-class QContactMemoryEngineData : public QSharedData
+class QContactMemoryEnginePrivate : public QSharedData
 {
 public:
-    QContactMemoryEngineData()
+    QContactMemoryEnginePrivate()
         : QSharedData()
         , m_refCount(QAtomicInt(1))
         , m_selfContactId()
@@ -48,7 +48,7 @@ public:
     {
     }
 
-    QContactMemoryEngineData(const QContactMemoryEngineData &other)
+    QContactMemoryEnginePrivate(const QContactMemoryEnginePrivate &other)
         : QSharedData(other),
         m_refCount(QAtomicInt(1)),
         m_selfContactId(other.m_selfContactId),
@@ -57,11 +57,11 @@ public:
     {
     }
 
-    ~QContactMemoryEngineData()
+    ~QContactMemoryEnginePrivate()
     {
     }
 
-    static QContactMemoryEngineData *data(QContactMemoryEngine *engine);
+    static QContactMemoryEnginePrivate *data(QContactMemoryEngine *engine);
 
     QAtomicInt m_refCount;
     QString m_id;                                  // the id parameter value
@@ -172,7 +172,7 @@ public:
 
 
 protected:
-    QContactMemoryEngine(QContactMemoryEngineData *data);
+    QContactMemoryEngine(QContactMemoryEnginePrivate *data);
 
 protected:
     /* Implement "signal coalescing" for batch functions via change set */
@@ -189,10 +189,10 @@ private:
 
     void performAsynchronousOperation(QContactAbstractRequest *request);
 
-    QContactMemoryEngineData *d;
-    static QMap<QString, QContactMemoryEngineData*> engineDatas;
+    QContactMemoryEnginePrivate *d;
+    static QMap<QString, QContactMemoryEnginePrivate*> engineDatas;
 
-    friend class QContactMemoryEngineData;
+    friend class QContactMemoryEnginePrivate;
 };
 
 QT_END_NAMESPACE_CONTACTS

@@ -37,13 +37,13 @@ public:
 
 class QOrganizerAbstractRequest;
 class QOrganizerManagerEngine;
-class QOrganizerItemMemoryEngineData : public QSharedData
+class QOrganizerItemMemoryEnginePrivate : public QSharedData
 {
 public:
     enum { DefaultCollectionLocalId = 1 }; // default collection has id of 1.
 
-    QOrganizerItemMemoryEngineData();
-    ~QOrganizerItemMemoryEngineData()
+    QOrganizerItemMemoryEnginePrivate();
+    ~QOrganizerItemMemoryEnginePrivate()
     {
     }
 
@@ -162,7 +162,7 @@ public:
     }
 
 protected:
-    QOrganizerItemMemoryEngine(QOrganizerItemMemoryEngineData* data);
+    QOrganizerItemMemoryEngine(QOrganizerItemMemoryEnginePrivate* data);
 
 protected:
     /* Implement "signal coalescing" for batch functions via change set */
@@ -183,7 +183,7 @@ private:
 
     void performAsynchronousOperation(QOrganizerAbstractRequest* request);
 
-    QOrganizerItemMemoryEngineData* d;
+    QOrganizerItemMemoryEnginePrivate* d;
 };
 
 QT_END_NAMESPACE_ORGANIZER

@@ -26,14 +26,14 @@
 QT_BEGIN_NAMESPACE_CONTACTS
 
 /* Shared QContactManager stuff here, default engine stuff below */
-QMultiHash<QString, QContactManagerEngineFactory*> QContactManagerData::m_engines;
-QSet<QContactManager*> QContactManagerData::m_aliveEngines;
-QList<QContactActionManagerPlugin*> QContactManagerData::m_actionManagers;
+QMultiHash<QString, QContactManagerEngineFactory*> QContactManagerPrivate::m_engines;
+QSet<QContactManager*> QContactManagerPrivate::m_aliveEngines;
+QList<QContactActionManagerPlugin*> QContactManagerPrivate::m_actionManagers;
 
-bool QContactManagerData::m_discoveredStatic;
-QList<QJsonObject> QContactManagerData::m_pluginPaths;
-QList<QJsonObject> QContactManagerData::m_metaData;
-QStringList QContactManagerData::m_managerNames;
+bool QContactManagerPrivate::m_discoveredStatic;
+QList<QJsonObject> QContactManagerPrivate::m_pluginPaths;
+QList<QJsonObject> QContactManagerPrivate::m_metaData;
+QStringList QContactManagerPrivate::m_managerNames;
 
 
 #ifndef QT_NO_LIBRARY
@@ -45,7 +45,7 @@ static void qContactsCleanEngines()
     // This is complicated by needing to remove any engines before we unload factories
     // guard pointers as one engine could be parent of another manager and cause doubledelete
     QList<QPointer<QContactManager> > aliveManagers;
-    for (QContactManager *manager : QContactManagerData::m_aliveEngines) {
+    for (QContactManager *manager : QContactManagerPrivate::m_aliveEngines) {
         aliveManagers << QPointer<QContactManager>(manager);
     }
 
@@ -56,23 +56,23 @@ static void qContactsCleanEngines()
         }
         // We don't delete the managers here, we just kill their engines
         // and replace it with an invalid engine (for safety :/)
-        QContactManagerData* d = QContactManagerData::managerData(manager.data());
+        QContactManagerPrivate* d = QContactManagerPrivate::managerData(manager.data());
 
         delete d->m_engine;
         d->m_engine = new QContactInvalidEngine();
     }
 
-    QList<QContactManagerEngineFactory*> factories = QContactManagerData::m_engines.values();
+    QList<QContactManagerEngineFactory*> factories = QContactManagerPrivate::m_engines.values();
 
     for (int i=0; i < factories.count(); i++) {
         delete factories.at(i);
     }
-    QContactManagerData::m_engines.clear();
-    QContactManagerData::m_actionManagers.clear();
-    QContactManagerData::m_aliveEngines.clear();
-    QContactManagerData::m_pluginPaths.clear();
-    QContactManagerData::m_metaData.clear();
-    QContactManagerData::m_managerNames.clear();
+    QContactManagerPrivate::m_engines.clear();
+    QContactManagerPrivate::m_actionManagers.clear();
+    QContactManagerPrivate::m_aliveEngines.clear();
+    QContactManagerPrivate::m_pluginPaths.clear();
+    QContactManagerPrivate::m_metaData.clear();
+    QContactManagerPrivate::m_managerNames.clear();
 }
 
 static int parameterValue(const QMap<QString, QString> &parameters, const char *key, int defaultValue)
@@ -87,7 +87,7 @@ static int parameterValue(const QMap<QString, QString> &parameters, const char *
     return defaultValue;
 }
 
-void QContactManagerData::createEngine(const QString &managerName, const QMap<QString, QString> &parameters)
+void QContactManagerPrivate::createEngine(const QString &managerName, const QMap<QString, QString> &parameters)
 {
     m_engine = 0;
 
@@ -160,7 +160,7 @@ void QContactManagerData::createEngine(const QString &managerName, const QMap<QS
     }
 }
 
-void QContactManagerData::loadStaticFactories()
+void QContactManagerPrivate::loadStaticFactories()
 {
     if (!m_discoveredStatic) {
 #if !defined QT_NO_DEBUG
@@ -201,7 +201,7 @@ void QContactManagerData::loadStaticFactories()
 
 
 /* Plugin loader */
-void QContactManagerData::loadFactoriesMetadata()
+void QContactManagerPrivate::loadFactoriesMetadata()
 {
 #if !defined QT_NO_DEBUG
     const bool showDebug = qgetenv("QT_DEBUG_PLUGINS").toInt() > 0;
@@ -236,30 +236,30 @@ void QContactManagerData::loadFactoriesMetadata()
 
 // Observer stuff
 
-void QContactManagerData::registerObserver(QContactManager *manager, QContactObserver *observer)
+void QContactManagerPrivate::registerObserver(QContactManager *manager, QContactObserver *observer)
 {
     if (!manager)
         return;
 
-    QContactManagerData* d = QContactManagerData::get(manager);
+    QContactManagerPrivate* d = QContactManagerPrivate::get(manager);
 
     d->m_observerForContact.insert(observer->contactId(), observer);
 
     // If this is the first observer, connect to the engine too
     if (d->m_observerForContact.size() == 1) {
         // This takes advantage of the manager connectNotify code
-        QObject::connect(manager, SIGNAL(contactsChanged(QList<QtContacts::QContactId>,QList<QtContacts::QContactDetail::DetailType>)),
-                manager, SLOT(_q_contactsUpdated(QList<QtContacts::QContactId>,QList<QtContacts::QContactDetail::DetailType>)));
-        QObject::connect(manager, SIGNAL(contactsRemoved(QList<QtContacts::QContactId>)),
-                manager, SLOT(_q_contactsDeleted(QList<QtContacts::QContactId>)));
+        QObjectPrivate::connect(manager, &QContactManager::contactsChanged,
+                                d, &QContactManagerPrivate::handleContactsChanged);
+        QObjectPrivate::connect(manager, &QContactManager::contactsRemoved,
+                                d, &QContactManagerPrivate::handleContactsRemoved);
     }
 }
 
-void QContactManagerData::unregisterObserver(QContactManager *manager, QContactObserver *observer)
+void QContactManagerPrivate::unregisterObserver(QContactManager *manager, QContactObserver *observer)
 {
     Q_ASSERT(manager);
 
-    QContactManagerData* d = QContactManagerData::get(manager);
+    QContactManagerPrivate* d = QContactManagerPrivate::get(manager);
 
     QContactId key = d->m_observerForContact.key(observer);
     if (!key.isNull()) {
@@ -268,15 +268,15 @@ void QContactManagerData::unregisterObserver(QContactManager *manager, QContactO
         // If there are now no more observers, disconnect from the engine
         if (d->m_observerForContact.size() == 0) {
             // This takes advantage of the manager disconnectNotify code
-            QObject::disconnect(manager, SIGNAL(contactsChanged(QList<QtContacts::QContactId>,QList<QtContacts::QContactDetail::DetailType>)),
-                    manager, SLOT(_q_contactsUpdated(QList<QtContacts::QContactId>,QList<QtContacts::QContactDetail::DetailType>)));
-            QObject::disconnect(manager, SIGNAL(contactsRemoved(QList<QtContacts::QContactId>)),
-                    manager, SLOT(_q_contactsDeleted(QList<QtContacts::QContactId>)));
+            QObjectPrivate::disconnect(manager, &QContactManager::contactsChanged,
+                                       d, &QContactManagerPrivate::handleContactsChanged);
+            QObjectPrivate::disconnect(manager, &QContactManager::contactsRemoved,
+                                       d, &QContactManagerPrivate::handleContactsRemoved);
         }
     }
 }
 
-void QContactManagerData::_q_contactsUpdated(const QList<QContactId> &ids, const QList<QContactDetail::DetailType> &typesChanged)
+void QContactManagerPrivate::handleContactsChanged(const QList<QContactId> &ids, const QList<QContactDetail::DetailType> &typesChanged)
 {
     for (const QContactId &id : ids) {
         const QList<QContactObserver *> observers = m_observerForContact.values(id);
@@ -286,7 +286,7 @@ void QContactManagerData::_q_contactsUpdated(const QList<QContactId> &ids, const
     }
 }
 
-void QContactManagerData::_q_contactsDeleted(const QList<QContactId> &ids)
+void QContactManagerPrivate::handleContactsRemoved(const QList<QContactId> &ids)
 {
     for (const QContactId &id : ids) {
         const QList<QContactObserver *> observers = m_observerForContact.values(id);
@@ -296,16 +296,10 @@ void QContactManagerData::_q_contactsDeleted(const QList<QContactId> &ids)
     }
 }
 
-// trampolines for private classes
-QContactManagerData* QContactManagerData::get(const QContactManager *manager)
-{
-    return manager->d;
-}
-
-QContactManagerEngine* QContactManagerData::engine(const QContactManager *manager)
+QContactManagerEngine* QContactManagerPrivate::engine(const QContactManager *manager)
 {
     if (manager)
-        return manager->d->m_engine;
+        return get(manager)->m_engine;
     return 0;
 }
 
@@ -386,7 +380,7 @@ static inline QByteArray unescapeColon(const QByteArray &param)
     \a managerName, \a params and \a managerUri and \a localId.
     Returns true if the parts could be parsed successfully, false otherwise.
 */
-bool QContactManagerData::parseUri(const QString &uriString, QString *managerName, QMap<QString, QString> *params, bool strict)
+bool QContactManagerPrivate::parseUri(const QString &uriString, QString *managerName, QMap<QString, QString> *params, bool strict)
 {
     // Format: qtcontacts:<managerid>:<key>=<value>&<key>=<value>
     // we assume that the prefix, managerid, and params cannot contain `:', `=', or `&'
@@ -441,7 +435,7 @@ bool QContactManagerData::parseUri(const QString &uriString, QString *managerNam
     If \a localId is non-null, the generated ID string is suitable for
     passing to QContactId::fromString().
 */
-QString QContactManagerData::buildUri(const QString &managerName, const QMap<QString, QString> &params)
+QString QContactManagerPrivate::buildUri(const QString &managerName, const QMap<QString, QString> &params)
 {
     // Format: qtcontacts:<managerid>:<key>=<value>&<key>=<value>
     // if the prefix, managerid, param keys, or param values contain `:', `=', or `&',
@@ -465,7 +459,7 @@ QString QContactManagerData::buildUri(const QString &managerName, const QMap<QSt
     \a managerName, \a params, \a managerUri and \a localId.
     Returns true if the parts could be parsed successfully, false otherwise.
 */
-bool QContactManagerData::parseIdData(const QByteArray &idData, QString *managerName, QMap<QString, QString> *params, QString *managerUri, QByteArray *localId)
+bool QContactManagerPrivate::parseIdData(const QByteArray &idData, QString *managerName, QMap<QString, QString> *params, QString *managerUri, QByteArray *localId)
 {
     // Format: <managerUri>:<localId>
     int splitIndex = idData.lastIndexOf(':');
@@ -490,7 +484,7 @@ bool QContactManagerData::parseIdData(const QByteArray &idData, QString *manager
     If \a localId is non-null, the generated ID string is suitable for
     passing to QContactId::fromString().
 */
-QByteArray QContactManagerData::buildIdData(const QString &managerUri, const QByteArray &localId)
+QByteArray QContactManagerPrivate::buildIdData(const QString &managerUri, const QByteArray &localId)
 {
     // Format: <managerUri>:<localId>
     // localId cannot contain ':' so it must be escaped
@@ -506,7 +500,7 @@ QByteArray QContactManagerData::buildIdData(const QString &managerUri, const QBy
     If \a localId is non-null, the generated ID string is suitable for
     passing to QContactId::fromString().
 */
-QByteArray QContactManagerData::buildIdData(const QString &managerName, const QMap<QString, QString> &params, const QByteArray &localId)
+QByteArray QContactManagerPrivate::buildIdData(const QString &managerName, const QMap<QString, QString> &params, const QByteArray &localId)
 {
     return buildIdData(buildUri(managerName, params), localId);
 }
@@ -516,7 +510,7 @@ QByteArray QContactManagerData::buildIdData(const QString &managerName, const QM
     This instance should be preferred when constructing ID objects in order to promote
     data sharing of the URI string.
 */
-QString QContactManagerData::cachedUri(const QString &managerUri)
+QString QContactManagerPrivate::cachedUri(const QString &managerUri)
 {
     static QStringList managerUris;
 

@@ -54,7 +54,7 @@ QString QContactMemoryEngineFactory::managerName() const
  */
 
 /* static data for manager class */
-QMap<QString, QContactMemoryEngineData*> QContactMemoryEngine::engineDatas;
+QMap<QString, QContactMemoryEnginePrivate*> QContactMemoryEngine::engineDatas;
 
 /*!
  * Factory function for creating a new in-memory backend, based
@@ -73,11 +73,11 @@ QContactMemoryEngine* QContactMemoryEngine::createMemoryEngine(const QMap<QStrin
         anonymous = true;
     }
 
-    QContactMemoryEngineData *data = engineDatas.value(idValue);
+    QContactMemoryEnginePrivate *data = engineDatas.value(idValue);
     if (data) {
         data->m_refCount.ref();
     } else {
-        data = new QContactMemoryEngineData();
+        data = new QContactMemoryEnginePrivate();
         data->m_id = idValue;
         data->m_anonymous = anonymous;
         engineDatas.insert(idValue, data);
@@ -89,7 +89,7 @@ QContactMemoryEngine* QContactMemoryEngine::createMemoryEngine(const QMap<QStrin
  * Constructs a new in-memory backend which shares the given \a data with
  * other shared memory engines.
  */
-QContactMemoryEngine::QContactMemoryEngine(QContactMemoryEngineData *data)
+QContactMemoryEngine::QContactMemoryEngine(QContactMemoryEnginePrivate *data)
     : d(data)
 {
     qRegisterMetaType<QContactAbstractRequest::State>("QContactAbstractRequest::State");

@@ -20,11 +20,12 @@
 
 QT_BEGIN_NAMESPACE_ORGANIZER
 
-class QOrganizerManagerData;
+class QOrganizerManagerPrivate;
 
 class Q_ORGANIZER_EXPORT QOrganizerManager : public QObject
 {
     Q_OBJECT
+    Q_DECLARE_PRIVATE(QOrganizerManager)
 
 public:
 #ifdef Q_QDOC // qdoc's parser fails to recognize the default map argument
@@ -139,14 +140,9 @@ Q_SIGNALS:
     void collectionsModified(const QList<std::pair<QtOrganizer::QOrganizerCollectionId, QtOrganizer::QOrganizerManager::Operation>> &collectionIds);
 
 private:
-    friend class QOrganizerManagerData;
     Q_DISABLE_COPY(QOrganizerManager)
-    QOrganizerManagerData *d;
 
     void createEngine(const QString &managerName, const QMap<QString, QString> &parameters);
-
-    Q_PRIVATE_SLOT(d, void _q_itemsUpdated(const QList<QtOrganizer::QOrganizerItemId> &ids, const QList<QtOrganizer::QOrganizerItemDetail::DetailType> &typesChanged))
-    Q_PRIVATE_SLOT(d, void _q_itemsDeleted(const QList<QtOrganizer::QOrganizerItemId> &ids))
 };
 
 QT_END_NAMESPACE_ORGANIZER

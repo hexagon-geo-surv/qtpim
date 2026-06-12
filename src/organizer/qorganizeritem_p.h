@@ -26,15 +26,15 @@
 
 QT_BEGIN_NAMESPACE_ORGANIZER
 
-class QOrganizerItemData : public QSharedData
+class QOrganizerItemPrivate : public QSharedData
 {
 public:
-    QOrganizerItemData()
+    QOrganizerItemPrivate()
         : QSharedData()
     {
     }
 
-    QOrganizerItemData(const QOrganizerItemData &other)
+    QOrganizerItemPrivate(const QOrganizerItemPrivate &other)
         : QSharedData(other)
         , m_id(other.m_id)
         , m_collectionId(other.m_collectionId)
@@ -42,13 +42,13 @@ public:
     {
     }
 
-    ~QOrganizerItemData() {}
+    ~QOrganizerItemPrivate() {}
 
     void removeOnly(QOrganizerItemDetail::DetailType detailType);
     void removeOnly(const QSet<QOrganizerItemDetail::DetailType> &detailTypes);
 
     // Trampoline
-    static QSharedDataPointer<QOrganizerItemData> &itemData(QOrganizerItem &item) {return item.d;}
+    static QSharedDataPointer<QOrganizerItemPrivate> &itemData(QOrganizerItem &item) {return item.d;}
 
     QOrganizerItemId m_id;
     QOrganizerCollectionId m_collectionId;

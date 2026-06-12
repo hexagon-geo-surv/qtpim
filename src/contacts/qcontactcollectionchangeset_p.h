@@ -26,15 +26,15 @@
 
 QT_BEGIN_NAMESPACE_CONTACTS
 
-class QContactCollectionChangeSetData : public QSharedData
+class QContactCollectionChangeSetPrivate : public QSharedData
 {
 public:
-    QContactCollectionChangeSetData()
+    QContactCollectionChangeSetPrivate()
         : QSharedData(), m_dataChanged(false)
     {
     }
 
-    QContactCollectionChangeSetData(const QContactCollectionChangeSetData& other)
+    QContactCollectionChangeSetPrivate(const QContactCollectionChangeSetPrivate& other)
         : QSharedData(other),
           m_dataChanged(other.m_dataChanged),
           m_addedCollections(other.m_addedCollections),
@@ -44,7 +44,7 @@ public:
     {
     }
 
-    ~QContactCollectionChangeSetData()
+    ~QContactCollectionChangeSetPrivate()
     {
     }
 

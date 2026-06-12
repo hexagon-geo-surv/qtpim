@@ -20,6 +20,7 @@
 #include <QtCore/qjsonobject.h>
 #include <QtCore/qmap.h>
 #include <QtCore/qstringlist.h>
+#include <QtCore/private/qobject_p.h>
 
 #include <QtContacts/qcontactid.h>
 #include <QtContacts/qcontactmanager.h>
@@ -33,16 +34,17 @@ QT_BEGIN_NAMESPACE_CONTACTS
 class QContactManagerEngineFactory;
 
 /* Data and stuff that is shared amongst all backends */
-class QContactManagerData
+class QContactManagerPrivate : public QObjectPrivate
 {
+    Q_DECLARE_PUBLIC(QContactManager)
 public:
-    QContactManagerData()
+    QContactManagerPrivate()
         : m_engine(0),
         m_lastError(QContactManager::NoError)
     {
     }
 
-    ~QContactManagerData()
+    ~QContactManagerPrivate()
     {
         delete m_engine;
     }
@@ -59,7 +61,8 @@ public:
     static QString cachedUri(const QString &managerUri);
 
     void createEngine(const QString &managerName, const QMap<QString, QString> &parameters);
-    static QContactManagerData* get(const QContactManager *manager);
+    static QContactManagerPrivate* get(const QContactManager *manager)
+    { return static_cast<QContactManagerPrivate *>(QObjectPrivate::get(const_cast<QContactManager *>(manager))); }
     static QContactManagerEngine* engine(const QContactManager *manager);
 
     QContactManagerEngine* m_engine;
@@ -69,8 +72,7 @@ public:
     /* Manager plugins */
     static QMultiHash<QString, QContactManagerEngineFactory*> m_engines;
     static QSet<QContactManager*> m_aliveEngines;
-    static QContactManagerData* managerData(QContactManager *manager) {return manager->d;}
-    static QContactManagerData* managerData(const QContactManager *manager) {return manager->d;} // laziness to avoid const_cast
+    static QContactManagerPrivate* managerData(const QContactManager *manager) { return get(manager); }
     static QList<QContactActionManagerPlugin*> m_actionManagers;
     static bool m_discoveredStatic;
     static QList<QJsonObject> m_pluginPaths;
@@ -82,12 +84,12 @@ public:
     // Observer stuff
     static void registerObserver(QContactManager *m, QContactObserver *observer);
     static void unregisterObserver(QContactManager *m, QContactObserver *observer);
-    void _q_contactsUpdated(const QList<QContactId> &ids, const QList<QContactDetail::DetailType> &typesChanged);
-    void _q_contactsDeleted(const QList<QContactId> &ids);
+    void handleContactsChanged(const QList<QContactId> &ids, const QList<QContactDetail::DetailType> &typesChanged);
+    void handleContactsRemoved(const QList<QContactId> &ids);
 
     QMultiHash<QContactId, QContactObserver*> m_observerForContact;
 private:
-    Q_DISABLE_COPY(QContactManagerData)
+    Q_DISABLE_COPY(QContactManagerPrivate)
 };
 
 /*
@@ -101,7 +103,7 @@ class QContactManagerSyncOpErrorHolder
 public:
     QContactManagerSyncOpErrorHolder(const QContactManager *m, QMap<int, QContactManager::Error> *pUserError = 0)
         : error(QContactManager::NoError),
-        data(QContactManagerData::managerData(m)),
+        data(QContactManagerPrivate::managerData(m)),
         userError(pUserError)
     {
     }
@@ -115,7 +117,7 @@ public:
     }
 
     QContactManager::Error error;
-    QContactManagerData* data;
+    QContactManagerPrivate* data;
     QMap<int, QContactManager::Error> errorMap;
     QMap<int, QContactManager::Error> *userError;
 };

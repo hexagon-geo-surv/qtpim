@@ -2308,7 +2308,7 @@ bool QContactManagerEngine::saveContacts(QList<QContact> *contacts, const QList<
                 // Existing contact we should have fetched
                 contactToSave = existingContacts.at(fetchedIdx);
 
-                QSharedDataPointer<QContactData>& cd = QContactData::contactData(contactToSave);
+                QSharedDataPointer<QContactPrivate>& cd = QContactPrivate::contactData(contactToSave);
                 cd->removeOnly(mask);
             } else if (errorMap->contains(i)) {
                 // A bad argument.  Leave it out of the contactsToSave list

@@ -26,15 +26,15 @@
 
 QT_BEGIN_NAMESPACE_ORGANIZER
 
-class QOrganizerCollectionChangeSetData : public QSharedData
+class QOrganizerCollectionChangeSetPrivate : public QSharedData
 {
 public:
-    QOrganizerCollectionChangeSetData()
+    QOrganizerCollectionChangeSetPrivate()
         : QSharedData(), m_dataChanged(false)
     {
     }
 
-    QOrganizerCollectionChangeSetData(const QOrganizerCollectionChangeSetData& other)
+    QOrganizerCollectionChangeSetPrivate(const QOrganizerCollectionChangeSetPrivate& other)
         : QSharedData(other),
           m_dataChanged(other.m_dataChanged),
           m_addedCollections(other.m_addedCollections),
@@ -44,7 +44,7 @@ public:
     {
     }
 
-    ~QOrganizerCollectionChangeSetData()
+    ~QOrganizerCollectionChangeSetPrivate()
     {
     }
 

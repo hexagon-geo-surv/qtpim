@@ -24,10 +24,11 @@ QT_BEGIN_NAMESPACE_CONTACTS
 class QContactAction;
 class QContactFilter;
 
-class QContactManagerData;
+class QContactManagerPrivate;
 class Q_CONTACTS_EXPORT QContactManager : public QObject
 {
     Q_OBJECT
+    Q_DECLARE_PRIVATE(QContactManager)
 
 public:
 #ifdef Q_QDOC // qdoc's parser fails to recognise the default map argument
@@ -150,16 +151,9 @@ protected:
     void disconnectNotify(const QMetaMethod &signal) override;
 
 private:
-    friend class QContactManagerData;
     void createEngine(const QString& managerName, const QMap<QString, QString>& parameters);
 
     Q_DISABLE_COPY(QContactManager)
-
-    Q_PRIVATE_SLOT(d, void _q_contactsUpdated(const QList<QtContacts::QContactId>& ids, const QList<QtContacts::QContactDetail::DetailType>& typesChanged))
-    Q_PRIVATE_SLOT(d, void _q_contactsDeleted(const QList<QtContacts::QContactId>& ids))
-
-    // private data pointer
-    QContactManagerData* d;
 };
 
 QT_END_NAMESPACE_CONTACTS

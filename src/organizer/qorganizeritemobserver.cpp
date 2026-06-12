@@ -15,7 +15,7 @@ class QOrganizerItemObserverPrivate
 public:
     QOrganizerItemId m_id;
     QPointer<QOrganizerManager> m_manager;
-    QOrganizerManagerData *m_managerPrivate;
+    QOrganizerManagerPrivate *m_managerPrivate;
 };
 
 /*!
@@ -35,7 +35,7 @@ QOrganizerItemObserver::QOrganizerItemObserver(QOrganizerManager *manager, const
 {
     d->m_id = itemId;
     d->m_manager = manager;
-    d->m_managerPrivate = QOrganizerManagerData::get(manager);
+    d->m_managerPrivate = QOrganizerManagerPrivate::get(manager);
     d->m_managerPrivate->registerObserver(this);
 }
 

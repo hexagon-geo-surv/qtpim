@@ -94,7 +94,7 @@ QT_BEGIN_NAMESPACE_CONTACTS
     The isEmpty() function will return true.
 */
 QContact::QContact()
-    : d(new QContactData)
+    : d(new QContactPrivate)
 {
     clearDetails();
 }
@@ -761,8 +761,8 @@ QMap<QString, QContactDetail> QContact::preferredDetails() const
 }
 
 
-/* Helper functions for QContactData */
-void QContactData::removeOnly(QContactDetail::DetailType type)
+/* Helper functions for QContactPrivate */
+void QContactPrivate::removeOnly(QContactDetail::DetailType type)
 {
     QList<QContactDetail>::iterator dit = m_details.begin();
     while (dit != m_details.end()) {
@@ -774,7 +774,7 @@ void QContactData::removeOnly(QContactDetail::DetailType type)
     }
 }
 
-void QContactData::removeOnly(const QSet<QContactDetail::DetailType>& types)
+void QContactPrivate::removeOnly(const QSet<QContactDetail::DetailType>& types)
 {
     QList<QContactDetail>::iterator dit = m_details.begin();
     while (dit != m_details.end()) {

@@ -25,20 +25,20 @@
 
 QT_BEGIN_NAMESPACE_CONTACTS
 
-class QContactCollectionData : public QSharedData
+class QContactCollectionPrivate : public QSharedData
 {
 public:
-    QContactCollectionData()
+    QContactCollectionPrivate()
         : QSharedData()
     {
     }
 
-    QContactCollectionData(const QContactCollectionData &other)
+    QContactCollectionPrivate(const QContactCollectionPrivate &other)
         : QSharedData(other), m_metaData(other.m_metaData), m_id(other.m_id)
     {
     }
 
-    ~QContactCollectionData()
+    ~QContactCollectionPrivate()
     {
     }
 

@@ -18,7 +18,7 @@
 
 QT_BEGIN_NAMESPACE_CONTACTS
 
-class QContactActionData;
+class QContactActionPrivate;
 class Q_CONTACTS_EXPORT QContactAction : public QObject
 {
     Q_OBJECT

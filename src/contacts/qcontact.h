@@ -21,7 +21,7 @@ class QContactId;
 class QContactManager;
 class QContactCollectionId;
 
-class QContactData;
+class QContactPrivate;
 class Q_CONTACTS_EXPORT QContact
 {
 public:
@@ -98,14 +98,14 @@ public:
     QMap<QString, QContactDetail> preferredDetails() const;
 
 private:
-    friend class QContactData;
+    friend class QContactPrivate;
     friend class QContactManager;
-    friend class QContactManagerData;
+    friend class QContactManagerPrivate;
     friend class QContactManagerEngine;
     Q_CONTACTS_EXPORT friend QDataStream& operator<<(QDataStream& out, const QContact& contact);
     Q_CONTACTS_EXPORT friend QDataStream& operator>>(QDataStream& in, QContact& contact);
 
-    QSharedDataPointer<QContactData> d;
+    QSharedDataPointer<QContactPrivate> d;
 };
 
 Q_CONTACTS_EXPORT size_t qHash(const QContact& key);

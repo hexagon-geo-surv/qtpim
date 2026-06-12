@@ -54,7 +54,7 @@ QT_BEGIN_NAMESPACE_CONTACTS
    Constructs a new change set
  */
 QContactChangeSet::QContactChangeSet()
-    : d(new QContactChangeSetData)
+    : d(new QContactChangeSetPrivate)
 {
 }
 

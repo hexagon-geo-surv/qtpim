@@ -19,7 +19,7 @@ QT_BEGIN_NAMESPACE_ORGANIZER
 
 class QOrganizerManagerEngine;
 
-class QOrganizerItemChangeSetData;
+class QOrganizerItemChangeSetPrivate;
 class Q_ORGANIZER_EXPORT QOrganizerItemChangeSet
 {
 public:
@@ -57,7 +57,7 @@ public:
     void emitSignals(QOrganizerManagerEngine *engine) const;
 
 private:
-    QSharedDataPointer<QOrganizerItemChangeSetData> d;
+    QSharedDataPointer<QOrganizerItemChangeSetPrivate> d;
 };
 
 QT_END_NAMESPACE_ORGANIZER

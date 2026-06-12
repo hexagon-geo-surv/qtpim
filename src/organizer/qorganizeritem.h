@@ -16,7 +16,7 @@
 
 QT_BEGIN_NAMESPACE_ORGANIZER
 
-class QOrganizerItemData;
+class QOrganizerItemPrivate;
 class Q_ORGANIZER_EXPORT QOrganizerItem
 {
 public:
@@ -75,9 +75,9 @@ protected:
     QOrganizerItem &assign(const QOrganizerItem &other, QOrganizerItemType::ItemType expectedType);
 
 protected:
-    friend class QOrganizerItemData;
+    friend class QOrganizerItemPrivate;
     friend class QOrganizerManager;
-    friend class QOrganizerManagerData;
+    friend class QOrganizerManagerPrivate;
     friend class QOrganizerManagerEngine;
 
 #ifndef QT_NO_DATASTREAM
@@ -85,7 +85,7 @@ protected:
     Q_ORGANIZER_EXPORT friend QDataStream &operator>>(QDataStream &in, QOrganizerItem &item);
 #endif // QT_NO_DATASTREAM
 
-    QSharedDataPointer<QOrganizerItemData> d;
+    QSharedDataPointer<QOrganizerItemPrivate> d;
 };
 
 Q_ORGANIZER_EXPORT size_t qHash(const QOrganizerItem &key);

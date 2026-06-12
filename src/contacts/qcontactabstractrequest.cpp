@@ -146,7 +146,7 @@ QContactAbstractRequest::QContactAbstractRequest(QContactAbstractRequestPrivate*
 QContactAbstractRequest::~QContactAbstractRequest()
 {
     d_ptr->m_mutex.lock();
-    QContactManagerEngine *engine = QContactManagerData::engine(d_ptr->m_manager);
+    QContactManagerEngine *engine = QContactManagerPrivate::engine(d_ptr->m_manager);
     d_ptr->m_mutex.unlock();
     if (engine)
         engine->requestDestroyed(this);
@@ -244,7 +244,7 @@ void QContactAbstractRequest::setManager(QContactManager* manager)
 bool QContactAbstractRequest::start()
 {
     QMutexLocker ml(&d_ptr->m_mutex);
-    QContactManagerEngine* engine = QContactManagerData::engine(d_ptr->m_manager);
+    QContactManagerEngine* engine = QContactManagerPrivate::engine(d_ptr->m_manager);
     if (engine && (d_ptr->m_state == QContactAbstractRequest::CanceledState
                    || d_ptr->m_state == QContactAbstractRequest::FinishedState
                    || d_ptr->m_state == QContactAbstractRequest::InactiveState)) {
@@ -261,7 +261,7 @@ bool QContactAbstractRequest::start()
 bool QContactAbstractRequest::cancel()
 {
     QMutexLocker ml(&d_ptr->m_mutex);
-    QContactManagerEngine* engine = QContactManagerData::engine(d_ptr->m_manager);
+    QContactManagerEngine* engine = QContactManagerPrivate::engine(d_ptr->m_manager);
     if (engine && d_ptr->m_state == QContactAbstractRequest::ActiveState) {
         ml.unlock();
         return engine->cancelRequest(this);
@@ -282,7 +282,7 @@ bool QContactAbstractRequest::cancel()
 bool QContactAbstractRequest::waitForFinished(int msecs)
 {
     QMutexLocker ml(&d_ptr->m_mutex);
-    QContactManagerEngine* engine = QContactManagerData::engine(d_ptr->m_manager);
+    QContactManagerEngine* engine = QContactManagerPrivate::engine(d_ptr->m_manager);
     if (engine) {
         switch (d_ptr->m_state) {
         case QContactAbstractRequest::ActiveState:

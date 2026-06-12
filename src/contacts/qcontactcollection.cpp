@@ -53,7 +53,7 @@ QT_BEGIN_NAMESPACE_CONTACTS
     Constructs a new collection.
  */
 QContactCollection::QContactCollection()
-    : d(new QContactCollectionData)
+    : d(new QContactCollectionPrivate)
 {
 }
 

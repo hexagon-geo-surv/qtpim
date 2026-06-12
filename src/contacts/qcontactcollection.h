@@ -18,7 +18,7 @@ QT_BEGIN_NAMESPACE_CONTACTS
 
 class QContactManagerEngine;
 
-class QContactCollectionData;
+class QContactCollectionPrivate;
 class Q_CONTACTS_EXPORT QContactCollection
 {
 public:
@@ -56,7 +56,7 @@ public:
 private:
     friend Q_CONTACTS_EXPORT size_t qHash(const QContactCollection &key);
     friend class QContactManagerEngine;
-    QSharedDataPointer<QContactCollectionData> d;
+    QSharedDataPointer<QContactCollectionPrivate> d;
 };
 
 Q_CONTACTS_EXPORT size_t qHash(const QContactCollection &key);

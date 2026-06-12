@@ -101,7 +101,7 @@ QOrganizerAbstractRequest::QOrganizerAbstractRequest(QOrganizerAbstractRequestPr
 QOrganizerAbstractRequest::~QOrganizerAbstractRequest()
 {
     d_ptr->m_mutex.lock();
-    QOrganizerManagerEngine *engine = QOrganizerManagerData::engine(d_ptr->m_manager);
+    QOrganizerManagerEngine *engine = QOrganizerManagerPrivate::engine(d_ptr->m_manager);
     d_ptr->m_mutex.unlock();
     if (engine)
         engine->requestDestroyed(this);
@@ -194,7 +194,7 @@ void QOrganizerAbstractRequest::setManager(QOrganizerManager *manager)
         return;
 
     d_ptr->m_manager = manager;
-    d_ptr->m_engine = QOrganizerManagerData::engine(d_ptr->m_manager);
+    d_ptr->m_engine = QOrganizerManagerPrivate::engine(d_ptr->m_manager);
 }
 
 /*!

@@ -43,7 +43,7 @@ QT_BEGIN_NAMESPACE_ORGANIZER
     Constructs a new change set.
  */
 QOrganizerItemChangeSet::QOrganizerItemChangeSet()
-    : d(new QOrganizerItemChangeSetData)
+    : d(new QOrganizerItemChangeSetPrivate)
 {
 }
 

@@ -45,20 +45,20 @@ public:
 };
 
 
-class QOrganizerItemSkeletonEngineData : public QSharedData
+class QOrganizerItemSkeletonEnginePrivate : public QSharedData
 {
 public:
-    QOrganizerItemSkeletonEngineData()
+    QOrganizerItemSkeletonEnginePrivate()
         : QSharedData()
     {
     }
 
-    QOrganizerItemSkeletonEngineData(const QOrganizerItemSkeletonEngineData& other)
+    QOrganizerItemSkeletonEnginePrivate(const QOrganizerItemSkeletonEnginePrivate& other)
         : QSharedData(other)
     {
     }
 
-    ~QOrganizerItemSkeletonEngineData()
+    ~QOrganizerItemSkeletonEnginePrivate()
     {
     }
 };
@@ -123,7 +123,7 @@ public:
     bool waitForRequestFinished(QOrganizerAbstractRequest* req, int msecs) override;
 
 private:
-    QOrganizerItemSkeletonEngineData* d;
+    QOrganizerItemSkeletonEnginePrivate* d;
 
     friend class QOrganizerItemSkeletonFactory;
 };

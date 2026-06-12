@@ -38,7 +38,7 @@ QContactObserver::QContactObserver(QContactManager* manager,
 {
     d->m_contactId = contactId;
     d->m_manager = manager;
-    QContactManagerData::registerObserver(manager, this);
+    QContactManagerPrivate::registerObserver(manager, this);
 }
 
 /*!
@@ -47,7 +47,7 @@ QContactObserver::QContactObserver(QContactManager* manager,
 QContactObserver::~QContactObserver()
 {
     if (!d->m_manager.isNull()) {
-        QContactManagerData::unregisterObserver(d->m_manager.data(), this);
+        QContactManagerPrivate::unregisterObserver(d->m_manager.data(), this);
     }
     delete d;
 }

@@ -18,7 +18,7 @@ QT_BEGIN_NAMESPACE_ORGANIZER
 
 class QOrganizerManagerEngine;
 
-class QOrganizerCollectionData;
+class QOrganizerCollectionPrivate;
 class Q_ORGANIZER_EXPORT QOrganizerCollection
 {
 public:
@@ -56,7 +56,7 @@ public:
 private:
     friend Q_ORGANIZER_EXPORT size_t qHash(const QOrganizerCollection &key);
     friend class QOrganizerManagerEngine;
-    QSharedDataPointer<QOrganizerCollectionData> d;
+    QSharedDataPointer<QOrganizerCollectionPrivate> d;
 };
 
 Q_ORGANIZER_EXPORT size_t qHash(const QOrganizerCollection &key);

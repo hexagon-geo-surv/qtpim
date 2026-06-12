@@ -20,6 +20,7 @@
 #include <QtCore/qlist.h>
 #include <QtCore/qmap.h>
 #include <QtCore/qstringlist.h>
+#include <QtCore/private/qobject_p.h>
 
 #include <QtOrganizer/qorganizermanager.h>
 #include <QtOrganizer/qorganizermanagerengine.h>
@@ -29,15 +30,16 @@ QT_BEGIN_NAMESPACE_ORGANIZER
 class QOrganizerItemObserver;
 class QOrganizerManagerEngineFactory;
 
-class QOrganizerManagerData
+class QOrganizerManagerPrivate : public QObjectPrivate
 {
+    Q_DECLARE_PUBLIC(QOrganizerManager)
 public:
-    QOrganizerManagerData()
+    QOrganizerManagerPrivate()
         : m_engine(0), m_lastError(QOrganizerManager::NoError)
     {
     }
 
-    ~QOrganizerManagerData()
+    ~QOrganizerManagerPrivate()
     {
         delete m_engine;
     }
@@ -54,7 +56,8 @@ public:
     static QString cachedUri(const QString &managerUri);
 
     void createEngine(const QString &managerName, const QMap<QString, QString> &parameters);
-    static QOrganizerManagerData *get(const QOrganizerManager *manager);
+    static QOrganizerManagerPrivate *get(const QOrganizerManager *manager)
+    { return static_cast<QOrganizerManagerPrivate *>(QObjectPrivate::get(const_cast<QOrganizerManager *>(manager))); }
     static QOrganizerManagerEngine *engine(const QOrganizerManager *manager);
 
     QOrganizerManagerEngine *m_engine;
@@ -72,12 +75,12 @@ public:
     // observer stuff
     void registerObserver(QOrganizerItemObserver *observer);
     void unregisterObserver(QOrganizerItemObserver *observer);
-    void _q_itemsUpdated(const QList<QOrganizerItemId> &ids, const QList<QOrganizerItemDetail::DetailType> &typesChanged);
-    void _q_itemsDeleted(const QList<QOrganizerItemId> &ids);
+    void handleItemsChanged(const QList<QOrganizerItemId> &ids, const QList<QOrganizerItemDetail::DetailType> &typesChanged);
+    void handleItemsRemoved(const QList<QOrganizerItemId> &ids);
     QMultiHash<QOrganizerItemId, QOrganizerItemObserver *> m_observerForItem;
 
     // helpers
-    static QOrganizerManagerData *managerData(const QOrganizerManager *m) { return m->d; }
+    static QOrganizerManagerPrivate *managerData(const QOrganizerManager *m) { return get(m); }
 };
 
 /*!
@@ -92,7 +95,7 @@ class QOrganizerManagerSyncOpErrorHolder
 {
 public:
     QOrganizerManagerSyncOpErrorHolder(const QOrganizerManager *m, QMap<int, QOrganizerManager::Error> *pUserError = 0)
-        : error(QOrganizerManager::NoError), data(QOrganizerManagerData::managerData(m)), userError(pUserError)
+        : error(QOrganizerManager::NoError), data(QOrganizerManagerPrivate::managerData(m)), userError(pUserError)
     {
     }
 
@@ -105,7 +108,7 @@ public:
     }
 
     QOrganizerManager::Error error;
-    QOrganizerManagerData *data;
+    QOrganizerManagerPrivate *data;
     QMap<int, QOrganizerManager::Error> errorMap;
     QMap<int, QOrganizerManager::Error> *userError;
 };

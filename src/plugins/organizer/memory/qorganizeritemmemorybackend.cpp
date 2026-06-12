@@ -51,12 +51,12 @@ QString QOrganizerItemMemoryFactory::managerName() const
   no longer requires this engine.
  */
 
-typedef QHash<QString, QOrganizerItemMemoryEngineData *> EngineDatas;
+typedef QHash<QString, QOrganizerItemMemoryEnginePrivate *> EngineDatas;
 Q_GLOBAL_STATIC(EngineDatas, theEngineDatas);
 
-/*! Constructor of a QOrganizerItemMemoryEngineData object
+/*! Constructor of a QOrganizerItemMemoryEnginePrivate object
 */
-QOrganizerItemMemoryEngineData::QOrganizerItemMemoryEngineData()
+QOrganizerItemMemoryEnginePrivate::QOrganizerItemMemoryEnginePrivate()
     : QSharedData(),
     m_nextOrganizerItemId(1),
     m_nextOrganizerCollectionId(2)
@@ -76,9 +76,9 @@ QOrganizerItemMemoryEngine* QOrganizerItemMemoryEngine::createMemoryEngine(const
     QString idValue = parameters.value(QStringLiteral("id"));
 
     EngineDatas &engineDatas = *theEngineDatas();
-    QOrganizerItemMemoryEngineData* data = engineDatas.value(idValue);
+    QOrganizerItemMemoryEnginePrivate* data = engineDatas.value(idValue);
     if (!data) {
-        data = new QOrganizerItemMemoryEngineData();
+        data = new QOrganizerItemMemoryEnginePrivate();
         // no store given?  new, anonymous store.
         if (!idValue.isEmpty()) {
             data->m_id = idValue;
@@ -93,7 +93,7 @@ QOrganizerItemMemoryEngine* QOrganizerItemMemoryEngine::createMemoryEngine(const
  * Constructs a new in-memory backend which shares the given \a data with
  * other shared memory engines.
  */
-QOrganizerItemMemoryEngine::QOrganizerItemMemoryEngine(QOrganizerItemMemoryEngineData* data)
+QOrganizerItemMemoryEngine::QOrganizerItemMemoryEngine(QOrganizerItemMemoryEnginePrivate* data)
     : d(data)
 {
     d->m_sharedEngines.append(this);
@@ -829,7 +829,7 @@ bool QOrganizerItemMemoryEngine::saveItems(QList<QOrganizerItem> *items, const Q
                 // Existing item we should have fetched
                 itemToSave = existingItems.at(fetchedIdx);
 
-                // QOrganizerItemData::removeOnly() is not exported, so we can only do this...
+                // QOrganizerItemPrivate::removeOnly() is not exported, so we can only do this...
                 for (QOrganizerItemDetail::DetailType mask : detailMask) {
                     QList<QOrganizerItemDetail> details(itemToSave.details(mask));
                     for (QOrganizerItemDetail detail : details)
@@ -1020,7 +1020,7 @@ bool QOrganizerItemMemoryEngine::removeItems(const QList<QOrganizerItem> *items,
 
 QOrganizerCollectionId QOrganizerItemMemoryEngine::defaultCollectionId() const
 {
-    const uint id(QOrganizerItemMemoryEngineData::DefaultCollectionLocalId);
+    const uint id(QOrganizerItemMemoryEnginePrivate::DefaultCollectionLocalId);
     return collectionId(QByteArray(reinterpret_cast<const char *>(&id), sizeof(uint)));
 }
 

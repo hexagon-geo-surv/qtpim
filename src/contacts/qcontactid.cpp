@@ -126,7 +126,7 @@ QString QContactId::toString() const
     if (!isNull()) {
         // Ensure the localId component has a valid string representation by hex encoding
         const QByteArray encodedLocalId(m_localId.toHex());
-        return QString::fromUtf8(QContactManagerData::buildIdData(m_managerUri, encodedLocalId));
+        return QString::fromUtf8(QContactManagerPrivate::buildIdData(m_managerUri, encodedLocalId));
     }
 
     return QString();
@@ -143,7 +143,7 @@ QContactId QContactId::fromString(const QString &idString)
     QString managerUri;
     QByteArray localId;
 
-    if (QContactManagerData::parseIdData(idString.toUtf8(), 0, 0, &managerUri, &localId)) {
+    if (QContactManagerPrivate::parseIdData(idString.toUtf8(), 0, 0, &managerUri, &localId)) {
         // The localId component must be decoded from hex
         return QContactId(managerUri, QByteArray::fromHex(localId));
     }
@@ -159,7 +159,7 @@ QContactId QContactId::fromString(const QString &idString)
 QByteArray QContactId::toByteArray() const
 {
     if (!isNull())
-        return QContactManagerData::buildIdData(m_managerUri, m_localId);
+        return QContactManagerPrivate::buildIdData(m_managerUri, m_localId);
 
     return QByteArray();
 }
@@ -175,7 +175,7 @@ QContactId QContactId::fromByteArray(const QByteArray &idData)
     QString managerUri;
     QByteArray localId;
 
-    if (QContactManagerData::parseIdData(idData, 0, 0, &managerUri, &localId))
+    if (QContactManagerPrivate::parseIdData(idData, 0, 0, &managerUri, &localId))
         return QContactId(managerUri, localId);
 
     return QContactId();

@@ -28,15 +28,15 @@
 
 QT_BEGIN_NAMESPACE_CONTACTS
 
-class QContactData : public QSharedData
+class QContactPrivate : public QSharedData
 {
 public:
-    QContactData()
+    QContactPrivate()
         : QSharedData()
     {
     }
 
-    QContactData(const QContactData& other)
+    QContactPrivate(const QContactPrivate& other)
         : QSharedData(other),
         m_id(other.m_id),
         m_collectionId(other.m_collectionId),
@@ -46,7 +46,7 @@ public:
     {
     }
 
-    ~QContactData() {}
+    ~QContactPrivate() {}
 
     QContactId m_id;
     QContactCollectionId m_collectionId;
@@ -59,7 +59,7 @@ public:
     void removeOnly(const QSet<QContactDetail::DetailType>& types);
 
     // Trampoline
-    static QSharedDataPointer<QContactData>& contactData(QContact& contact) {return contact.d;}
+    static QSharedDataPointer<QContactPrivate>& contactData(QContact& contact) {return contact.d;}
 };
 
 QT_END_NAMESPACE_CONTACTS

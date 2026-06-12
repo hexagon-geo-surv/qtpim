@@ -53,7 +53,7 @@ QT_BEGIN_NAMESPACE_ORGANIZER
     Constructs a new collection.
  */
 QOrganizerCollection::QOrganizerCollection()
-    : d(new QOrganizerCollectionData)
+    : d(new QOrganizerCollectionPrivate)
 {
 }
 

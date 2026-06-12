@@ -72,7 +72,7 @@ QT_BEGIN_NAMESPACE_ORGANIZER
     The organizer item will have an empty item ID, and an empty collection ID. It's of type \l QOrganizerItemType::TypeUndefined.
  */
 QOrganizerItem::QOrganizerItem()
-    : d(new QOrganizerItemData)
+    : d(new QOrganizerItemPrivate)
 {
     QOrganizerItemType organizeritemType;
     organizeritemType.setType(QOrganizerItemType::TypeUndefined);
@@ -93,7 +93,7 @@ QOrganizerItem::QOrganizerItem(const QOrganizerItem &other)
     Constructs a new, empty item of the given type \a type.
 */
 QOrganizerItem::QOrganizerItem(QOrganizerItemType::ItemType type)
-    : d(new QOrganizerItemData)
+    : d(new QOrganizerItemPrivate)
 {
     QOrganizerItemType organizeritemType;
     organizeritemType.setType(type);
@@ -114,7 +114,7 @@ QOrganizerItem::QOrganizerItem(const QOrganizerItem &other, QOrganizerItemType::
     if (other.type() == expectedType) {
         d = other.d;
     } else {
-        d = new QOrganizerItemData;
+        d = new QOrganizerItemPrivate;
         setType(expectedType);
     }
 }
@@ -132,7 +132,7 @@ QOrganizerItem &QOrganizerItem::assign(const QOrganizerItem &other, QOrganizerIt
         if (other.type() == expectedType) {
             d = other.d;
         } else {
-            d = new QOrganizerItemData;
+            d = new QOrganizerItemPrivate;
             setType(expectedType);
         }
     }
@@ -683,7 +683,7 @@ void QOrganizerItem::setData(const QString &name, const QVariant &data)
 /*!
     \internal
  */
-void QOrganizerItemData::removeOnly(QOrganizerItemDetail::DetailType detailType)
+void QOrganizerItemPrivate::removeOnly(QOrganizerItemDetail::DetailType detailType)
 {
     QList<QOrganizerItemDetail>::iterator dit = m_details.begin();
     while (dit != m_details.end()) {
@@ -698,7 +698,7 @@ void QOrganizerItemData::removeOnly(QOrganizerItemDetail::DetailType detailType)
 /*!
     \internal
  */
-void QOrganizerItemData::removeOnly(const QSet<QOrganizerItemDetail::DetailType> &detailTypes)
+void QOrganizerItemPrivate::removeOnly(const QSet<QOrganizerItemDetail::DetailType> &detailTypes)
 {
     QList<QOrganizerItemDetail>::iterator dit = m_details.begin();
     while (dit != m_details.end()) {
