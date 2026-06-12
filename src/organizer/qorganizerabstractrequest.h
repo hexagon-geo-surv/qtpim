@@ -19,13 +19,13 @@ class Q_ORGANIZER_EXPORT QOrganizerAbstractRequest : public QObject
 public:
     ~QOrganizerAbstractRequest();
 
+    Q_ENUMS(State)
     enum State {
         InactiveState = 0,
         ActiveState,
         CanceledState,
         FinishedState
     };
-    Q_ENUM(State)
 
     State state() const;
     inline bool isInactive() const { return state() == QOrganizerAbstractRequest::InactiveState; }
