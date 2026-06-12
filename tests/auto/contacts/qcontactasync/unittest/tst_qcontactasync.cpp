@@ -408,7 +408,6 @@ void tst_QContactAsync::contactFetch()
     QVERIFY(!cfr.isFinished());
     QVERIFY(!cfr.cancel());
     QVERIFY(!cfr.waitForFinished());
-    qRegisterMetaType<QContactFetchRequest*>("QContactFetchRequest*");
     QThreadSignalSpy spy(&cfr, SIGNAL(stateChanged(QContactAbstractRequest::State)));
     cfr.setFilter(fil);
     QCOMPARE(cfr.filter(), fil);
@@ -639,7 +638,6 @@ void tst_QContactAsync::contactFetchById()
     QVERIFY(!cfr.isFinished());
     QVERIFY(!cfr.cancel());
     QVERIFY(!cfr.waitForFinished());
-    qRegisterMetaType<QContactFetchByIdRequest*>("QContactFetchByIdRequest*");
     QThreadSignalSpy spy(&cfr, SIGNAL(stateChanged(QContactAbstractRequest::State)));
     QVERIFY(!cfr.cancel()); // not started
 
@@ -683,7 +681,6 @@ void tst_QContactAsync::contactFetchByIdWithEmptyIds()
     QVERIFY(!cfr.isFinished());
     QVERIFY(!cfr.cancel());
     QVERIFY(!cfr.waitForFinished());
-    qRegisterMetaType<QContactFetchByIdRequest*>("QContactFetchByIdRequest*");
     QThreadSignalSpy spy(&cfr, SIGNAL(stateChanged(QContactAbstractRequest::State)));
     QVERIFY(!cfr.cancel()); // not started
 
@@ -730,7 +727,6 @@ void tst_QContactAsync::contactFetchByIdMixingEmptyIds()
     QVERIFY(!cfr.isFinished());
     QVERIFY(!cfr.cancel());
     QVERIFY(!cfr.waitForFinished());
-    qRegisterMetaType<QContactFetchByIdRequest*>("QContactFetchByIdRequest*");
     QThreadSignalSpy spy(&cfr, SIGNAL(stateChanged(QContactAbstractRequest::State)));
     QVERIFY(!cfr.cancel()); // not started
 
@@ -781,7 +777,6 @@ void tst_QContactAsync::contactFetchByIdWithNonExistingButValidIds()
     QVERIFY(!cfr.isFinished());
     QVERIFY(!cfr.cancel());
     QVERIFY(!cfr.waitForFinished());
-    qRegisterMetaType<QContactFetchByIdRequest*>("QContactFetchByIdRequest*");
     QThreadSignalSpy spy(&cfr, SIGNAL(stateChanged(QContactAbstractRequest::State)));
     QVERIFY(!cfr.cancel()); // not started
 
@@ -831,7 +826,6 @@ void tst_QContactAsync::contactFetchByIdErrorHandling()
     QVERIFY(!cfrCausingErrors.cancel());
     QVERIFY(!cfrCausingErrors.waitForFinished());
 
-    qRegisterMetaType<QContactFetchByIdRequest*>("QContactFetchByIdRequest*");
     QThreadSignalSpy spy2(&cfrCausingErrors, SIGNAL(stateChanged(QContactAbstractRequest::State)));
 
     QVERIFY(!cfrCausingErrors.cancel()); // not started
@@ -874,7 +868,6 @@ void tst_QContactAsync::contactIdFetch()
     QVERIFY(!cfr.isFinished());
     QVERIFY(!cfr.cancel());
     QVERIFY(!cfr.waitForFinished());
-    qRegisterMetaType<QContactIdFetchRequest*>("QContactIdFetchRequest*");
 
     QThreadSignalSpy spy(&cfr, SIGNAL(stateChanged(QContactAbstractRequest::State)));
     cfr.setFilter(fil);
@@ -1034,7 +1027,6 @@ void tst_QContactAsync::contactRemove()
     QVERIFY(!crr.isFinished());
     QVERIFY(!crr.cancel());
     QVERIFY(!crr.waitForFinished());
-    qRegisterMetaType<QContactRemoveRequest*>("QContactRemoveRequest*");
     QThreadSignalSpy spy(&crr, SIGNAL(stateChanged(QContactAbstractRequest::State)));
     QVERIFY(!crr.cancel()); // not started
 
@@ -1158,7 +1150,6 @@ void tst_QContactAsync::contactRemoveErrorHandling() {
     QVERIFY(!csr.isFinished());
     QVERIFY(!csr.cancel());
     QVERIFY(!csr.waitForFinished());
-    qRegisterMetaType<QContactSaveRequest*>("QContactSaveRequest*");
     QThreadSignalSpy spy(&csr, SIGNAL(stateChanged(QContactAbstractRequest::State)));
 
     // Setup a two identical lists of contacts for testing save and remove.
@@ -1207,7 +1198,6 @@ void tst_QContactAsync::contactRemoveErrorHandling() {
     QVERIFY(!contactRemoveRequest.isFinished());
     QVERIFY(!contactRemoveRequest.cancel());
     QVERIFY(!contactRemoveRequest.waitForFinished());
-    qRegisterMetaType<QContactSaveRequest*>("QContactSaveRequest*");
     QThreadSignalSpy spy2(&contactRemoveRequest, SIGNAL(stateChanged(QContactAbstractRequest::State)));
 
     // Setup valid and invalid contact ids for remove request, start it and wait for finished.
@@ -1279,7 +1269,6 @@ void tst_QContactAsync::contactSave()
     QVERIFY(!csr.isFinished());
     QVERIFY(!csr.cancel());
     QVERIFY(!csr.waitForFinished());
-    qRegisterMetaType<QContactSaveRequest*>("QContactSaveRequest*");
     QThreadSignalSpy spy(&csr, SIGNAL(stateChanged(QContactAbstractRequest::State)));
     csr.setContact(testContact);
     QCOMPARE(csr.contacts(), saveList);
@@ -1497,7 +1486,6 @@ void tst_QContactAsync::contactSaveErrorHandling()
     QVERIFY(!csr.isFinished());
     QVERIFY(!csr.cancel());
     QVERIFY(!csr.waitForFinished());
-    qRegisterMetaType<QContactSaveRequest*>("QContactSaveRequest*");
     QThreadSignalSpy spy(&csr, SIGNAL(stateChanged(QContactAbstractRequest::State)));
 
     QList<QContact> testContacts;
@@ -1558,7 +1546,6 @@ void tst_QContactAsync::contactSaveRemovedContacts()
 
     // Save all three test contacts.
     csr.setManager(cm.data());
-    qRegisterMetaType<QContactSaveRequest*>("QContactSaveRequest*");
     csr.setContacts(testContacts);
     QVERIFY(csr.start());
     QVERIFY(csr.waitForFinished());
@@ -1664,7 +1651,6 @@ void tst_QContactAsync::contactPartialSave()
     QList<QContactDetail::DetailType> typeMasks;
     typeMasks << QContactDetail::TypeEmailAddress;
     csr.setTypeMask(typeMasks);
-    qRegisterMetaType<QContactSaveRequest*>("QContactSaveRequest*");
     QThreadSignalSpy spy(&csr, SIGNAL(stateChanged(QContactAbstractRequest::State)));
     QVERIFY(csr.start());
     QVERIFY((csr.isActive() && csr.state() == QContactAbstractRequest::ActiveState) || csr.isFinished());
@@ -1899,7 +1885,6 @@ void tst_QContactAsync::relationshipFetch()
     QVERIFY(!rfr.isFinished());
     QVERIFY(!rfr.cancel());
     QVERIFY(!rfr.waitForFinished());
-    qRegisterMetaType<QContactRelationshipFetchRequest*>("QContactRelationshipFetchRequest*");
     QThreadSignalSpy spy(&rfr, SIGNAL(stateChanged(QContactAbstractRequest::State)));
     QVERIFY(!rfr.cancel()); // not started
     QVERIFY(rfr.start());
@@ -2119,7 +2104,6 @@ void tst_QContactAsync::relationshipRemove()
 
     rrr.setRelationships(relationships);
     rrr.setManager(cm.data());
-    qRegisterMetaType<QContactRelationshipRemoveRequest*>("QContactRelationshipRemoveRequest*");
     QThreadSignalSpy spy(&rrr, SIGNAL(stateChanged(QContactAbstractRequest::State)));
     QCOMPARE(rrr.manager(), cm.data());
     QVERIFY(!rrr.isActive());
@@ -2267,7 +2251,6 @@ void tst_QContactAsync::relationshipSave()
     QVERIFY(!rsr.isFinished());
     QVERIFY(!rsr.cancel());
     QVERIFY(!rsr.waitForFinished());
-    qRegisterMetaType<QContactRelationshipSaveRequest*>("QContactRelationshipSaveRequest*");
     QThreadSignalSpy spy(&rsr, SIGNAL(stateChanged(QContactAbstractRequest::State)));
     rsr.setRelationship(testRel);
     QCOMPARE(rsr.relationships(), saveList);
@@ -2411,7 +2394,6 @@ void tst_QContactAsync::collectionFetch()
     QVERIFY(!cfr.isFinished());
     QVERIFY(!cfr.cancel());
     QVERIFY(!cfr.waitForFinished());
-    qRegisterMetaType<QContactCollectionFetchRequest*>("QContactCollectionFetchRequest*");
     QThreadSignalSpy spy(&cfr, SIGNAL(stateChanged(QContactAbstractRequest::State)));
     QVERIFY(!cfr.cancel()); // not started
 
@@ -2515,7 +2497,6 @@ void tst_QContactAsync::collectionRemove()
     QVERIFY(!crr.isFinished());
     QVERIFY(!crr.cancel());
     QVERIFY(!crr.waitForFinished());
-    qRegisterMetaType<QContactCollectionRemoveRequest*>("QContactCollectionRemoveRequest*");
     QThreadSignalSpy spy(&crr, SIGNAL(stateChanged(QContactAbstractRequest::State)));
     QVERIFY(!crr.cancel()); // not started
     QVERIFY(crr.start());
@@ -2674,7 +2655,6 @@ void tst_QContactAsync::collectionSave()
     QVERIFY(!csr.isFinished());
     QVERIFY(!csr.cancel());
     QVERIFY(!csr.waitForFinished());
-    qRegisterMetaType<QContactCollectionSaveRequest*>("QContactCollectionSaveRequest*");
     QThreadSignalSpy spy(&csr, SIGNAL(stateChanged(QContactAbstractRequest::State)));
     csr.setCollection(testCollection);
     QCOMPARE(csr.collections(), saveList);

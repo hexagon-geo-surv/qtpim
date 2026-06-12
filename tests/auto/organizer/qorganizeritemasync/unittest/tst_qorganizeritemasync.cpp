@@ -484,7 +484,6 @@ void tst_QOrganizerItemAsync::itemFetch()
     QVERIFY(!ifr.isFinished());
     QVERIFY(!ifr.cancel());
     QVERIFY(!ifr.waitForFinished());
-    qRegisterMetaType<QOrganizerItemFetchRequest*>("QOrganizerItemFetchRequest*");
     QThreadSignalSpy spy(&ifr, SIGNAL(stateChanged(QtOrganizer::QOrganizerAbstractRequest::State)));
     ifr.setFilter(fil);
     QCOMPARE(ifr.filter(), fil);
@@ -717,7 +716,6 @@ void tst_QOrganizerItemAsync::itemFetchById()
     QVERIFY(!ifr.isFinished());
     QVERIFY(!ifr.cancel());
     QVERIFY(!ifr.waitForFinished());
-    qRegisterMetaType<QOrganizerItemFetchByIdRequest*>("QOrganizerItemFetchByIdRequest*");
     QThreadSignalSpy spy(&ifr, SIGNAL(stateChanged(QtOrganizer::QOrganizerAbstractRequest::State)));
     QVERIFY(!ifr.cancel()); // not started
 
@@ -772,7 +770,6 @@ void tst_QOrganizerItemAsync::itemIdFetch()
     QVERIFY(!ifr.isFinished());
     QVERIFY(!ifr.cancel());
     QVERIFY(!ifr.waitForFinished());
-    qRegisterMetaType<QOrganizerItemIdFetchRequest*>("QOrganizerItemIdFetchRequest*");
 
     QThreadSignalSpy spy(&ifr, SIGNAL(stateChanged(QtOrganizer::QOrganizerAbstractRequest::State)));
     ifr.setFilter(fil);
@@ -940,7 +937,6 @@ void tst_QOrganizerItemAsync::itemOccurrenceFetch()
     QVERIFY(!ifr.isFinished());
     QVERIFY(!ifr.cancel());
     QVERIFY(!ifr.waitForFinished());
-    qRegisterMetaType<QOrganizerItemFetchRequest*>("QOrganizerItemFetchRequest*");
     QThreadSignalSpy spy(&ifr, SIGNAL(stateChanged(QtOrganizer::QOrganizerAbstractRequest::State)));
     ifr.setParentItem(parent);
     QCOMPARE(ifr.parentItem(), parent);
@@ -1130,7 +1126,6 @@ void tst_QOrganizerItemAsync::itemFetchForExport()
     QVERIFY(!ifr.isFinished());
     QVERIFY(!ifr.cancel());
     QVERIFY(!ifr.waitForFinished());
-    qRegisterMetaType<QOrganizerItemFetchRequest*>("QOrganizerItemFetchRequest*");
     QThreadSignalSpy spy(&ifr, SIGNAL(stateChanged(QtOrganizer::QOrganizerAbstractRequest::State)));
     ifr.setFilter(fil);
     QCOMPARE(ifr.filter(), fil);
@@ -1393,7 +1388,6 @@ void tst_QOrganizerItemAsync::itemRemove()
     QVERIFY(!irr.isFinished());
     QVERIFY(!irr.cancel());
     QVERIFY(!irr.waitForFinished());
-    qRegisterMetaType<QOrganizerItemRemoveRequest*>("QOrganizerItemRemoveRequest*");
     QThreadSignalSpy spy(&irr, SIGNAL(stateChanged(QtOrganizer::QOrganizerAbstractRequest::State)));
     QVERIFY(!irr.cancel()); // not started
 
@@ -1570,7 +1564,6 @@ void tst_QOrganizerItemAsync::itemRemoveById()
     QVERIFY(!irr.isFinished());
     QVERIFY(!irr.cancel());
     QVERIFY(!irr.waitForFinished());
-    qRegisterMetaType<QOrganizerItemRemoveByIdRequest*>("QOrganizerItemRemoveByIdRequest*");
     QThreadSignalSpy spy(&irr, SIGNAL(stateChanged(QtOrganizer::QOrganizerAbstractRequest::State)));
     QVERIFY(!irr.cancel()); // not started
 
@@ -1714,7 +1707,6 @@ void tst_QOrganizerItemAsync::itemSave()
     QVERIFY(!isr.isFinished());
     QVERIFY(!isr.cancel());
     QVERIFY(!isr.waitForFinished());
-    qRegisterMetaType<QOrganizerItemSaveRequest*>("QOrganizerItemSaveRequest*");
     QThreadSignalSpy spy(&isr, SIGNAL(stateChanged(QtOrganizer::QOrganizerAbstractRequest::State)));
     isr.setItem(testTodo);
     QCOMPARE(isr.items(), saveList);
@@ -1909,7 +1901,6 @@ void tst_QOrganizerItemAsync::itemListSave()
     QVERIFY(!isr.isFinished());
     QVERIFY(!isr.cancel());
     QVERIFY(!isr.waitForFinished());
-    qRegisterMetaType<QOrganizerItemSaveRequest*>("QOrganizerItemSaveRequest*");
     QThreadSignalSpy spy(&isr, SIGNAL(stateChanged(QtOrganizer::QOrganizerAbstractRequest::State)));
     isr.setItems(saveList);
     QVERIFY(!isr.cancel()); // not started
@@ -2139,7 +2130,6 @@ void tst_QOrganizerItemAsync::collectionFetch()
     QVERIFY(!cfr.isFinished());
     QVERIFY(!cfr.cancel());
     QVERIFY(!cfr.waitForFinished());
-    qRegisterMetaType<QOrganizerCollectionFetchRequest*>("QOrganizerCollectionFetchRequest*");
     QThreadSignalSpy spy(&cfr, SIGNAL(stateChanged(QtOrganizer::QOrganizerAbstractRequest::State)));
     QVERIFY(!cfr.cancel()); // not started
 
@@ -2243,7 +2233,6 @@ void tst_QOrganizerItemAsync::collectionRemove()
     QVERIFY(!crr.isFinished());
     QVERIFY(!crr.cancel());
     QVERIFY(!crr.waitForFinished());
-    qRegisterMetaType<QOrganizerCollectionRemoveRequest*>("QOrganizerCollectionRemoveRequest*");
     QThreadSignalSpy spy(&crr, SIGNAL(stateChanged(QtOrganizer::QOrganizerAbstractRequest::State)));
     QVERIFY(!crr.cancel()); // not started
     QVERIFY(crr.start());
@@ -2401,7 +2390,6 @@ void tst_QOrganizerItemAsync::collectionSave()
     QVERIFY(!csr.isFinished());
     QVERIFY(!csr.cancel());
     QVERIFY(!csr.waitForFinished());
-    qRegisterMetaType<QOrganizerCollectionSaveRequest*>("QOrganizerCollectionSaveRequest*");
     QThreadSignalSpy spy(&csr, SIGNAL(stateChanged(QtOrganizer::QOrganizerAbstractRequest::State)));
     csr.setCollection(testCollection);
     QCOMPARE(csr.collections(), saveList);
