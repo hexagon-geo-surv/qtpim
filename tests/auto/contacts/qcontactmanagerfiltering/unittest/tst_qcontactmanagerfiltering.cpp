@@ -3532,8 +3532,12 @@ QList<QContactId> tst_QContactManagerFiltering::prepareModel(QContactManager *cm
 
     QList<QContactId> list;
 
-    /* Add our newly saved contacts to our internal list of added contacts */
-    for (const QContactId &id : (QList<QContactId>() << contactR.id()
+    /* Add our newly saved contacts to our internal list of added contacts.
+       Note: the list must be bound to a named variable. A range-based for loop
+       over the temporary returned by the operator<< chain would iterate over a
+       dangling reference, because operator<< returns a reference to the initial
+       temporary, which is not lifetime-extended by the loop (before C++23). */
+    const QList<QContactId> savedIds = QList<QContactId>() << contactR.id()
                                                         << contactQ.id()
                                                         << contactP.id()
                                                         << contactO.id()
@@ -3550,7 +3554,8 @@ QList<QContactId> tst_QContactManagerFiltering::prepareModel(QContactManager *cm
                                                         << contactD.id()
                                                         << contactC.id()
                                                         << contactB.id()
-                                                        << contactA.id())) {
+                                                        << contactA.id();
+    for (const QContactId &id : savedIds) {
         if (!id.isNull()) {
             contactsAddedToManagers.insert(cm, id);
             list.prepend(id);
