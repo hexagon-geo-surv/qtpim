@@ -74,7 +74,7 @@ void tst_QOrganizerItemDetails::compare()
 {
     QOrganizerItemRecurrence r, r2;
     QVERIFY(r == r2);
-    QVERIFY(QOrganizerItemDetail() != r);
+    QVERIFY(QOrganizerItemDetail() != static_cast<const QOrganizerItemDetail &>(r));
 
     QOrganizerRecurrenceRule testRule;
     testRule.setFrequency(QOrganizerRecurrenceRule::Weekly);
@@ -128,11 +128,11 @@ void tst_QOrganizerItemDetails::compare()
     exdates << QDate(2010, 10, 17);
     r.setExceptionDates(exdates);
     QVERIFY(r != r2);
-    QVERIFY(e.detail(QOrganizerItemDetail::TypeRecurrence) != r);
+    QVERIFY(e.detail(QOrganizerItemDetail::TypeRecurrence) != static_cast<const QOrganizerItemDetail &>(r));
     QVERIFY(e.detail(QOrganizerItemDetail::TypeRecurrence) == r2);
     QVERIFY(e.saveDetail(&r));
     QVERIFY(e.detail(QOrganizerItemDetail::TypeRecurrence) == r);
-    QVERIFY(e.detail(QOrganizerItemDetail::TypeRecurrence) != r2);
+    QVERIFY(e.detail(QOrganizerItemDetail::TypeRecurrence) != static_cast<const QOrganizerItemDetail &>(r2));
     QVERIFY(e != e2);
 
     // remove.
@@ -383,7 +383,7 @@ void tst_QOrganizerItemDetails::recurrence()
     // update
     exdates << QDate(2010, 10, 17);
     r.setExceptionDates(exdates);
-    QVERIFY(e.detail(QOrganizerItemDetail::TypeRecurrence) != r);
+    QVERIFY(e.detail(QOrganizerItemDetail::TypeRecurrence) != static_cast<const QOrganizerItemDetail &>(r));
     QVERIFY(e.saveDetail(&r));
     QVERIFY(e.detail(QOrganizerItemDetail::TypeRecurrence) == r);
     QVERIFY(e.details(QOrganizerItemDetail::TypeRecurrence).size() == 1); // should update, not add another.
