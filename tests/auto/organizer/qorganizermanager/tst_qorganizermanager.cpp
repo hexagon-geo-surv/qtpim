@@ -2722,7 +2722,10 @@ void tst_QOrganizerManager::changeSet()
     QVERIFY(changeSet.changedItems().isEmpty());
 
     QList<QOrganizerItemId> l1, l2;
-    for (int n : QList<int>() << 1 << 1 << 1 << 2 << 2 << 3 << 3 << 4 << 4 << 4 << 5 << 10 << 9 << 8 << 8 << 8 << 7 << 7 << 6) {
+    // Bind to a named local: a range-for over the operator<< chain would dangle, as
+    // operator<< returns a reference to the (non-extended) temporary (before C++23).
+    const QList<int> ns = QList<int>() << 1 << 1 << 1 << 2 << 2 << 3 << 3 << 4 << 4 << 4 << 5 << 10 << 9 << 8 << 8 << 8 << 7 << 7 << 6;
+    for (int n : ns) {
         ((QRandomGenerator::global()->bounded(2)) ? l1 : l2).append(makeItemId(n));
     }
     changeSet.clearChangedItems();
