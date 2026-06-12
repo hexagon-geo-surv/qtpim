@@ -729,7 +729,7 @@ void tst_QVersitReader::testParseNextVersitProperty_data()
     {
         QVersitProperty expectedProperty;
         expectedProperty.setName(QStringLiteral("ORG"));
-        expectedProperty.setValue(QString::fromUtf8(KATAKANA_NOKIA));
+        expectedProperty.setValue(QStringList(QString::fromUtf8(KATAKANA_NOKIA)));
         expectedProperty.setValueType(QVersitProperty::CompoundType);
         QTest::newRow("org utf8")
             << QVersitDocument::VCard21Type
@@ -740,7 +740,7 @@ void tst_QVersitReader::testParseNextVersitProperty_data()
     {
         QVersitProperty expectedProperty;
         expectedProperty.setName(QStringLiteral("ORG"));
-        expectedProperty.setValue(QString::fromUtf8(KATAKANA_NOKIA));
+        expectedProperty.setValue(QStringList(QString::fromUtf8(KATAKANA_NOKIA)));
         expectedProperty.setValueType(QVersitProperty::CompoundType);
         QTest::newRow("vcard21 org utf8 qp")
             << QVersitDocument::VCard21Type
