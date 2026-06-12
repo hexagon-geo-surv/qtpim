@@ -248,10 +248,10 @@ void QContactManagerData::registerObserver(QContactManager *manager, QContactObs
     // If this is the first observer, connect to the engine too
     if (d->m_observerForContact.size() == 1) {
         // This takes advantage of the manager connectNotify code
-        QObject::connect(manager, SIGNAL(contactsChanged(QList<QContactId>,QList<QContactDetail::DetailType>)),
-                manager, SLOT(_q_contactsUpdated(QList<QContactId>,QList<QContactDetail::DetailType>)));
-        QObject::connect(manager, SIGNAL(contactsRemoved(QList<QContactId>)),
-                manager, SLOT(_q_contactsDeleted(QList<QContactId>)));
+        QObject::connect(manager, SIGNAL(contactsChanged(QList<QtContacts::QContactId>,QList<QtContacts::QContactDetail::DetailType>)),
+                manager, SLOT(_q_contactsUpdated(QList<QtContacts::QContactId>,QList<QtContacts::QContactDetail::DetailType>)));
+        QObject::connect(manager, SIGNAL(contactsRemoved(QList<QtContacts::QContactId>)),
+                manager, SLOT(_q_contactsDeleted(QList<QtContacts::QContactId>)));
     }
 }
 
@@ -268,10 +268,10 @@ void QContactManagerData::unregisterObserver(QContactManager *manager, QContactO
         // If there are now no more observers, disconnect from the engine
         if (d->m_observerForContact.size() == 0) {
             // This takes advantage of the manager disconnectNotify code
-            QObject::disconnect(manager, SIGNAL(contactsChanged(QList<QContactId>,QList<QContactDetail::DetailType>)),
-                    manager, SLOT(_q_contactsUpdated(QList<QContactId>,QList<QContactDetail::DetailType>)));
-            QObject::disconnect(manager, SIGNAL(contactsRemoved(QList<QContactId>)),
-                    manager, SLOT(_q_contactsDeleted(QList<QContactId>)));
+            QObject::disconnect(manager, SIGNAL(contactsChanged(QList<QtContacts::QContactId>,QList<QtContacts::QContactDetail::DetailType>)),
+                    manager, SLOT(_q_contactsUpdated(QList<QtContacts::QContactId>,QList<QtContacts::QContactDetail::DetailType>)));
+            QObject::disconnect(manager, SIGNAL(contactsRemoved(QList<QtContacts::QContactId>)),
+                    manager, SLOT(_q_contactsDeleted(QList<QtContacts::QContactId>)));
         }
     }
 }

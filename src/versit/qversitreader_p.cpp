@@ -385,8 +385,8 @@ bool LineReader::tryReadLine(LByteArray *cursor, bool atEnd)
 void QVersitReaderPrivate::init(QVersitReader* reader)
 {
     qRegisterMetaType<QVersitReader::State>("QVersitReader::State");
-    connect(this, SIGNAL(stateChanged(QVersitReader::State)),
-            reader, SIGNAL(stateChanged(QVersitReader::State)),Qt::DirectConnection);
+    connect(this, SIGNAL(stateChanged(QtVersit::QVersitReader::State)),
+            reader, SIGNAL(stateChanged(QtVersit::QVersitReader::State)),Qt::DirectConnection);
     connect(this, SIGNAL(resultsAvailable()),
             reader, SIGNAL(resultsAvailable()), Qt::DirectConnection);
 }

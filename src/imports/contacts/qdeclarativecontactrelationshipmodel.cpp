@@ -142,8 +142,8 @@ void QDeclarativeContactRelationshipModel::setManager(const QString& manager)
 {
     if (d->m_manager == 0 || manager != d->m_manager->managerName() ) {
         d->m_manager = new QContactManager(manager,QMap<QString,QString>(), this);
-        connect(d->m_manager,SIGNAL(relationshipsAdded(QList<QContactId>)), this, SLOT(fetchAgain()));
-        connect(d->m_manager,SIGNAL(relationshipsRemoved(QList<QContactId>)), this, SLOT(fetchAgain()));
+        connect(d->m_manager,SIGNAL(relationshipsAdded(QList<QtContacts::QContactId>)), this, SLOT(fetchAgain()));
+        connect(d->m_manager,SIGNAL(relationshipsRemoved(QList<QtContacts::QContactId>)), this, SLOT(fetchAgain()));
         emit managerChanged();
     }
 }
@@ -264,7 +264,7 @@ void QDeclarativeContactRelationshipModel::fetchAgain()
             if (d->m_role == QDeclarativeContactRelationship::Second || d->m_role == QDeclarativeContactRelationship::Either)
                 req->setSecond(contact.id());
             req->setRelationshipType(d->m_relationshipTypeHolder.relationship().relationshipType());
-            connect(req,SIGNAL(stateChanged(QContactAbstractRequest::State)), this, SLOT(requestUpdated()));
+            connect(req,SIGNAL(stateChanged(QtContacts::QContactAbstractRequest::State)), this, SLOT(requestUpdated()));
             req->start();
         }
     }
@@ -281,7 +281,7 @@ void QDeclarativeContactRelationshipModel::addRelationship(QDeclarativeContactRe
         QContactRelationshipSaveRequest* req = new QContactRelationshipSaveRequest(this);
         req->setManager(d->m_manager);
         req->setRelationship(cr);
-        connect(req, SIGNAL(stateChanged(QContactAbstractRequest::State)), this, SLOT(relationshipsSaved()));
+        connect(req, SIGNAL(stateChanged(QtContacts::QContactAbstractRequest::State)), this, SLOT(relationshipsSaved()));
         req->start();
     }
 }
@@ -297,7 +297,7 @@ void QDeclarativeContactRelationshipModel::removeRelationship(QDeclarativeContac
         QContactRelationshipRemoveRequest* req = new QContactRelationshipRemoveRequest(this);
         req->setManager(d->m_manager);
         req->setRelationship(cr);
-        connect(req,SIGNAL(stateChanged(QContactAbstractRequest::State)), this, SLOT(relationshipsRemoved()));
+        connect(req,SIGNAL(stateChanged(QtContacts::QContactAbstractRequest::State)), this, SLOT(relationshipsRemoved()));
         req->start();
     }
 }

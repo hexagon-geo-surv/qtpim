@@ -456,7 +456,7 @@ void QDeclarativeOrganizerModel::importItems(const QUrl& url, const QStringList 
         if (file->open(QIODevice::ReadOnly)) {
             if (!d->m_reader) {
                 d->m_reader = new QVersitReader;
-                connect(d->m_reader, SIGNAL(stateChanged(QVersitReader::State)), this, SLOT(startImport(QVersitReader::State)));
+                connect(d->m_reader, SIGNAL(stateChanged(QtVersit::QVersitReader::State)), this, SLOT(startImport(QtVersit::QVersitReader::State)));
             }
 
             d->m_reader->setDevice(file);
@@ -507,7 +507,7 @@ void QDeclarativeOrganizerModel::exportItems(const QUrl &url, const QStringList 
         if (file->open(QIODevice::ReadWrite)) {
             if (!d->m_writer) {
                 d->m_writer = new QVersitWriter;
-                connect(d->m_writer, SIGNAL(stateChanged(QVersitWriter::State)), this, SLOT(itemsExported(QVersitWriter::State)));
+                connect(d->m_writer, SIGNAL(stateChanged(QtVersit::QVersitWriter::State)), this, SLOT(itemsExported(QtVersit::QVersitWriter::State)));
             }
             d->m_writer->setDevice(file);
             if (d->m_writer->startWriting(document)) {
@@ -561,7 +561,7 @@ void QDeclarativeOrganizerModel::setManager(const QString& managerName)
     connect(d->m_manager, &QOrganizerManager::collectionsChanged, &d->m_fetchCollectionsTimer, static_cast<void (QTimer::*)(void)>(&QTimer::start));
     connect(d->m_manager, &QOrganizerManager::collectionsRemoved, &d->m_fetchCollectionsTimer, static_cast<void (QTimer::*)(void)>(&QTimer::start));
     connect(d->m_manager, &QOrganizerManager::dataChanged, &d->m_updateTimer, static_cast<void (QTimer::*)(void)>(&QTimer::start));
-    connect(d->m_manager, SIGNAL(itemsModified(QList<std::pair<QOrganizerItemId,QOrganizerManager::Operation> >)), this, SLOT(onItemsModified(QList<std::pair<QOrganizerItemId,QOrganizerManager::Operation> >)));
+    connect(d->m_manager, SIGNAL(itemsModified(QList<std::pair<QtOrganizer::QOrganizerItemId,QtOrganizer::QOrganizerManager::Operation> >)), this, SLOT(onItemsModified(QList<std::pair<QtOrganizer::QOrganizerItemId,QtOrganizer::QOrganizerManager::Operation> >)));
 
     const QOrganizerManager::Error managerError = d->m_manager->error();
     if (QOrganizerManager::NoError != managerError && d->m_error != managerError) {
@@ -828,8 +828,8 @@ int QDeclarativeOrganizerModel::fetchItems(const QDateTime &start, const QDateTi
 
     // Parameter validation left to fetch request method.
     QOrganizerItemFetchRequest *fetchRequest = new QOrganizerItemFetchRequest(this);
-    connect(fetchRequest, SIGNAL(stateChanged(QOrganizerAbstractRequest::State)),
-            this, SLOT(onFetchItemsRequestStateChanged(QOrganizerAbstractRequest::State)));
+    connect(fetchRequest, SIGNAL(stateChanged(QtOrganizer::QOrganizerAbstractRequest::State)),
+            this, SLOT(onFetchItemsRequestStateChanged(QtOrganizer::QOrganizerAbstractRequest::State)));
 
     QList<QOrganizerItemSortOrder> sList;
     QVariantList::const_iterator it = sortOrders.begin();
@@ -880,8 +880,8 @@ int QDeclarativeOrganizerModel::fetchItems(const QStringList &itemIds)
         return -1;
 
     QOrganizerItemFetchByIdRequest *fetchRequest = new QOrganizerItemFetchByIdRequest(this);
-    connect(fetchRequest, SIGNAL(stateChanged(QOrganizerAbstractRequest::State)),
-            this, SLOT(onFetchItemsRequestStateChanged(QOrganizerAbstractRequest::State)));
+    connect(fetchRequest, SIGNAL(stateChanged(QtOrganizer::QOrganizerAbstractRequest::State)),
+            this, SLOT(onFetchItemsRequestStateChanged(QtOrganizer::QOrganizerAbstractRequest::State)));
     fetchRequest->setManager(d->m_manager);
 
     QList<QOrganizerItemId> ids;
@@ -1147,7 +1147,7 @@ void QDeclarativeOrganizerModel::fetchAgain()
     }
     d->m_fetchRequest->setFetchHint(d->m_fetchHint ? d->m_fetchHint->fetchHint() : QOrganizerItemFetchHint());
 
-    connect(d->m_fetchRequest, SIGNAL(stateChanged(QOrganizerAbstractRequest::State)), this, SLOT(requestUpdated()));
+    connect(d->m_fetchRequest, SIGNAL(stateChanged(QtOrganizer::QOrganizerAbstractRequest::State)), this, SLOT(requestUpdated()));
     d->m_fetchRequest->start();
 }
 
@@ -1253,7 +1253,7 @@ void QDeclarativeOrganizerModel::saveItem(QDeclarativeOrganizerItem* di)
             req->setProperty(ITEM_TO_SAVE_PROPERTY, QVariant::fromValue(pItem));
         }
 
-        connect(req, SIGNAL(stateChanged(QOrganizerAbstractRequest::State)), this, SLOT(onRequestStateChanged(QOrganizerAbstractRequest::State)));
+        connect(req, SIGNAL(stateChanged(QtOrganizer::QOrganizerAbstractRequest::State)), this, SLOT(onRequestStateChanged(QtOrganizer::QOrganizerAbstractRequest::State)));
 
         req->start();
     }
@@ -1281,7 +1281,7 @@ void QDeclarativeOrganizerModel::removeItem(QDeclarativeOrganizerItem *item)
     QOrganizerItemRemoveRequest* req = new QOrganizerItemRemoveRequest(this);
     req->setManager(d->m_manager);
     req->setItem(item->item());
-    connect(req, SIGNAL(stateChanged(QOrganizerAbstractRequest::State)), this, SLOT(onRequestStateChanged(QOrganizerAbstractRequest::State)));
+    connect(req, SIGNAL(stateChanged(QtOrganizer::QOrganizerAbstractRequest::State)), this, SLOT(onRequestStateChanged(QtOrganizer::QOrganizerAbstractRequest::State)));
     req->start();
 }
 
@@ -1311,7 +1311,7 @@ void QDeclarativeOrganizerModel::removeItems(const QStringList& ids)
 
     req->setItemIds(oids);
 
-    connect(req, SIGNAL(stateChanged(QOrganizerAbstractRequest::State)), this, SLOT(onRequestStateChanged(QOrganizerAbstractRequest::State)));
+    connect(req, SIGNAL(stateChanged(QtOrganizer::QOrganizerAbstractRequest::State)), this, SLOT(onRequestStateChanged(QtOrganizer::QOrganizerAbstractRequest::State)));
 
     req->start();
 }
@@ -1332,7 +1332,7 @@ void QDeclarativeOrganizerModel::removeItems(const QList<QDeclarativeOrganizerIt
     }
 
     req->setItems(ois);
-    connect(req, SIGNAL(stateChanged(QOrganizerAbstractRequest::State)), this, SLOT(onRequestStateChanged(QOrganizerAbstractRequest::State)));
+    connect(req, SIGNAL(stateChanged(QtOrganizer::QOrganizerAbstractRequest::State)), this, SLOT(onRequestStateChanged(QtOrganizer::QOrganizerAbstractRequest::State)));
     req->start();
 }
 
@@ -1428,8 +1428,8 @@ void QDeclarativeOrganizerModel::onItemsModified(const QList<std::pair<QOrganize
         // FIXME; to be optimized with fetching only the modified items
         // from the storage locations modified items are on
         QOrganizerItemFetchRequest *fetchRequest = new QOrganizerItemFetchRequest(this);
-        connect(fetchRequest, SIGNAL(stateChanged(QOrganizerAbstractRequest::State)),
-                this, SLOT(onItemsModifiedFetchRequestStateChanged(QOrganizerAbstractRequest::State)));
+        connect(fetchRequest, SIGNAL(stateChanged(QtOrganizer::QOrganizerAbstractRequest::State)),
+                this, SLOT(onItemsModifiedFetchRequestStateChanged(QtOrganizer::QOrganizerAbstractRequest::State)));
         fetchRequest->setManager(d->m_manager);
         fetchRequest->setStartDate(d->m_startPeriod);
         fetchRequest->setEndDate(d->m_endPeriod);
@@ -1620,7 +1620,7 @@ void QDeclarativeOrganizerModel::fetchCollections()
     QOrganizerCollectionFetchRequest* req = new QOrganizerCollectionFetchRequest(this);
     req->setManager(d->m_manager);
 
-    connect(req,SIGNAL(stateChanged(QOrganizerAbstractRequest::State)), this, SLOT(collectionsFetched()));
+    connect(req,SIGNAL(stateChanged(QtOrganizer::QOrganizerAbstractRequest::State)), this, SLOT(collectionsFetched()));
 
     req->start();
 }
@@ -1684,7 +1684,7 @@ void QDeclarativeOrganizerModel::saveCollection(QDeclarativeOrganizerCollection*
         req->setManager(d->m_manager);
         req->setCollection(collection);
 
-        connect(req, SIGNAL(stateChanged(QOrganizerAbstractRequest::State)), this, SLOT(onRequestStateChanged(QOrganizerAbstractRequest::State)));
+        connect(req, SIGNAL(stateChanged(QtOrganizer::QOrganizerAbstractRequest::State)), this, SLOT(onRequestStateChanged(QtOrganizer::QOrganizerAbstractRequest::State)));
 
         req->start();
     }
@@ -1701,7 +1701,7 @@ void QDeclarativeOrganizerModel::removeCollection(const QString &collectionId)
     req->setManager(d->m_manager);
     req->setCollectionId(QOrganizerCollectionId::fromString(collectionId));
 
-    connect(req, SIGNAL(stateChanged(QOrganizerAbstractRequest::State)), this, SLOT(onRequestStateChanged(QOrganizerAbstractRequest::State)));
+    connect(req, SIGNAL(stateChanged(QtOrganizer::QOrganizerAbstractRequest::State)), this, SLOT(onRequestStateChanged(QtOrganizer::QOrganizerAbstractRequest::State)));
 
     req->start();
 }

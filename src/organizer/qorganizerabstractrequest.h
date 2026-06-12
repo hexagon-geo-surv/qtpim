@@ -25,6 +25,7 @@ public:
         CanceledState,
         FinishedState
     };
+    Q_ENUM(State)
 
     State state() const;
     inline bool isInactive() const { return state() == QOrganizerAbstractRequest::InactiveState; }

@@ -195,8 +195,8 @@ QDeclarativeContactModel::QDeclarativeContactModel(QObject *parent) :
     connect(this, SIGNAL(sortOrdersChanged()), SLOT(doContactUpdate()));
 
     //import vcard
-    connect(&d->m_reader, SIGNAL(stateChanged(QVersitReader::State)), this, SLOT(startImport(QVersitReader::State)));
-    connect(&d->m_writer, SIGNAL(stateChanged(QVersitWriter::State)), this, SLOT(contactsExported(QVersitWriter::State)));
+    connect(&d->m_reader, SIGNAL(stateChanged(QtVersit::QVersitReader::State)), this, SLOT(startImport(QtVersit::QVersitReader::State)));
+    connect(&d->m_writer, SIGNAL(stateChanged(QtVersit::QVersitWriter::State)), this, SLOT(contactsExported(QtVersit::QVersitWriter::State)));
 }
 
 QDeclarativeContactModel::~QDeclarativeContactModel()
@@ -234,12 +234,12 @@ void QDeclarativeContactModel::setManager(const QString& managerName)
     d->m_manager = new QContactManager(managerName);
 
     connect(d->m_manager, SIGNAL(dataChanged()), this, SLOT(doUpdate()));
-    connect(d->m_manager, SIGNAL(contactsAdded(QList<QContactId>)), this, SLOT(onContactsAdded(QList<QContactId>)));
-    connect(d->m_manager, SIGNAL(contactsRemoved(QList<QContactId>)), this, SLOT(onContactsRemoved(QList<QContactId>)));
-    connect(d->m_manager, SIGNAL(contactsChanged(QList<QContactId>,QList<QContactDetail::DetailType>)), this, SLOT(onContactsChanged(QList<QContactId>)));
-    connect(d->m_manager, SIGNAL(collectionsAdded(QList<QContactCollectionId>)), this, SLOT(fetchCollections()));
-    connect(d->m_manager, SIGNAL(collectionsChanged(QList<QContactCollectionId>)), this, SLOT(fetchCollections()));
-    connect(d->m_manager, SIGNAL(collectionsRemoved(QList<QContactCollectionId>)), this, SLOT(fetchCollections()));
+    connect(d->m_manager, SIGNAL(contactsAdded(QList<QtContacts::QContactId>)), this, SLOT(onContactsAdded(QList<QtContacts::QContactId>)));
+    connect(d->m_manager, SIGNAL(contactsRemoved(QList<QtContacts::QContactId>)), this, SLOT(onContactsRemoved(QList<QtContacts::QContactId>)));
+    connect(d->m_manager, SIGNAL(contactsChanged(QList<QtContacts::QContactId>,QList<QtContacts::QContactDetail::DetailType>)), this, SLOT(onContactsChanged(QList<QtContacts::QContactId>)));
+    connect(d->m_manager, SIGNAL(collectionsAdded(QList<QtContacts::QContactCollectionId>)), this, SLOT(fetchCollections()));
+    connect(d->m_manager, SIGNAL(collectionsChanged(QList<QtContacts::QContactCollectionId>)), this, SLOT(fetchCollections()));
+    connect(d->m_manager, SIGNAL(collectionsRemoved(QList<QtContacts::QContactCollectionId>)), this, SLOT(fetchCollections()));
 
 
     if (d->m_error != QContactManager::NoError) {
@@ -736,8 +736,8 @@ int QDeclarativeContactModel::fetchContacts(const QStringList &contactIds)
         return -1;
 
     QContactFetchByIdRequest *fetchRequest = new QContactFetchByIdRequest(this);
-    connect(fetchRequest, SIGNAL(stateChanged(QContactAbstractRequest::State)),
-            this, SLOT(onFetchContactsRequestStateChanged(QContactAbstractRequest::State)));
+    connect(fetchRequest, SIGNAL(stateChanged(QtContacts::QContactAbstractRequest::State)),
+            this, SLOT(onFetchContactsRequestStateChanged(QtContacts::QContactAbstractRequest::State)));
     fetchRequest->setManager(d->m_manager);
 
     QList<QContactId> ids;
@@ -764,7 +764,7 @@ void QDeclarativeContactModel::removeCollection(const QString &collectionId)
     req->setManager(d->m_manager);
     req->setCollectionId(QContactCollectionId::fromString(collectionId));
 
-    connect(req, SIGNAL(stateChanged(QContactAbstractRequest::State)), this, SLOT(onRequestStateChanged(QContactAbstractRequest::State)));
+    connect(req, SIGNAL(stateChanged(QtContacts::QContactAbstractRequest::State)), this, SLOT(onRequestStateChanged(QtContacts::QContactAbstractRequest::State)));
 
     req->start();
 }
@@ -790,7 +790,7 @@ void QDeclarativeContactModel::saveCollection(QDeclarativeContactCollection *dec
             req->setProperty("DeclarativeCollection", QVariant::fromValue(pCollection));
         }
 
-        connect(req, SIGNAL(stateChanged(QContactAbstractRequest::State)), this, SLOT(onRequestStateChanged(QContactAbstractRequest::State)));
+        connect(req, SIGNAL(stateChanged(QtContacts::QContactAbstractRequest::State)), this, SLOT(onRequestStateChanged(QtContacts::QContactAbstractRequest::State)));
         req->start();
     }
 }
@@ -809,7 +809,7 @@ void QDeclarativeContactModel::fetchCollections()
     }
 
     QContactCollectionFetchRequest* req = new QContactCollectionFetchRequest(this);
-    connect(req,SIGNAL(stateChanged(QContactAbstractRequest::State)), this, SLOT(collectionsFetched()));
+    connect(req,SIGNAL(stateChanged(QtContacts::QContactAbstractRequest::State)), this, SLOT(collectionsFetched()));
     req->setManager(d->m_manager);
     req->start();
 }
@@ -935,8 +935,8 @@ void QDeclarativeContactModel::fetchAgain()
     fetchRequest->setFetchHint(d->m_fetchHint ? d->m_fetchHint->fetchHint() : QContactFetchHint());
 
     connect(fetchRequest, SIGNAL(resultsAvailable()), this, SLOT(requestUpdated()));
-    connect(fetchRequest, SIGNAL(stateChanged(QContactAbstractRequest::State)),
-            this, SLOT(fetchRequestStateChanged(QContactAbstractRequest::State)));
+    connect(fetchRequest, SIGNAL(stateChanged(QtContacts::QContactAbstractRequest::State)),
+            this, SLOT(fetchRequestStateChanged(QtContacts::QContactAbstractRequest::State)));
 
     // cancel all previous requests
     for (QContactFetchRequest *req : std::as_const(d->m_pendingRequests)) {
@@ -1085,7 +1085,7 @@ void QDeclarativeContactModel::saveContact(QDeclarativeContact* dc)
             req->setProperty("DeclarativeContact", QVariant::fromValue(pContact));
         }
 
-        connect(req,SIGNAL(stateChanged(QContactAbstractRequest::State)), this, SLOT(onRequestStateChanged(QContactAbstractRequest::State)));
+        connect(req,SIGNAL(stateChanged(QtContacts::QContactAbstractRequest::State)), this, SLOT(onRequestStateChanged(QtContacts::QContactAbstractRequest::State)));
         req->start();
     }
 }
@@ -1158,8 +1158,8 @@ void QDeclarativeContactModel::onContactsAdded(const QList<QContactId>& ids)
 {
     if (d->m_autoUpdate && !ids.isEmpty()) {
         QContactFetchRequest *fetchRequest = createContactFetchRequest(ids);
-        connect(fetchRequest,SIGNAL(stateChanged(QContactAbstractRequest::State)),
-                this, SLOT(onContactsAddedFetchRequestStateChanged(QContactAbstractRequest::State)));
+        connect(fetchRequest,SIGNAL(stateChanged(QtContacts::QContactAbstractRequest::State)),
+                this, SLOT(onContactsAddedFetchRequestStateChanged(QtContacts::QContactAbstractRequest::State)));
         fetchRequest->start();
     }
 }
@@ -1196,7 +1196,7 @@ void QDeclarativeContactModel::removeContacts(const QStringList &ids)
     }
     req->setContactIds(contactIdsAsList);
 
-    connect(req,SIGNAL(stateChanged(QContactAbstractRequest::State)), this, SLOT(onRequestStateChanged(QContactAbstractRequest::State)));
+    connect(req,SIGNAL(stateChanged(QtContacts::QContactAbstractRequest::State)), this, SLOT(onRequestStateChanged(QtContacts::QContactAbstractRequest::State)));
 
     req->start();
 }
@@ -1240,8 +1240,8 @@ void QDeclarativeContactModel::onContactsChanged(const QList<QContactId> &ids)
 {
     if (d->m_autoUpdate && !ids.isEmpty()) {
         QContactFetchRequest *fetchRequest = createContactFetchRequest(ids);
-        connect(fetchRequest, SIGNAL(stateChanged(QContactAbstractRequest::State)),
-                this, SLOT(onContactsChangedFetchRequestStateChanged(QContactAbstractRequest::State)));
+        connect(fetchRequest, SIGNAL(stateChanged(QtContacts::QContactAbstractRequest::State)),
+                this, SLOT(onContactsChangedFetchRequestStateChanged(QtContacts::QContactAbstractRequest::State)));
         fetchRequest->start();
     }
 

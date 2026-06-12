@@ -99,7 +99,7 @@ void AsyncRequestExample::performRequests()
     exampleContact.saveDetail(&phoneNumberDetail);
 
     // save the newly created contact in the manager
-    connect(&m_contactSaveRequest, SIGNAL(stateChanged(QContactAbstractRequest::State)), this, SLOT(contactSaveRequestStateChanged(QContactAbstractRequest::State)));
+    connect(&m_contactSaveRequest, SIGNAL(stateChanged(QtContacts::QContactAbstractRequest::State)), this, SLOT(contactSaveRequestStateChanged(QtContacts::QContactAbstractRequest::State)));
     m_contactSaveRequest.setManager(m_manager);
     m_contactSaveRequest.setContacts(QList<QContact>() << exampleContact);
     m_contactSaveRequest.start();
@@ -116,7 +116,7 @@ void AsyncRequestExample::performRequests()
 //! [Creating a new contact in a manager waiting until finished]
 
 //! [Filtering contacts from a manager]
-    connect(&m_contactFetchRequest, SIGNAL(stateChanged(QContactAbstractRequest::State)), this, SLOT(contactFetchRequestStateChanged(QContactAbstractRequest::State)));
+    connect(&m_contactFetchRequest, SIGNAL(stateChanged(QtContacts::QContactAbstractRequest::State)), this, SLOT(contactFetchRequestStateChanged(QtContacts::QContactAbstractRequest::State)));
     m_contactFetchRequest.setManager(m_manager);
     m_contactFetchRequest.setFilter(QContactPhoneNumber::match("+123 4567"));
     m_contactFetchRequest.start();
@@ -145,7 +145,7 @@ void AsyncRequestExample::performRequests()
     m_contactFetchRequest.waitForFinished();
 
 //! [Removing a contact from a manager]
-    connect(&m_contactRemoveRequest, SIGNAL(stateChanged(QContactAbstractRequest::State)), this, SLOT(contactRemoveRequestStateChanged(QContactAbstractRequest::State)));
+    connect(&m_contactRemoveRequest, SIGNAL(stateChanged(QtContacts::QContactAbstractRequest::State)), this, SLOT(contactRemoveRequestStateChanged(QtContacts::QContactAbstractRequest::State)));
     m_contactRemoveRequest.setManager(m_manager);
     m_contactRemoveRequest.setContactIds(QList<QContactId>() << exampleContact.id());
     m_contactRemoveRequest.start();
@@ -180,7 +180,7 @@ void AsyncRequestExample::performRequests()
     groupRelationship.setSecond(exampleGroupMember);
 
     // finally, save the relationship in the manager
-    connect(&m_relationshipSaveRequest, SIGNAL(stateChanged(QContactAbstractRequest::State)), this, SLOT(relationshipSaveRequestStateChanged(QContactAbstractRequest::State)));
+    connect(&m_relationshipSaveRequest, SIGNAL(stateChanged(QtContacts::QContactAbstractRequest::State)), this, SLOT(relationshipSaveRequestStateChanged(QtContacts::QContactAbstractRequest::State)));
     m_relationshipSaveRequest.setManager(m_manager);
     m_relationshipSaveRequest.setRelationships(QList<QContactRelationship>() << groupRelationship);
     m_relationshipSaveRequest.start();
@@ -189,7 +189,7 @@ void AsyncRequestExample::performRequests()
     m_contactFetchRequest.waitForFinished();
 
 //! [Retrieving relationships between contacts]
-    connect(&m_relationshipFetchRequest, SIGNAL(stateChanged(QContactAbstractRequest::State)), this, SLOT(relationshipFetchRequestStateChanged(QContactAbstractRequest::State)));
+    connect(&m_relationshipFetchRequest, SIGNAL(stateChanged(QtContacts::QContactAbstractRequest::State)), this, SLOT(relationshipFetchRequestStateChanged(QtContacts::QContactAbstractRequest::State)));
     m_relationshipFetchRequest.setManager(m_manager);
     // retrieve the list of relationships between the example group contact and the example member contact
     // where the group contact is the first contact in the relationship, and the member contact is the
@@ -213,7 +213,7 @@ void AsyncRequestExample::performRequests()
 //! [Providing a fetch hint]
 
 //! [Removing a relationship]
-    connect(&m_relationshipRemoveRequest, SIGNAL(stateChanged(QContactAbstractRequest::State)), this, SLOT(relationshipRemoveRequestStateChanged(QContactAbstractRequest::State)));
+    connect(&m_relationshipRemoveRequest, SIGNAL(stateChanged(QtContacts::QContactAbstractRequest::State)), this, SLOT(relationshipRemoveRequestStateChanged(QtContacts::QContactAbstractRequest::State)));
     m_relationshipRemoveRequest.setManager(m_manager);
     m_relationshipRemoveRequest.setRelationships(QList<QContactRelationship>() << groupRelationship);
     m_relationshipRemoveRequest.start();

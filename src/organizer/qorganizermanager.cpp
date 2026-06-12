@@ -243,19 +243,31 @@ void QOrganizerManager::createEngine(const QString &managerName, const QMap<QStr
 {
     d->createEngine(managerName, parameters);
 
-    connect(d->m_engine, SIGNAL(dataChanged()), this, SIGNAL(dataChanged()));
-    connect(d->m_engine, SIGNAL(itemsAdded(QList<QOrganizerItemId>)), this, SIGNAL(itemsAdded(QList<QOrganizerItemId>)));
-    connect(d->m_engine, SIGNAL(itemsChanged(QList<QOrganizerItemId>, QList<QOrganizerItemDetail::DetailType>)), this, SIGNAL(itemsChanged(QList<QOrganizerItemId>, QList<QOrganizerItemDetail::DetailType>)));
-    connect(d->m_engine, SIGNAL(itemsRemoved(QList<QOrganizerItemId>)), this, SIGNAL(itemsRemoved(QList<QOrganizerItemId>)));
+    connect(d->m_engine, &QOrganizerManagerEngine::dataChanged,
+            this, &QOrganizerManager::dataChanged);
+    connect(d->m_engine, &QOrganizerManagerEngine::itemsAdded,
+            this, &QOrganizerManager::itemsAdded);
+    connect(d->m_engine, &QOrganizerManagerEngine::itemsChanged,
+            this, &QOrganizerManager::itemsChanged);
+    connect(d->m_engine, &QOrganizerManagerEngine::itemsRemoved,
+            this, &QOrganizerManager::itemsRemoved);
     connect(d->m_engine, &QOrganizerManagerEngine::itemsModified,
             this, &QOrganizerManager::itemsModified);
-    connect(d->m_engine, SIGNAL(collectionsAdded(QList<QOrganizerCollectionId>)), this, SIGNAL(collectionsAdded(QList<QOrganizerCollectionId>)));
-    connect(d->m_engine, SIGNAL(collectionsChanged(QList<QOrganizerCollectionId>)), this, SIGNAL(collectionsChanged(QList<QOrganizerCollectionId>)));
-    connect(d->m_engine, SIGNAL(collectionsRemoved(QList<QOrganizerCollectionId>)), this, SIGNAL(collectionsRemoved(QList<QOrganizerCollectionId>)));
+    connect(d->m_engine, &QOrganizerManagerEngine::collectionsAdded,
+            this, &QOrganizerManager::collectionsAdded);
+    connect(d->m_engine, &QOrganizerManagerEngine::collectionsChanged,
+            this, &QOrganizerManager::collectionsChanged);
+    connect(d->m_engine, &QOrganizerManagerEngine::collectionsRemoved,
+            this, &QOrganizerManager::collectionsRemoved);
     connect(d->m_engine, &QOrganizerManagerEngine::collectionsModified,
             this, &QOrganizerManager::collectionsModified);
-    connect(d->m_engine, SIGNAL(itemsChanged(QList<QOrganizerItemId>, QList<QOrganizerItemDetail::DetailType>)), this, SLOT(_q_itemsUpdated(QList<QOrganizerItemId>, QList<QOrganizerItemDetail::DetailType>)));
-    connect(d->m_engine, SIGNAL(itemsRemoved(QList<QOrganizerItemId>)), this, SLOT(_q_itemsDeleted(QList<QOrganizerItemId>)));
+    // These target Q_PRIVATE_SLOTs, which cannot be referenced by member-function
+    // pointer, so the string-based form is used with fully-qualified parameter types
+    // to match the moc-generated (and now fully-qualified) signal/slot signatures.
+    connect(d->m_engine, SIGNAL(itemsChanged(QList<QtOrganizer::QOrganizerItemId>,QList<QtOrganizer::QOrganizerItemDetail::DetailType>)),
+            this, SLOT(_q_itemsUpdated(QList<QtOrganizer::QOrganizerItemId>,QList<QtOrganizer::QOrganizerItemDetail::DetailType>)));
+    connect(d->m_engine, SIGNAL(itemsRemoved(QList<QtOrganizer::QOrganizerItemId>)),
+            this, SLOT(_q_itemsDeleted(QList<QtOrganizer::QOrganizerItemId>)));
 }
 
 /*!

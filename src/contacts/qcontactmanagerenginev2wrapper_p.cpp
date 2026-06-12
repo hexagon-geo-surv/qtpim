@@ -43,8 +43,8 @@ bool QContactManagerEngineV2Wrapper::startRequest(QContactAbstractRequest* req)
         RequestController* controller;
         controller = new PartialSaveRequestController(m_engine, this);
         controller->setRequest(req);
-        connect(controller, SIGNAL(stateChanged(QContactAbstractRequest::State)),
-                this, SLOT(requestStateChanged(QContactAbstractRequest::State)),
+        connect(controller, SIGNAL(stateChanged(QtContacts::QContactAbstractRequest::State)),
+                this, SLOT(requestStateChanged(QtContacts::QContactAbstractRequest::State)),
                 Qt::QueuedConnection);
         m_controllerForRequest.insert(req, controller);
         if (controller->start()) {
@@ -183,8 +183,8 @@ bool FetchByIdRequestController::start()
     // normally, you'd set the manager, but in this case, we only have a bare engine:
     QContactManagerEngineV2Wrapper::setEngineOfRequest(qcfr, m_engine);
     m_currentSubRequest.reset(qcfr);
-    connect(qcfr, SIGNAL(stateChanged(QContactAbstractRequest::State)),
-            this, SLOT(handleUpdatedSubRequest(QContactAbstractRequest::State)),
+    connect(qcfr, SIGNAL(stateChanged(QtContacts::QContactAbstractRequest::State)),
+            this, SLOT(handleUpdatedSubRequest(QtContacts::QContactAbstractRequest::State)),
             Qt::QueuedConnection);
     return qcfr->start();
 }
@@ -269,8 +269,8 @@ bool PartialSaveRequestController::start()
         // normally, you'd set the manager, but in this case, we only have a bare engine:
         QContactManagerEngineV2Wrapper::setEngineOfRequest(cfbir, m_v2wrapper);
         m_currentSubRequest.reset(cfbir);
-        connect(cfbir, SIGNAL(stateChanged(QContactAbstractRequest::State)),
-                this, SLOT(handleUpdatedSubRequest(QContactAbstractRequest::State)),
+        connect(cfbir, SIGNAL(stateChanged(QtContacts::QContactAbstractRequest::State)),
+                this, SLOT(handleUpdatedSubRequest(QtContacts::QContactAbstractRequest::State)),
                 Qt::QueuedConnection);
         return cfbir->start();
     } else {
@@ -290,8 +290,8 @@ bool PartialSaveRequestController::start()
         // normally, you'd set the manager, but in this case, we only have a bare engine:
         QContactManagerEngineV2Wrapper::setEngineOfRequest(csr, m_engine);
         m_currentSubRequest.reset(csr);
-        connect(csr, SIGNAL(stateChanged(QContactAbstractRequest::State)),
-                this, SLOT(handleUpdatedSubRequest(QContactAbstractRequest::State)),
+        connect(csr, SIGNAL(stateChanged(QtContacts::QContactAbstractRequest::State)),
+                this, SLOT(handleUpdatedSubRequest(QtContacts::QContactAbstractRequest::State)),
                 Qt::QueuedConnection);
         return csr->start();
     }
@@ -340,8 +340,8 @@ void PartialSaveRequestController::handleFinishedSubRequest(QContactAbstractRequ
         // normally, you'd set the manager, but in this case, we only have a bare engine:
         QContactManagerEngineV2Wrapper::setEngineOfRequest(csr, m_engine);
         m_currentSubRequest.reset(csr);
-        connect(csr, SIGNAL(stateChanged(QContactAbstractRequest::State)),
-                this, SLOT(handleUpdatedSubRequest(QContactAbstractRequest::State)),
+        connect(csr, SIGNAL(stateChanged(QtContacts::QContactAbstractRequest::State)),
+                this, SLOT(handleUpdatedSubRequest(QtContacts::QContactAbstractRequest::State)),
                 Qt::QueuedConnection);
         csr->start(); // TODO what if this fails?
     } else if (subReq->type() == QContactAbstractRequest::ContactSaveRequest) {

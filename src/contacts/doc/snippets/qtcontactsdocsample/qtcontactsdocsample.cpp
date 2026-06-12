@@ -471,8 +471,8 @@ void RequestExample::performRequest()
     m_fetchRequest->setManager(this->m_manager); // m_manager is a QContactManager*.
     m_fetchRequest->setFilter(dfil);
     connect(m_fetchRequest, SIGNAL(resultsAvailable()), this, SLOT(printContacts()));
-    connect(m_fetchRequest, SIGNAL(stateChanged(QContactAbstractRequest::State)),
-            this, SLOT(stateChanged(QContactAbstractRequest::State)));
+    connect(m_fetchRequest, SIGNAL(stateChanged(QtContacts::QContactAbstractRequest::State)),
+            this, SLOT(stateChanged(QtContacts::QContactAbstractRequest::State)));
     if (!m_fetchRequest->start()) {
         qDebug() << "Unable to request contacts!";
         QCoreApplication::exit(0);
