@@ -55,6 +55,7 @@ public:
             if (!ids.contains(id)) {
                 m_ids = ids;
                 emit valueChanged();
+                return;
             }
         }
     }
