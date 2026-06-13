@@ -1,11 +1,13 @@
 # Copyright (C) 2026 The Qt Company Ltd.
 # SPDX-License-Identifier: BSD-3-Clause
 
-# Excluded on QNX: the test passes there but its total run time on the QNX
-# qemu target exceeds the CI test timeout. The QML bindings exercised here are
-# not platform-specific, so the coverage is fully provided by the other
-# platforms.
-if(NOT QNX)
+# Excluded on QNX and Android. On QNX the test passes but its total run time on
+# the qemu target exceeds the CI test timeout; on Android the .qml test files
+# are not on the device's filesystem (only the resource root ':/', which has
+# none), so QtQuickTest finds no tests and the executable exits non-zero. The
+# QML bindings exercised here are not platform-specific, so the coverage is
+# fully provided by the other platforms.
+if(NOT QNX AND NOT ANDROID)
     qt_internal_add_test(tst_qmlcontacts
         SOURCES
             tst_qmlcontacts.cpp

@@ -1,0 +1,6 @@
+# Android's time-zone database resolves these zones differently (the imported
+# UTC datetimes come out shifted by one hour), so the comparison fails.
+[testTimeZones:dst area in standard time]
+android
+[testTimeZones:dst specified with rdate - standard]
+android

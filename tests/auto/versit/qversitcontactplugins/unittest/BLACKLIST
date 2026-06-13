@@ -1,5 +1,7 @@
-# The versit handler plugins are not loaded on the QNX target.
+# The versit handler plugins are not loaded on the QNX target or under Android.
 [testImporterPlugins]
 qnx
+android
 [testExporterPlugins]
 qnx
+android
