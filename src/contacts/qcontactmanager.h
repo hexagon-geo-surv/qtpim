@@ -146,10 +146,6 @@ Q_SIGNALS:
     void collectionsRemoved(const QList<QtContacts::QContactCollectionId> &collectionIds);
     void collectionsModified(const QList<std::pair<QtContacts::QContactCollectionId, QtContacts::QContactManager::Operation> > &collectionIds);
 
-protected:
-    void connectNotify(const QMetaMethod &signal) override;
-    void disconnectNotify(const QMetaMethod &signal) override;
-
 private:
     void createEngine(const QString& managerName, const QMap<QString, QString>& parameters);
 

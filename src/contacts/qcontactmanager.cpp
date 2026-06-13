@@ -206,6 +206,29 @@ void QContactManager::createEngine(const QString &managerName, const QMap<QStrin
     Q_D(QContactManager);
     d->createEngine(managerName, parameters);
 
+    connect(d->m_engine, &QContactManagerEngine::dataChanged,
+            this, &QContactManager::dataChanged);
+    connect(d->m_engine, &QContactManagerEngine::contactsAdded,
+            this, &QContactManager::contactsAdded);
+    connect(d->m_engine, &QContactManagerEngine::contactsChanged,
+            this, &QContactManager::contactsChanged);
+    connect(d->m_engine, &QContactManagerEngine::contactsRemoved,
+            this, &QContactManager::contactsRemoved);
+    connect(d->m_engine, &QContactManagerEngine::relationshipsAdded,
+            this, &QContactManager::relationshipsAdded);
+    connect(d->m_engine, &QContactManagerEngine::relationshipsRemoved,
+            this, &QContactManager::relationshipsRemoved);
+    connect(d->m_engine, &QContactManagerEngine::selfContactIdChanged,
+            this, &QContactManager::selfContactIdChanged);
+    connect(d->m_engine, &QContactManagerEngine::collectionsAdded,
+            this, &QContactManager::collectionsAdded);
+    connect(d->m_engine, &QContactManagerEngine::collectionsChanged,
+            this, &QContactManager::collectionsChanged);
+    connect(d->m_engine, &QContactManagerEngine::collectionsRemoved,
+            this, &QContactManager::collectionsRemoved);
+    connect(d->m_engine, &QContactManagerEngine::collectionsModified,
+            this, &QContactManager::collectionsModified);
+
     QContactManagerPrivate::m_aliveEngines.insert(this);
 }
 
@@ -902,55 +925,6 @@ QString QContactManager::managerUri() const
 {
     Q_D(const QContactManager);
     return d->m_engine->managerUri();
-}
-
-/*!
-    \internal
-
-    Returns the signal that corresponds to \a proxySignal in the
-    meta-object of the \a sourceObject.
-*/
-static QMetaMethod proxyToSourceSignal(const QMetaMethod &proxySignal, QObject *sourceObject)
-{
-    if (!proxySignal.isValid())
-        return proxySignal;
-    Q_ASSERT(proxySignal.methodType() == QMetaMethod::Signal);
-    Q_ASSERT(sourceObject != 0);
-    const QMetaObject *sourceMeta = sourceObject->metaObject();
-    int sourceIndex = sourceMeta->indexOfSignal(proxySignal.methodSignature());
-    Q_ASSERT(sourceIndex != -1);
-    return sourceMeta->method(sourceIndex);
-}
-
-/*!
-    \internal
-
-    When someone connects to this manager, connect the corresponding signal from the engine, if we
-    haven't before. If we have, just increment a count.
-
-    This allows lazy evaluation on the engine side (e.g. setting up dbus watchers) and prevents
-    unnecessary work.
-*/
-void QContactManager::connectNotify(const QMetaMethod &signal)
-{
-    Q_D(QContactManager);
-    /* For most signals we just connect from the engine to ourselves, since we just proxy, but we should connect only once */
-    QMetaMethod sourceSignal = proxyToSourceSignal(signal, d->m_engine);
-    connect(d->m_engine, sourceSignal, this, signal, Qt::UniqueConnection);
-}
-
-/*!
-    \internal
-
-    When someone disconnects, disconnect from the engine too if there are no more users of that signal.
-*/
-void QContactManager::disconnectNotify(const QMetaMethod &signal)
-{
-    Q_D(QContactManager);
-    if (!isSignalConnected(signal)) {
-        QMetaMethod sourceSignal = proxyToSourceSignal(signal, d->m_engine);
-        disconnect(d->m_engine, sourceSignal, this, signal);
-    }
 }
 
 QT_END_NAMESPACE_CONTACTS
