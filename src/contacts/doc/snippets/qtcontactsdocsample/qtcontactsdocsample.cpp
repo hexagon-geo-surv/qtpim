@@ -11,6 +11,7 @@
 
 QTCONTACTS_USE_NAMESPACE
 
+using namespace Qt::StringLiterals;
 static void loadDefault();
 static void queryManagerCapabilities();
 static void contactDetailManipulation();
@@ -36,8 +37,8 @@ int stopCompilerWarnings()
     QContactManager* cm = new QContactManager();
     addContact(cm);
     callContact(cm);
-    matchCall(cm, "111-222-333"); // unknown number.
-    matchCall(cm, "12345678");    // alice's number.
+    matchCall(cm, "111-222-333"_L1); // unknown number.
+    matchCall(cm, "12345678"_L1);    // alice's number.
     viewSpecificDetail(cm);
     viewDetails(cm);
     detailSharing(cm);
@@ -93,18 +94,18 @@ void contactDetailManipulation()
     QContact exampleContact;
 
     QContactName nameDetail;
-    nameDetail.setFirstName("Adam");
-    nameDetail.setLastName("Unlikely");
+    nameDetail.setFirstName("Adam"_L1);
+    nameDetail.setLastName("Unlikely"_L1);
 
     QContactPhoneNumber phoneNumberDetail;
-    phoneNumberDetail.setNumber("+123 4567");
+    phoneNumberDetail.setNumber("+123 4567"_L1);
 
     exampleContact.saveDetail(&nameDetail);
     exampleContact.saveDetail(&phoneNumberDetail);
 //! [Adding a detail to a contact]
 
 //! [Updating a detail in a contact]
-    phoneNumberDetail.setNumber("+123 9876");
+    phoneNumberDetail.setNumber("+123 9876"_L1);
     exampleContact.saveDetail(&phoneNumberDetail); // overwrites old value on save
 //! [Updating a detail in a contact]
 
@@ -115,16 +116,16 @@ void contactDetailManipulation()
 
 void contactManipulation()
 {
-    QContactManager m_manager("memory");
+    QContactManager m_manager("memory"_L1);
 //! [Synchronously creating a new contact in a manager]
     QContact exampleContact;
 
     QContactName nameDetail;
-    nameDetail.setFirstName("Adam");
-    nameDetail.setLastName("Unlikely");
+    nameDetail.setFirstName("Adam"_L1);
+    nameDetail.setLastName("Unlikely"_L1);
 
     QContactPhoneNumber phoneNumberDetail;
-    phoneNumberDetail.setNumber("+123 4567");
+    phoneNumberDetail.setNumber("+123 4567"_L1);
 
     exampleContact.saveDetail(&nameDetail);
     exampleContact.saveDetail(&phoneNumberDetail);
@@ -135,7 +136,7 @@ void contactManipulation()
 //! [Synchronously creating a new contact in a manager]
 
 //! [Synchronously filtering contacts from a manager]
-    QList<QContact> results = m_manager.contacts(QContactPhoneNumber::match("+123 4567"));
+    QList<QContact> results = m_manager.contacts(QContactPhoneNumber::match("+123 4567"_L1));
 //! [Synchronously filtering contacts from a manager]
 
 //! [Synchronously retrieving an existing contact from a manager]
@@ -143,7 +144,7 @@ void contactManipulation()
 //! [Synchronously retrieving an existing contact from a manager]
 
 //! [Synchronously updating an existing contact in a manager]
-    phoneNumberDetail.setNumber("+123 9876");
+    phoneNumberDetail.setNumber("+123 9876"_L1);
     exampleContact.saveDetail(&phoneNumberDetail);
     m_manager.saveContact(&exampleContact);
 //! [Synchronously updating an existing contact in a manager]
@@ -157,12 +158,12 @@ void contactManipulation()
     QContact exampleGroup;
     exampleGroup.setType(QContactType::TypeGroup);
     QContactNickname groupName;
-    groupName.setNickname("Example Group");
+    groupName.setNickname("Example Group"_L1);
     exampleGroup.saveDetail(&groupName);
 
     QContact exampleGroupMember;
     QContactName groupMemberName;
-    groupMemberName.setFirstName("Member");
+    groupMemberName.setFirstName("Member"_L1);
     exampleGroupMember.saveDetail(&groupMemberName);
 
     // second, save those contacts in the manager
@@ -221,13 +222,13 @@ void addContact(QContactManager* cm)
     QContact alice;
 
     QContactDisplayLabel displayLabel;
-    displayLabel.setLabel("Ally Jones");
+    displayLabel.setLabel("Ally Jones"_L1);
     alice.saveDetail(&displayLabel);
 
     /* Set the contact's name */
     QContactName aliceName;
-    aliceName.setFirstName("Alice");
-    aliceName.setLastName("Jones");
+    aliceName.setFirstName("Alice"_L1);
+    aliceName.setLastName("Jones"_L1);
     alice.saveDetail(&aliceName);
 
     /* Add a phone number */
@@ -237,9 +238,9 @@ void addContact(QContactManager* cm)
     number.setSubTypes(subTypeMobile);
     number.setContexts(QContactDetail::ContextHome);
     number.setSubTypes(subTypeMobile);
-    number.setNumber("12345678");
+    number.setNumber("12345678"_L1);
     alice.saveDetail(&number);
-    alice.setPreferredDetail("DialAction", number);
+    alice.setPreferredDetail("DialAction"_L1, number);
 
     /* Add a second phone number */
     QContactPhoneNumber number2;
@@ -248,7 +249,7 @@ void addContact(QContactManager* cm)
     number.setSubTypes(subTypeLandline);
     number2.setContexts(QContactDetail::ContextWork);
     number2.setSubTypes(subTypeLandline);
-    number2.setNumber("555-4444");
+    number2.setNumber("555-4444"_L1);
     alice.saveDetail(&number2);
 
     /* Save the contact */
@@ -298,7 +299,7 @@ void matchCall(QContactManager* cm, const QString& incomingCallNbr)
     } else {
         QContact match = cm->contact(matchingContacts.at(0));
         QContactDisplayLabel displayLabel;
-        displayLabel.setLabel("Match");
+        displayLabel.setLabel("Match"_L1);
         match.saveDetail(&displayLabel);
         qDebug() << "Incoming call from"
                  << match.details(QContactDisplayLabel::Type).value(0).value(QContactDisplayLabel::FieldLabel)
@@ -328,9 +329,8 @@ void viewDetails(QContactManager* cm)
         QMap<int, QVariant> fields = detail.values();
 
         qDebug("\tDetail #%d (%d):", i, detail.type());
-        foreach (const int& fieldKey, fields.keys()) {
+        for (const auto &fieldKey : fields.keys())
             qDebug() << "\t\t" << fieldKey << "(" << fields.value(fieldKey) << ") =" << detail.value(fieldKey);
-        }
         qDebug();
     }
 }
@@ -344,7 +344,7 @@ void detailSharing(QContactManager* cm)
 
     /* Create a new phone number detail. */
     QContactPhoneNumber newNumber;
-    newNumber.setNumber("123123123");
+    newNumber.setNumber("123123123"_L1);
     qDebug() << "\tThe new phone number is" << newNumber.number();
 
     /*
@@ -354,7 +354,7 @@ void detailSharing(QContactManager* cm)
      * Removal is done purely via key() checking, also.
      */
     QContactPhoneNumber nnCopy(newNumber);
-    nnCopy.setNumber("456456456");
+    nnCopy.setNumber("456456456"_L1);
     qDebug() << "\tThat number is still" << newNumber.number() << ", the copy is" << nnCopy.number();
 
     /* Save the detail in the contact, then remove via the copy, then resave. */
@@ -381,10 +381,9 @@ void detailSharing(QContactManager* cm)
      * To persist changes to a detail, you must call saveDetail().
      */
     QList<QContactPhoneNumber> allNumbers = a.details<QContactPhoneNumber>();
-    foreach (const QContactPhoneNumber& savedPhn, allNumbers) {
-        if (savedPhn.key() != newNumber.key()) {
+    for (const auto &savedPhn : allNumbers) {
+        if (savedPhn.key() != newNumber.key())
             continue;
-        }
 
         /*
          * This phone number is the saved copy of the newNumber detail.
@@ -393,7 +392,7 @@ void detailSharing(QContactManager* cm)
          */
         qDebug() << "\tCurrently, the (stack) newNumber is" << newNumber.number()
                  << ", and the saved newNumber is" << savedPhn.number();
-        newNumber.setNumber("678678678");
+        newNumber.setNumber("678678678"_L1);
         qDebug() << "\tNow, the (stack) newNumber is" << newNumber.number()
                  << ", but the saved newNumber is" << savedPhn.number();
     }
@@ -416,14 +415,14 @@ void editView(QContactManager* cm)
     /* Change the first phone number */
     QList<QContactDetail> numbers = a.details(QContactPhoneNumber::Type);
     QContactPhoneNumber phone = numbers.value(0);
-    phone.setNumber("123-4445");
+    phone.setNumber("123-4445"_L1);
 
     /* Add an email address */
     QContactEmailAddress email;
-    email.setEmailAddress("alice.jones@example");
+    email.setEmailAddress("alice.jones@example"_L1);
     email.setContexts(QContactDetail::ContextHome);
     int emailField = QContactEmailAddress::FieldEmailAddress;
-    email.setValue(emailField, "Alice's Work Email Address");
+    email.setValue(emailField, "Alice's Work Email Address"_L1);
 
     /* Save the updated details to the contact. */
     a.saveDetail(&phone);
@@ -445,13 +444,13 @@ void displayLabel()
 
     /* Set the display label */
     QContactDisplayLabel displayLabel;
-    displayLabel.setLabel("Abigail Arkansas");
+    displayLabel.setLabel("Abigail Arkansas"_L1);
     exampleContact.saveDetail(&displayLabel);
 
     /* Update some fields that might influence the display label */
     QContactName name = exampleContact.detail<QContactName>();
-    name.setFirstName("Abigail");
-    name.setLastName("Arkansas");
+    name.setFirstName("Abigail"_L1);
+    name.setLastName("Arkansas"_L1);
     exampleContact.saveDetail(&name);
 
     qDebug() << "The display label for the contact:" << exampleContact.details(QContactDisplayLabel::Type).value(1).value(QContactDisplayLabel::FieldLabel);
@@ -464,15 +463,16 @@ void RequestExample::performRequest()
     // retrieve any contact whose first name is "Alice"
     QContactDetailFilter dfil;
     dfil.setDetailType(QContactName::Type, QContactName::FieldFirstName);
-    dfil.setValue("Alice");
+    dfil.setValue("Alice"_L1);
     dfil.setMatchFlags(QContactFilter::MatchExactly);
 
     // m_fetchRequest was created with m_fetchRequest = new QContactFetchRequest() in the ctor.
     m_fetchRequest->setManager(this->m_manager); // m_manager is a QContactManager*.
     m_fetchRequest->setFilter(dfil);
-    connect(m_fetchRequest, SIGNAL(resultsAvailable()), this, SLOT(printContacts()));
-    connect(m_fetchRequest, SIGNAL(stateChanged(QtContacts::QContactAbstractRequest::State)),
-            this, SLOT(stateChanged(QtContacts::QContactAbstractRequest::State)));
+    connect(m_fetchRequest, &QContactFetchRequest::resultsAvailable,
+            this, &RequestExample::printContacts);
+    connect(m_fetchRequest, &QContactFetchRequest::stateChanged,
+            this, &RequestExample::stateChanged);
     if (!m_fetchRequest->start()) {
         qDebug() << "Unable to request contacts!";
         QCoreApplication::exit(0);
@@ -527,21 +527,20 @@ void shortsnippets()
         //! [5]
         //! [6]
         // Who are the members of a group contact?
-        QList<QContact> groupMembers = groupContact.relatedContacts(QContactRelationship::HasMember(), QContactRelationship::Second);
+        const auto groupMembers = groupContact.relatedContacts(QContactRelationship::HasMember(), QContactRelationship::Second);
         // What groups is this contact in?
-        QList<QContact> contactGroups = contact.relatedContacts(QContactRelationship::HasMember(), QContactRelationship::First);
+        const auto contactGroups = contact.relatedContacts(QContactRelationship::HasMember(), QContactRelationship::First);
         // An alternative to QContact::relationships()
-        QList<QContact> spouses = contact.relatedContacts(QContactRelationship::HasSpouse(), QContactRelationship::Either);
+        const auto spouses = contact.relatedContacts(QContactRelationship::HasSpouse(), QContactRelationship::Either);
         if (spouses.count() > 1) {
             // Custom relationship type
-            QList<QContact> therapists = contact.relatedContacts("HasTherapist", QContactRelationship::Second);
+            const auto therapists = contact.relatedContacts("HasTherapist"_L1, QContactRelationship::Second);
         }
         //! [6]
         //! [Getting all tags]
         QSet<QString> tags;
-        foreach (const QContactTag& tag, contact.details<QContactTag>()) {
+        for (const auto &tag : contact.details<QContactTag>())
              tags.insert(tag.tag());
-        }
         //! [Getting all tags]
         //! [Checking for a specific tag]
         if (contact.details<QContactTag>().count() > 0) {
@@ -554,7 +553,7 @@ void shortsnippets()
 void loadManager()
 {
 //! [Loading a specific manager backend]
-    QContactManager contactManager("KABC");
+    QContactManager contactManager("KABC"_L1);
 //! [Loading a specific manager backend]
 }
 
@@ -562,7 +561,7 @@ void loadManagerWithParameters()
 {
 //! [Loading a specific manager backend with parameters]
     QMap<QString, QString> parameters;
-    parameters.insert("Settings", "~/.qcontactmanager-kabc-settings.ini");
-    QContactManager contactManager("KABC", parameters);
+    parameters.insert("Settings"_L1, "~/.qcontactmanager-kabc-settings.ini"_L1);
+    QContactManager contactManager("KABC"_L1, parameters);
 //! [Loading a specific manager backend with parameters]
 }
