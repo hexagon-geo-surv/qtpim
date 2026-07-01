@@ -643,7 +643,7 @@ QOrganizerCollectionId QOrganizerManager::defaultCollectionId() const
 /*!
   Returns the collection identified by the given \a collectionId which is managed by this manager.
  */
-QOrganizerCollection QOrganizerManager::collection(const QOrganizerCollectionId& collectionId) const
+QOrganizerCollection QOrganizerManager::collection(const QOrganizerCollectionId& collectionId)
 {
     Q_D(QOrganizerManager);
     QOrganizerManagerSyncOpErrorHolder h(this);
@@ -653,7 +653,7 @@ QOrganizerCollection QOrganizerManager::collection(const QOrganizerCollectionId&
 /*!
   Returns a list of all of the collections managed by this manager.
  */
-QList<QOrganizerCollection> QOrganizerManager::collections() const
+QList<QOrganizerCollection> QOrganizerManager::collections()
 {
     Q_D(QOrganizerManager);
     QOrganizerManagerSyncOpErrorHolder h(this);

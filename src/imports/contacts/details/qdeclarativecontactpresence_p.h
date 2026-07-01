@@ -57,7 +57,7 @@ public:
         Offline = QContactPresence::PresenceOffline
     };
 
-    QDeclarativeContactPresence(QObject* parent = nullptr)
+    QDeclarativeContactPresence(QObject* parent = Q_NULLPTR)
         :QDeclarativeContactDetail(parent)
     {
         setDetail(QContactPresence());

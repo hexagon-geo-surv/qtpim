@@ -97,8 +97,8 @@ void snippets()
 
     //! [Retrieving entries for a time period]
     QList<QOrganizerItem> entries =
-        defaultManager.items(QDate(2010, 1, 1).startOfDay(),
-                             QDate(2010, 1, 31).endOfDay());
+        defaultManager.items(QDateTime(QDate(2010, 1, 1), QTime(0, 0, 0)),
+                             QDateTime(QDate(2010, 1, 31), QTime(23, 59, 59)));
     //! [Retrieving entries for a time period]
 
     //! [Retrieving entries with a filter]

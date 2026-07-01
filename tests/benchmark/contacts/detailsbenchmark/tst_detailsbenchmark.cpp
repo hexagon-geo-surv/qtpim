@@ -8,7 +8,6 @@
 #include <QtDebug>
 
 #include <QSet>
-#include <QRandomGenerator>
 
 //TESTED_COMPONENT=src/contacts
 
@@ -152,8 +151,8 @@ namespace {
         static const QStringList hobbies(generateHobbiesList());
 
         QContact retn;
-        quint32 random = QRandomGenerator::global()->generate();
-        bool moreRandom = QRandomGenerator::global()->generate() % 2 == 0;
+        int random = qrand();
+        bool moreRandom = qrand() % 2 == 0;
 
         QContactSyncTarget synctarget;
         synctarget.setSyncTarget(syncTarget);

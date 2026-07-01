@@ -35,7 +35,7 @@ public:
         SyncTarget = QContactSyncTarget::FieldSyncTarget
     };
 
-    QDeclarativeContactSyncTarget(QObject* parent = nullptr)
+    QDeclarativeContactSyncTarget(QObject* parent = Q_NULLPTR)
         :QDeclarativeContactDetail(parent)
     {
         setDetail(QContactSyncTarget());

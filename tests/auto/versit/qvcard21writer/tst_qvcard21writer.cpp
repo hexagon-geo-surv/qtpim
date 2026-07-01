@@ -14,8 +14,6 @@
 #include <QVariant>
 #include <QtCore/qstringconverter.h>
 
-#include <QTextCodec>
-
 // This says "NOKIA" in Katakana
 const QString KATAKANA_NOKIA(QString::fromUtf8("\xe3\x83\x8e\xe3\x82\xad\xe3\x82\xa2"));
 

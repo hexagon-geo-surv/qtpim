@@ -44,7 +44,7 @@ public:
     };
     Q_DECLARE_FLAGS(RangeFlags, RangeFlag)
 
-    QDeclarativeContactDetailRangeFilter(QObject* parent = nullptr)
+    QDeclarativeContactDetailRangeFilter(QObject* parent = Q_NULLPTR)
         : QDeclarativeContactFilter(parent)
     {
         connect(this, SIGNAL(valueChanged()), SIGNAL(filterChanged()));

@@ -38,7 +38,7 @@ class CalendarDemo : public QMainWindow
     Q_OBJECT
 
 public:
-    CalendarDemo(QWidget *parent = nullptr);
+    CalendarDemo(QWidget *parent = Q_NULLPTR);
     ~CalendarDemo();
 
 public Q_SLOTS:

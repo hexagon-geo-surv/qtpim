@@ -37,7 +37,6 @@ QT_BEGIN_NAMESPACE_CONTACTS
  * layouts as if they were POD, and the offsetof macro
  * does indeed work in our case. */
 QT_WARNING_PUSH
-QT_WARNING_DISABLE_CLANG("-Winvalid-offsetof")
 QT_WARNING_DISABLE_GCC("-Winvalid-offsetof")
 QT_WARNING_DISABLE_CLANG("-Winvalid-offsetof")
 
@@ -1208,9 +1207,8 @@ class QContactDisplayLabelPrivate : public QContactDetailBuiltinPrivate<QContact
 {
 public:
     QString m_label;
-    QString m_labelGroup;
 
-    enum { FieldCount = 2 };
+    enum { FieldCount = 1 };
 
     QContactDisplayLabelPrivate() : QContactDetailBuiltinPrivate<QContactDisplayLabelPrivate>(QContactDisplayLabel::Type) {}
 };
@@ -1218,7 +1216,6 @@ public:
 template<>
 const QContactDetailBuiltinPrivateBase::Member QContactDetailBuiltinPrivate<QContactDisplayLabelPrivate>::s_members[] = {
     { QContactDetailBuiltinPrivateBase::String, offsetof(QContactDisplayLabelPrivate, m_label) },
-    { QContactDetailBuiltinPrivateBase::String, offsetof(QContactDisplayLabelPrivate, m_labelGroup) },
 };
 
 /*!
@@ -1230,15 +1227,14 @@ const QContactDetail::DetailType QContactDisplayLabel::Type(QContactType::TypeDi
 /*!
    \enum QContactDisplayLabel::DisplayLabelField
    This enumeration defines the fields supported by QContactDisplayLabel.
-   \value FieldLabel The value stored in this field contains the display label.
-   \value FieldLabelGroup The value stored in this field contains the label group (section character)
-   \sa label(), setLabel(), setLabelGroup(), labelGroup()
+   \value FieldLabel The value stored in this field contains the displaylabel.
+   \sa label(), setLabel()
  */
 
 /*!
    \fn QContactDisplayLabel::setLabel(const QString& displayLabel)
-   Sets the display label of the contact which is stored in this detail to \a displayLabel.
-   The display label may be equivalent to the formatted name of the contact.
+   Sets the displayLabel of the contact which is stored in this detail to \a displayLabel.
+   displayLabel can be for example the first name of a contact.
  */
 void QContactDisplayLabel::setLabel(const QString& _value)
 {
@@ -1247,37 +1243,11 @@ void QContactDisplayLabel::setLabel(const QString& _value)
 
 /*!
    \fn QContactDisplayLabel::label() const
-   Returns the display label of the contact which is stored in this detail.
+   Returns the displayLabel of the contact which is stored in this detail.
  */
 QString QContactDisplayLabel::label() const
 {
     return reinterpret_cast<const QContactDisplayLabelPrivate*>(d.constData())->memberValue<QString>(QContactDisplayLabel::FieldLabel);
-}
-
-/*!
-   \fn QContactDisplayLabel::setLabelGroup(const QString& group)
-   Sets the display label group for the contact which is stored in this detail to \a group.
-
-   This is usually the first character of the display label, but may instead
-   be the first character of either the first name or last name of the contact,
-   depending on the platform settings.
-
-   The display label group specifies the group to which the contact belongs,
-   within sectionized views such as fast-scroll ribbons or other subdivided
-   contact list views.
- */
-void QContactDisplayLabel::setLabelGroup(const QString& _value)
-{
-    reinterpret_cast<QContactDisplayLabelPrivate*>(d.data())->setMemberValue<QString>(QContactDisplayLabel::FieldLabelGroup, _value);
-}
-
-/*!
-   \fn QContactDisplayLabel::labelGroup() const
-   Returns the display label group of the contact which is stored in this detail.
- */
-QString QContactDisplayLabel::labelGroup() const
-{
-    return reinterpret_cast<const QContactDisplayLabelPrivate*>(d.constData())->memberValue<QString>(QContactDisplayLabel::FieldLabelGroup);
 }
 
 

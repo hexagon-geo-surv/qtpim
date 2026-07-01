@@ -90,9 +90,6 @@ module supports.
     \li X-CHILDREN
     \li QContactFamily (Children field)
   \row
-    \li X-FOLKS-FAVOURITE*
-    \li QContactFavorite
-  \row
     \li X-QTPROJECT-FAVORITE
     \li QContactFavorite
   \row

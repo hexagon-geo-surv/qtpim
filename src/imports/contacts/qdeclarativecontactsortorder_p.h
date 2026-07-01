@@ -43,7 +43,7 @@ public:
     };
 
 
-    QDeclarativeContactSortOrder(QObject* parent = nullptr);
+    QDeclarativeContactSortOrder(QObject* parent = Q_NULLPTR);
 
     void setDetail(const int detailType);
 

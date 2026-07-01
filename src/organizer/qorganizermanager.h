@@ -29,14 +29,14 @@ class Q_ORGANIZER_EXPORT QOrganizerManager : public QObject
 
 public:
 #ifdef Q_QDOC // qdoc's parser fails to recognize the default map argument
-    explicit QOrganizerManager(const QString &managerName, const QMap<QString, QString> &parameters = 0, QObject *parent = nullptr);
+    explicit QOrganizerManager(const QString &managerName, const QMap<QString, QString> &parameters = 0, QObject *parent = Q_NULLPTR);
 #else
-    explicit QOrganizerManager(const QString &managerName, const QMap<QString, QString> &parameters = (QMap<QString, QString>()), QObject *parent = nullptr);
+    explicit QOrganizerManager(const QString &managerName, const QMap<QString, QString> &parameters = (QMap<QString, QString>()), QObject *parent = Q_NULLPTR);
 #endif
-    explicit QOrganizerManager(QObject *parent = nullptr);
+    explicit QOrganizerManager(QObject *parent = Q_NULLPTR);
     ~QOrganizerManager();
 
-    static QOrganizerManager *fromUri(const QString &uri, QObject *parent = nullptr);
+    static QOrganizerManager *fromUri(const QString &uri, QObject *parent = Q_NULLPTR);
     static QStringList availableManagers();
 
     QString managerName() const;
@@ -115,8 +115,8 @@ public:
 
     // collections
     QOrganizerCollectionId defaultCollectionId() const;
-    QOrganizerCollection collection(const QOrganizerCollectionId& collectionId) const;
-    QList<QOrganizerCollection> collections() const;
+    QOrganizerCollection collection(const QOrganizerCollectionId& collectionId);
+    QList<QOrganizerCollection> collections();
     bool saveCollection(QOrganizerCollection* collection);
     bool removeCollection(const QOrganizerCollectionId& collectionId);
 

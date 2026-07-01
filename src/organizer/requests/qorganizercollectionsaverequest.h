@@ -22,7 +22,7 @@ class Q_ORGANIZER_EXPORT QOrganizerCollectionSaveRequest : public QOrganizerAbst
     Q_OBJECT
 
 public:
-    QOrganizerCollectionSaveRequest(QObject *parent = nullptr);
+    QOrganizerCollectionSaveRequest(QObject *parent = Q_NULLPTR);
     ~QOrganizerCollectionSaveRequest();
 
     void setCollection(const QOrganizerCollection &collection);

@@ -47,7 +47,7 @@ public:
         CustomMessage = QContactGlobalPresence::FieldCustomMessage
     };
 
-    QDeclarativeContactGlobalPresence(QObject* parent = nullptr)
+    QDeclarativeContactGlobalPresence(QObject* parent = Q_NULLPTR)
         :QDeclarativeContactDetail(parent)
     {
         setDetail(QContactGlobalPresence());

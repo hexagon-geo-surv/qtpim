@@ -5,7 +5,6 @@
 #include <QtCore/qcoreapplication.h>
 #include <QtCore/qfile.h>
 #include <QtCore/qlist.h>
-#include <QtCore/qrandomgenerator.h>
 
 #include <QtContacts/qtcontacts.h>
 #include <QtContacts/qcontacttag.h>
@@ -30,8 +29,8 @@ class MyResourceHandler : public QVersitDefaultResourceHandler {
 public:
    bool saveResource(const QByteArray& contents, const QVersitProperty& property,
                      QString* location) {
-       Q_UNUSED(property);
-       *location = QString::number(QRandomGenerator::global()->generate());
+       Q_UNUSED(property)
+       *location = QString::number(qrand());
        QFile file(*location);
        file.open(QIODevice::WriteOnly);
        file.write(contents); // In a real implementation, consider when this file will be deleted.
@@ -47,8 +46,8 @@ public:
 #if 0
 int main(int argc, char *argv[])
 {
-    Q_UNUSED(argc);
-    Q_UNUSED(argv);
+    Q_UNUSED(argc)
+    Q_UNUSED(argv)
     completeExample();
     exportExample();
     importExample();

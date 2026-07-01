@@ -29,7 +29,7 @@ QTCONTACTS_USE_NAMESPACE
 class DummyAction : public QContactAction
 {
 public:
-    DummyAction(QObject* parent = nullptr) { Q_UNUSED(parent); }
+    DummyAction(QObject* parent = Q_NULLPTR) { Q_UNUSED(parent) }
 
     QVariantMap metaData() const {return QVariantMap();}
 
@@ -62,7 +62,7 @@ class QPhoneNumberAction : public DummyAction
     Q_OBJECT
 
 public:
-    QPhoneNumberAction(QObject *parent = nullptr) : DummyAction(parent) {}
+    QPhoneNumberAction(QObject *parent = Q_NULLPTR) : DummyAction(parent) {}
     ~QPhoneNumberAction() {}
 };
 
@@ -71,7 +71,7 @@ class QPhoneNumberActionFactory : public QContactActionFactory
     Q_OBJECT
 
 public:
-    QPhoneNumberActionFactory(QObject* parent = nullptr) : QContactActionFactory(parent)
+    QPhoneNumberActionFactory(QObject* parent = Q_NULLPTR) : QContactActionFactory(parent)
     {
         m_actionDescriptor = createDescriptor("PhoneNumberAction", "tst_qcontactmanagerfiltering:phonenumberaction", "phonenumberaction", 1);
     }
@@ -90,13 +90,13 @@ public:
 
     QContactAction* create(const QContactActionDescriptor& which) const
     {
-        Q_UNUSED(which);
+        Q_UNUSED(which)
         return new QPhoneNumberAction;
     }
 
     QSet<QContactActionTarget> supportedTargets(const QContact& contact, const QContactActionDescriptor& which) const
     {
-        Q_UNUSED(which);
+        Q_UNUSED(which)
         QSet<QContactActionTarget> retn;
         QList<QContactDetail> pnDets = contact.details(QContactPhoneNumber::DefinitionName);
         for (const QContactDetail& det : pnDets) {
@@ -111,7 +111,7 @@ public:
 
     QContactFilter contactFilter(const QContactActionDescriptor& which) const
     {
-        Q_UNUSED(which);
+        Q_UNUSED(which)
         QContactDetailFilter df;
         // XXX TODO: find some way to pass the defAndFieldNamesForTypeForActions value for Integer to this function...
         df.setDetailDefinitionName(QContactPhoneNumber::DefinitionName, QContactPhoneNumber::FieldNumber);

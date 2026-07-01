@@ -7,10 +7,6 @@
 #include <QtTest/QtTest>
 #include <QTimeZone>
 
-#if QT_VERSION >= QT_VERSION_CHECK(5, 8, 0)
-#include <cstddef>
-#endif
-
 QTORGANIZER_USE_NAMESPACE
 QTVERSITORGANIZER_USE_NAMESPACE
 
@@ -779,8 +775,8 @@ void tst_QVersitOrganizerImporter::testImportEventProperties_data()
         QOrganizerEventTime etr;
         // The time portion must be valid but is ignored.  This test cheats a bit because it knows
         // the implementation sets it to 00:00:00
-        etr.setStartDateTime(QDate(2010, 1, 2).startOfDay());
-        etr.setEndDateTime(QDate(2010, 1, 2).startOfDay());
+        etr.setStartDateTime(QDateTime(QDate(2010, 1, 2), QTime(0, 0, 0)));
+        etr.setEndDateTime(QDateTime(QDate(2010, 1, 2), QTime(0, 0, 0)));
         etr.setAllDay(true);
         QTest::newRow("all day event") << properties
             << (QList<QOrganizerItemDetail>() << etr);
@@ -795,7 +791,7 @@ void tst_QVersitOrganizerImporter::testImportEventProperties_data()
         duration.setName(QStringLiteral("DURATION"));
         duration.setValue(QStringLiteral("P15DT5H7M20S"));
         QOrganizerEventTime etr;
-        etr.setStartDateTime(QDate(2009, 12, 31).startOfDay());
+        etr.setStartDateTime(QDateTime(QDate(2009, 12, 31), QTime(0, 0, 0)));
         etr.setEndDateTime(QDateTime(QDate(2010, 1, 15), QTime(5, 7, 20)));
         QTest::newRow("dtstart and duration: days hours minutes seconds")
             << (QList<QVersitProperty>() << dtstart << duration)
@@ -835,13 +831,13 @@ void tst_QVersitOrganizerImporter::testImportEventProperties_data()
             << (QList<QOrganizerItemDetail>() << etr);
 
         duration.setValue(QStringLiteral("P15D"));
-        etr.setEndDateTime(QDate(2010, 1, 15).startOfDay());
+        etr.setEndDateTime(QDateTime(QDate(2010, 1, 15), QTime(0, 0, 0)));
         QTest::newRow("dtstart and duration: days")
             << (QList<QVersitProperty>() << dtstart << duration)
             << (QList<QOrganizerItemDetail>() << etr);
 
         duration.setValue(QStringLiteral("P7W"));
-        etr.setEndDateTime(QDate(2010, 2, 18).startOfDay());
+        etr.setEndDateTime(QDateTime(QDate(2010, 2, 18), QTime(0, 0, 0)));
         QTest::newRow("dtstart and duration: weeks")
             << (QList<QVersitProperty>() << dtstart << duration)
             << (QList<QOrganizerItemDetail>() << etr);
@@ -849,7 +845,7 @@ void tst_QVersitOrganizerImporter::testImportEventProperties_data()
         dtstart.setValue(QStringLiteral("20100115T050720"));
         duration.setValue(QStringLiteral("-P15DT5H7M20S"));
         etr.setStartDateTime(QDateTime(QDate(2010, 1, 15), QTime(5, 7, 20)));
-        etr.setEndDateTime(QDate(2009, 12, 31).startOfDay());
+        etr.setEndDateTime(QDateTime(QDate(2009, 12, 31), QTime(0, 0, 0)));
         QTest::newRow("dtstart and duration: negative")
             << (QList<QVersitProperty>() << dtstart << duration)
             << (QList<QOrganizerItemDetail>() << etr);
@@ -1291,8 +1287,8 @@ void tst_QVersitOrganizerImporter::testImportTodoProperties_data()
         QOrganizerTodoTime todoTime;
         // The time portion must be valid but is ignored.  This test cheats a bit because it knows
         // the implementation sets it to 00:00:00
-        todoTime.setStartDateTime(QDate(2010, 1, 2).startOfDay());
-        todoTime.setDueDateTime(QDate(2010, 1, 3).startOfDay());
+        todoTime.setStartDateTime(QDateTime(QDate(2010, 1, 2), QTime(0, 0, 0)));
+        todoTime.setDueDateTime(QDateTime(QDate(2010, 1, 3), QTime(0, 0, 0)));
         todoTime.setAllDay(true);
         QTest::newRow("all day todo") << properties
             << (QList<QOrganizerItemDetail>() << todoTime);
@@ -1790,11 +1786,7 @@ void tst_QVersitOrganizerImporter::testExtendedDetail_data()
     {
         QTest::newRow("null denoting an empty variant")
                 << QString("name")
-#if QT_VERSION >= QT_VERSION_CHECK(5, 8, 0)
-                << QVariant::fromValue<std::nullptr_t>(nullptr)
-#else
                 << QVariant()
-#endif
                 << jsonArrayWith.arg("null")
                 << true;
         QTest::newRow("compact json with extra whitespace removed")

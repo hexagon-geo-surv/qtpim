@@ -173,14 +173,6 @@ QVariant QOrganizerCollection::extendedMetaData(const QString &key) const
 }
 
 /*!
-    Returns all extended metadata of the collection.
- */
-QVariantMap QOrganizerCollection::extendedMetaData() const
-{
-    return d->m_metaData.value(QOrganizerCollection::KeyExtended).toMap();
-}
-
-/*!
     Returns the meta data of the collection for the given \a key.
  */
 QVariant QOrganizerCollection::metaData(MetaDataKey key) const
@@ -192,9 +184,9 @@ QVariant QOrganizerCollection::metaData(MetaDataKey key) const
     \relates QOrganizerCollection
     Returns the hash value for \a key.
  */
-Q_ORGANIZER_EXPORT size_t qHash(const QOrganizerCollection &key)
+Q_ORGANIZER_EXPORT uint qHash(const QOrganizerCollection &key)
 {
-    size_t hash = qHash(key.id());
+    uint hash = qHash(key.id());
     QMap<QOrganizerCollection::MetaDataKey, QVariant>::const_iterator i = key.d->m_metaData.constBegin();
     while (i != key.d->m_metaData.constEnd()) {
         if (i.key() == QOrganizerCollection::KeyExtended) {
@@ -240,15 +232,9 @@ QDebug operator<<(QDebug dbg, const QOrganizerCollection& collection)
 QDataStream &operator<<(QDataStream &out, const QOrganizerCollection &collection)
 {
     quint8 formatVersion = 1;
-    QMap<int, QVariant> values;
-    auto i = collection.metaData().constBegin();
-    auto end = collection.metaData().constEnd();
-    for ( ; i != end; ++i)
-        values.insert(i.key(), i.value());
-
     return out << formatVersion
                << collection.id().toString()
-               << values;
+               << collection.metaData();
 }
 
 /*!

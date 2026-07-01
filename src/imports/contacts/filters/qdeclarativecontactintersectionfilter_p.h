@@ -29,7 +29,7 @@ class QDeclarativeContactIntersectionFilter : public QDeclarativeContactCompound
     Q_OBJECT
 
 public:
-    QDeclarativeContactIntersectionFilter(QObject* parent = nullptr)
+    QDeclarativeContactIntersectionFilter(QObject* parent = Q_NULLPTR)
         :QDeclarativeContactCompoundFilter(parent)
     {
     }

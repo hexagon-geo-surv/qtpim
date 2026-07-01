@@ -34,7 +34,7 @@ public:
     enum FieldType {
         Label = QContactDisplayLabel::FieldLabel
     };
-    QDeclarativeContactDisplayLabel(QObject* parent = nullptr)
+    QDeclarativeContactDisplayLabel(QObject* parent = Q_NULLPTR)
         :QDeclarativeContactDetail(parent)
     {
         setDetail(QContactDisplayLabel());

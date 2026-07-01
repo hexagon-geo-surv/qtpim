@@ -173,14 +173,6 @@ QVariant QContactCollection::extendedMetaData(const QString &key) const
 }
 
 /*!
-    Returns all extended metadata of the collection.
- */
-QVariantMap QContactCollection::extendedMetaData() const
-{
-    return d->m_metaData.value(QContactCollection::KeyExtended).toMap();
-}
-
-/*!
     Returns the meta data of the collection for the given \a key.
  */
 QVariant QContactCollection::metaData(MetaDataKey key) const
@@ -192,9 +184,9 @@ QVariant QContactCollection::metaData(MetaDataKey key) const
     \relates QContactCollection
     Returns the hash value for \a key.
  */
-Q_CONTACTS_EXPORT size_t qHash(const QContactCollection &key)
+Q_CONTACTS_EXPORT uint qHash(const QContactCollection &key)
 {
-    size_t hash = qHash(key.id());
+    uint hash = qHash(key.id());
     QMap<QContactCollection::MetaDataKey, QVariant>::const_iterator i = key.d->m_metaData.constBegin();
     while (i != key.d->m_metaData.constEnd()) {
         if (i.key() == QContactCollection::KeyExtended) {
@@ -240,15 +232,9 @@ QDebug operator<<(QDebug dbg, const QContactCollection& collection)
 QDataStream &operator<<(QDataStream &out, const QContactCollection &collection)
 {
     quint8 formatVersion = 1;
-    QMap<int, QVariant> values;
-    auto i = collection.metaData().constBegin();
-    auto end = collection.metaData().constEnd();
-    for ( ; i != end; ++i)
-        values.insert(i.key(), i.value());
-
     return out << formatVersion
                << collection.id().toString()
-               << values;
+               << collection.metaData();
 }
 
 /*!

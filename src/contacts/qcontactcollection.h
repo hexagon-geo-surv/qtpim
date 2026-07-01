@@ -51,15 +51,14 @@ public:
 
     void setExtendedMetaData(const QString &key, const QVariant &value);
     QVariant extendedMetaData(const QString &key) const;
-    QVariantMap extendedMetaData() const;
 
 private:
-    friend Q_CONTACTS_EXPORT size_t qHash(const QContactCollection &key);
+    friend Q_CONTACTS_EXPORT uint qHash(const QContactCollection &key);
     friend class QContactManagerEngine;
     QSharedDataPointer<QContactCollectionPrivate> d;
 };
 
-Q_CONTACTS_EXPORT size_t qHash(const QContactCollection &key);
+Q_CONTACTS_EXPORT uint qHash(const QContactCollection &key);
 
 #ifndef QT_NO_DEBUG_STREAM
 Q_CONTACTS_EXPORT QDebug operator<<(QDebug dbg, const QContactCollection &collection);

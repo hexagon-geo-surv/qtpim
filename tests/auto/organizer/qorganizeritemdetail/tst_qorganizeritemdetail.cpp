@@ -306,7 +306,7 @@ void tst_QOrganizerItemDetail::values()
     p.setValue(104, (int)6);
 
     p.setValue(105, d.toString(Qt::ISODate));
-    p.setValue(106, dt.toString(Qt::ISODateWithMs));
+    p.setValue(106, dt.toString(Qt::ISODate));
 
     // Test the setter that takes a QString
     p.setValue(107, "123");
@@ -333,7 +333,7 @@ void tst_QOrganizerItemDetail::values()
     QCOMPARE(p.value(103), QVariant(dt));
     QCOMPARE(p.value(104), QVariant((int)6));
     QCOMPARE(p.value(105), QVariant(d.toString(Qt::ISODate)));
-    QCOMPARE(p.value(106), QVariant(dt.toString(Qt::ISODateWithMs)));
+    QCOMPARE(p.value(106), QVariant(dt.toString(Qt::ISODate)));
     QCOMPARE(p.value(107), QVariant(QString("123")));
     QCOMPARE(p.value(QOrganizerItemPriority::FieldPriority).toInt(), static_cast<int>(QOrganizerItemPriority::ExtremelyHighPriority));
 
@@ -343,7 +343,7 @@ void tst_QOrganizerItemDetail::values()
     QCOMPARE(p.value<QString>(103), dt.toString(Qt::ISODateWithMs));
     QCOMPARE(p.value<QString>(104), QString("6"));
     QCOMPARE(p.value<QString>(105), d.toString(Qt::ISODate));
-    QCOMPARE(p.value<QString>(106), dt.toString(Qt::ISODateWithMs));
+    QCOMPARE(p.value<QString>(106), dt.toString(Qt::ISODate));
     QCOMPARE(p.value<QString>(107), QString("123"));
     QCOMPARE(p.value<int>(QOrganizerItemPriority::FieldPriority), static_cast<int>(QOrganizerItemPriority::ExtremelyHighPriority));
 
@@ -403,7 +403,7 @@ void tst_QOrganizerItemDetail::values()
     values.insert(104, (int)6);
 
     values.insert(105, d.toString(Qt::ISODate));
-    values.insert(106, dt.toString(Qt::ISODateWithMs));
+    values.insert(106, dt.toString(Qt::ISODate));
     values.insert(107, "123");
     values.insert(101, QString("This is a string"));
 
@@ -428,7 +428,7 @@ void tst_QOrganizerItemDetail::values()
     QCOMPARE(p.value(103).toString(), dt.toString(Qt::ISODateWithMs));
     QCOMPARE(p.value(104).toString(), QString("6"));
     QCOMPARE(p.value(105).toString(), d.toString(Qt::ISODate));
-    QCOMPARE(p.value(106).toString(), dt.toString(Qt::ISODateWithMs));
+    QCOMPARE(p.value(106).toString(), dt.toString(Qt::ISODate));
     QCOMPARE(p.value(107).toString(), QString("123"));
 
     /* Typed accessors, string first */
@@ -437,7 +437,7 @@ void tst_QOrganizerItemDetail::values()
     QCOMPARE(p.value<QString>(103), dt.toString(Qt::ISODateWithMs));
     QCOMPARE(p.value<QString>(104), QString("6"));
     QCOMPARE(p.value<QString>(105), d.toString(Qt::ISODate));
-    QCOMPARE(p.value<QString>(106), dt.toString(Qt::ISODateWithMs));
+    QCOMPARE(p.value<QString>(106), dt.toString(Qt::ISODate));
     QCOMPARE(p.value<QString>(107), QString("123"));
 
     /* Now individual original types */

@@ -44,7 +44,7 @@ public:
         Suffix = QContactName::FieldSuffix,
     };
 
-    QDeclarativeContactName(QObject* parent = nullptr)
+    QDeclarativeContactName(QObject* parent = Q_NULLPTR)
         :QDeclarativeContactDetail(parent)
     {
         setDetail(QContactName());

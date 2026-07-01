@@ -108,7 +108,7 @@ QDataStream &operator<<(QDataStream &out, const QOrganizerItemSortOrder &sortOrd
 {
     quint8 formatVersion = 1; // Version of QDataStream format for QOrganizerItemSortOrder
     return out << formatVersion
-               << static_cast<quint32>(sortOrder.detailType())
+               << sortOrder.detailType()
                << sortOrder.detailField()
                << static_cast<quint32>(sortOrder.blankPolicy())
                << static_cast<quint32>(sortOrder.direction())

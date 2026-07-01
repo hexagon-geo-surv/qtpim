@@ -118,8 +118,8 @@ public:
 
     // collections
     QOrganizerCollectionId defaultCollectionId() const override;
-    QOrganizerCollection collection(const QOrganizerCollectionId &collectionId, QOrganizerManager::Error *error) const override;
-    QList<QOrganizerCollection> collections(QOrganizerManager::Error* error) const override;
+    QOrganizerCollection collection(const QOrganizerCollectionId &collectionId, QOrganizerManager::Error *error) override;
+    QList<QOrganizerCollection> collections(QOrganizerManager::Error* error) override;
     bool saveCollection(QOrganizerCollection* collection, QOrganizerManager::Error* error) override;
     bool removeCollection(const QOrganizerCollectionId& collectionId, QOrganizerManager::Error* error) override;
 

@@ -25,7 +25,7 @@ class Q_ORGANIZER_EXPORT QOrganizerItemFetchByIdRequest : public QOrganizerAbstr
     Q_OBJECT
 
 public:
-    QOrganizerItemFetchByIdRequest(QObject *parent = nullptr);
+    QOrganizerItemFetchByIdRequest(QObject *parent = Q_NULLPTR);
     ~QOrganizerItemFetchByIdRequest();
 
     void setIds(const QList<QOrganizerItemId> &ids);

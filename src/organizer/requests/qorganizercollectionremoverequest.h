@@ -22,7 +22,7 @@ class Q_ORGANIZER_EXPORT QOrganizerCollectionRemoveRequest : public QOrganizerAb
     Q_OBJECT
 
 public:
-    QOrganizerCollectionRemoveRequest(QObject *parent = nullptr);
+    QOrganizerCollectionRemoveRequest(QObject *parent = Q_NULLPTR);
     ~QOrganizerCollectionRemoveRequest();
 
     void setCollectionId(const QOrganizerCollectionId &collectionId);

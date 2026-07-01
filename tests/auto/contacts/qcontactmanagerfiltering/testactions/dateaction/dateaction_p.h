@@ -29,7 +29,7 @@ QTCONTACTS_USE_NAMESPACE
 class DummyAction : public QContactAction
 {
 public:
-    DummyAction(QObject* parent = nullptr) { Q_UNUSED(parent); }
+    DummyAction(QObject* parent = Q_NULLPTR) { Q_UNUSED(parent) }
 
     QVariantMap metaData() const {return QVariantMap();}
 
@@ -63,7 +63,7 @@ class QDateAction : public DummyAction
     Q_OBJECT
 
 public:
-    QDateAction(QObject *parent = nullptr) : DummyAction(parent) {}
+    QDateAction(QObject *parent = Q_NULLPTR) : DummyAction(parent) {}
     ~QDateAction() {}
 };
 
@@ -72,7 +72,7 @@ class QDateActionFactory : public QContactActionFactory
     Q_OBJECT
 
 public:
-    QDateActionFactory(QObject* parent = nullptr) : QContactActionFactory(parent)
+    QDateActionFactory(QObject* parent = Q_NULLPTR) : QContactActionFactory(parent)
     {
         m_actionDescriptor = createDescriptor("DateAction", "tst_qcontactmanagerfiltering:dateaction", "dateaction", 1);
     }
@@ -91,13 +91,13 @@ public:
 
     QContactAction* create(const QContactActionDescriptor& which) const
     {
-        Q_UNUSED(which);
+        Q_UNUSED(which)
         return new QDateAction;
     }
 
     QSet<QContactActionTarget> supportedTargets(const QContact& contact, const QContactActionDescriptor& which) const
     {
-        Q_UNUSED(which);
+        Q_UNUSED(which)
         QSet<QContactActionTarget> retn;
         QList<QContactDetail> dateDets = contact.details("DateDefinition");
         for (const QContactDetail& det : dateDets) {
@@ -112,7 +112,7 @@ public:
 
     QContactFilter contactFilter(const QContactActionDescriptor& which) const
     {
-        Q_UNUSED(which);
+        Q_UNUSED(which)
         QContactDetailFilter df;
         // XXX TODO: find some way to pass the defAndFieldNamesForTypeForActions value for Date to this function...
         df.setDetailDefinitionName("DateDefinition", "DateField");

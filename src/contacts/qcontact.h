@@ -25,12 +25,6 @@ class QContactPrivate;
 class Q_CONTACTS_EXPORT QContact
 {
 public:
-    enum AccessConstraintsEnforcement {
-        ReplaceAccessConstraints,
-        IgnoreAccessConstraints,
-        EnforceAccessConstraints,
-    };
-
     QContact();
 
     ~QContact();
@@ -78,8 +72,8 @@ public:
     }
 
     /* generic detail addition/removal functions */
-    bool saveDetail(QContactDetail* detail, AccessConstraintsEnforcement enforce = EnforceAccessConstraints);
-    bool removeDetail(QContactDetail* detail, AccessConstraintsEnforcement enforce = EnforceAccessConstraints);
+    bool saveDetail(QContactDetail* detail);
+    bool removeDetail(QContactDetail* detail);
 
     /* Relationships that this contact was involved in when it was retrieved from the manager */
     QList<QContactRelationship> relationships(const QString& relationshipType = QString()) const;
@@ -108,7 +102,7 @@ private:
     QSharedDataPointer<QContactPrivate> d;
 };
 
-Q_CONTACTS_EXPORT size_t qHash(const QContact& key);
+Q_CONTACTS_EXPORT uint qHash(const QContact& key);
 #ifndef QT_NO_DEBUG_STREAM
 Q_CONTACTS_EXPORT QDebug operator<<(QDebug dbg, const QContact& contact);
 #endif

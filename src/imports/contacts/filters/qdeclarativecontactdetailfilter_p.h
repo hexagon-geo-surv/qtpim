@@ -34,7 +34,7 @@ class QDeclarativeContactDetailFilter : public QDeclarativeContactFilter
     Q_PROPERTY(MatchFlags matchFlags READ matchFlags WRITE setMatchFlags NOTIFY valueChanged)
 public:
 
-    QDeclarativeContactDetailFilter(QObject* parent = nullptr)
+    QDeclarativeContactDetailFilter(QObject* parent = Q_NULLPTR)
         : QDeclarativeContactFilter(parent)
     {
         connect(this, SIGNAL(valueChanged()), SIGNAL(filterChanged()));

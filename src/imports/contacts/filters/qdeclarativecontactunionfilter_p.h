@@ -28,7 +28,7 @@ class QDeclarativeContactUnionFilter : public QDeclarativeContactCompoundFilter
 {
     Q_OBJECT
 public:
-    QDeclarativeContactUnionFilter(QObject* parent = nullptr)
+    QDeclarativeContactUnionFilter(QObject* parent = Q_NULLPTR)
         :QDeclarativeContactCompoundFilter(parent)
     {
     }

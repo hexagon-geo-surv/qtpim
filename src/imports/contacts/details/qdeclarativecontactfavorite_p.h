@@ -36,7 +36,7 @@ public:
         Favorite = QContactFavorite::FieldFavorite,
         Index = QContactFavorite::FieldIndex
     };
-    QDeclarativeContactFavorite(QObject* parent = nullptr)
+    QDeclarativeContactFavorite(QObject* parent = Q_NULLPTR)
         :QDeclarativeContactDetail(parent)
     {
         setDetail(QContactFavorite());

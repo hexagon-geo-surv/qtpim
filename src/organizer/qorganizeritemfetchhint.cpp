@@ -152,13 +152,8 @@ void QOrganizerItemFetchHint::setOptimizationHints(OptimizationHints hints)
 QDataStream &operator<<(QDataStream &out, const QOrganizerItemFetchHint &hint)
 {
     quint8 formatVersion = 1;
-    QList<quint32> values;
-    const auto detailTypesHint = hint.detailTypesHint();
-    for (QOrganizerItemDetail::DetailType detailType : detailTypesHint)
-        values.append(detailType);
-
     return out << formatVersion
-               << values
+               << hint.detailTypesHint()
                << static_cast<quint32>(hint.optimizationHints());
 }
 

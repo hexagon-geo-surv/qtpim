@@ -27,7 +27,7 @@ class Q_ORGANIZER_EXPORT QOrganizerItemFetchForExportRequest : public QOrganizer
     Q_OBJECT
 
 public:
-    QOrganizerItemFetchForExportRequest(QObject *parent = nullptr);
+    QOrganizerItemFetchForExportRequest(QObject *parent = Q_NULLPTR);
     ~QOrganizerItemFetchForExportRequest();
 
     void setFilter(const QOrganizerItemFilter &filter);

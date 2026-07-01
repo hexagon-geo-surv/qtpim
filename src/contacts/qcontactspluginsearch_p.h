@@ -35,10 +35,7 @@ inline QStringList mobilityPlugins(const QString& plugintype)
     const bool showDebug = qgetenv("QT_DEBUG_PLUGINS").toInt() > 0;
 #endif
 
-    QStringList paths;
-#ifndef QT_NO_LIBRARY
-    paths = QCoreApplication::libraryPaths();
-#endif
+    QStringList paths = QCoreApplication::libraryPaths();
 #ifdef QTM_PLUGIN_PATH
     paths << QLatin1String(QTM_PLUGIN_PATH);
 #endif

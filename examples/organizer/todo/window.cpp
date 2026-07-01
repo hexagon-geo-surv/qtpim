@@ -102,8 +102,10 @@ void Window::refreshList()
     foreach(QOrganizerItem item, items) {
         if (item.type() == QOrganizerItemType::TypeTodo) {
             QOrganizerTodo todo = static_cast<QOrganizerTodo>(item);
-            if (todo.startDateTime() > calendarWidget->selectedDate().endOfDay() ||
-                todo.dueDateTime() < calendarWidget->selectedDate().startOfDay())
+            if (todo.startDateTime() >
+                    QDateTime(calendarWidget->selectedDate(), QTime(23,59)) ||
+                todo.dueDateTime() <
+                    QDateTime(calendarWidget->selectedDate(), QTime(0, 0)))
                 continue;
 
             QString display = todo.startDateTime().toString("yy/MM/dd hh:mm") +

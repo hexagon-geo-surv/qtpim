@@ -73,7 +73,7 @@ QT_BEGIN_NAMESPACE_ORGANIZER
 */
 
 /*!
-    \fn size_t qHash(const QOrganizerItemId &id)
+    \fn uint qHash(const QOrganizerItemId &id)
     \relates QOrganizerItemId
 
     Returns the hash value for \a id.

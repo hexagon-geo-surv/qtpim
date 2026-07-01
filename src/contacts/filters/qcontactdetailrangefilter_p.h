@@ -24,7 +24,14 @@ QT_BEGIN_NAMESPACE_CONTACTS
 class QContactDetailRangeFilterPrivate : public QContactFilterPrivate
 {
 public:
-    QContactDetailRangeFilterPrivate() = default;
+    QContactDetailRangeFilterPrivate()
+        : QContactFilterPrivate(),
+        m_typeId(QContactDetail::TypeUndefined),
+        m_fieldId(-1),
+        m_flags(0),
+        m_rangeflags(0)
+    {
+    }
 
     QContactDetailRangeFilterPrivate(const QContactDetailRangeFilterPrivate& other)
         : QContactFilterPrivate(other),
@@ -58,7 +65,7 @@ public:
     QDataStream& outputToStream(QDataStream& stream, quint8 formatVersion) const override
     {
         if (formatVersion == 1) {
-            stream << quint32(m_typeId) << m_fieldId << m_minValue << m_maxValue
+            stream << m_typeId << m_fieldId << m_minValue << m_maxValue
                 << static_cast<quint32>(m_flags)
                 << static_cast<quint32>(m_rangeflags);
         }
@@ -96,8 +103,8 @@ public:
 
     Q_IMPLEMENT_CONTACTFILTER_VIRTUALCTORS(QContactDetailRangeFilter, QContactFilter::ContactDetailRangeFilter)
 
-    QContactDetail::DetailType m_typeId = QContactDetail::TypeUndefined;
-    int m_fieldId = -1;
+    QContactDetail::DetailType m_typeId;
+    int m_fieldId;
     QVariant m_minValue;
     QVariant m_maxValue;
     QContactFilter::MatchFlags m_flags;

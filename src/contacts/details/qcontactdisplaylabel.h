@@ -22,15 +22,11 @@ public:
 #endif
 
     enum DisplayLabelField {
-        FieldLabel = 0,
-        FieldLabelGroup
+        FieldLabel = 0
     };
 
     void setLabel(const QString& displayLabel);
     QString label() const;
-
-    void setLabelGroup(const QString& displayLabelGroup);
-    QString labelGroup() const;
 
     static QContactFilter match(const QString& label);
 };

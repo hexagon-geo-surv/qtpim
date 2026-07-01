@@ -78,7 +78,7 @@ class QDeclarativeContact : public QObject
 
 public:
 
-    explicit QDeclarativeContact(QObject *parent = nullptr);
+    explicit QDeclarativeContact(QObject *parent = Q_NULLPTR);
     ~QDeclarativeContact();
 
     void setContact(const QContact& c);

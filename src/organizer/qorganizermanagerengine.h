@@ -28,7 +28,7 @@ class Q_ORGANIZER_EXPORT QOrganizerManagerEngine : public QObject
     Q_OBJECT
 
 public:
-    QOrganizerManagerEngine(QObject *parent = nullptr);
+    QOrganizerManagerEngine(QObject *parent = Q_NULLPTR);
 
     virtual QString managerName() const;
     virtual QMap<QString, QString> managerParameters() const;
@@ -74,8 +74,8 @@ public:
 
     // collections
     virtual QOrganizerCollectionId defaultCollectionId() const;
-    virtual QOrganizerCollection collection(const QOrganizerCollectionId &collectionId, QOrganizerManager::Error *error) const;
-    virtual QList<QOrganizerCollection> collections(QOrganizerManager::Error *error) const;
+    virtual QOrganizerCollection collection(const QOrganizerCollectionId &collectionId, QOrganizerManager::Error *error);
+    virtual QList<QOrganizerCollection> collections(QOrganizerManager::Error *error);
     virtual bool saveCollection(QOrganizerCollection *collection, QOrganizerManager::Error *error);
     virtual bool removeCollection(const QOrganizerCollectionId &collectionId, QOrganizerManager::Error *error);
 

@@ -58,8 +58,6 @@ private slots: // Tests
     void testFavorite();
     void testFavorite_data();
     void testMultipleFavorites();
-    void testFolksFavorite();
-    void testFolksFavorite_data();
     void testSound();
     void testTag();
     void testExtendedDetail();

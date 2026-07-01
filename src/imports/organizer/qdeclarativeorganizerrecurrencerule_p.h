@@ -63,7 +63,7 @@ public:
         December = QOrganizerRecurrenceRule::December
     };
 
-    QDeclarativeOrganizerRecurrenceRule(QObject *parent = nullptr);
+    QDeclarativeOrganizerRecurrenceRule(QObject *parent = Q_NULLPTR);
 
     void setFrequency(Frequency freq);
     Frequency frequency() const;

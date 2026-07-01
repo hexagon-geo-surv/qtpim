@@ -20,7 +20,7 @@ class Q_ORGANIZER_EXPORT QOrganizerItemObserver : public QObject
     Q_OBJECT
 
 public:
-    QOrganizerItemObserver(QOrganizerManager *manager, const QOrganizerItemId &itemId, QObject *parent = nullptr);
+    QOrganizerItemObserver(QOrganizerManager *manager, const QOrganizerItemId &itemId, QObject *parent = Q_NULLPTR);
     ~QOrganizerItemObserver();
     QOrganizerItemId itemId() const;
 

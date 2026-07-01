@@ -980,11 +980,7 @@ TestCase {
             // clean db
             model.startPeriod = localDate('2011-01-01');
             model.endPeriod = localDate('2012-08-30');
-            // depending on how the changes are batched there may
-            // be either one or more modelChanged signals.
-            // thus, unconditional wait() is required...
-            wait(spyWaitDelay);
-            verify(modelChangedSpy.count > 0);
+            modelChangedSpy.wait(spyWaitDelay);
             cleanDatabase();
             compare(model.itemCount, 0, "Model not empty")
         }

@@ -34,7 +34,7 @@ public:
     enum FieldType {
         Guid = QContactGuid::FieldGuid
     };
-    QDeclarativeContactGuid(QObject* parent = nullptr)
+    QDeclarativeContactGuid(QObject* parent = Q_NULLPTR)
         :QDeclarativeContactDetail(parent)
     {
         setDetail(QContactGuid());

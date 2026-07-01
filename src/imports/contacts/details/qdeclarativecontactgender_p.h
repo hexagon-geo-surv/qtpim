@@ -42,7 +42,7 @@ public:
         Unspecified = QContactGender::GenderUnspecified
     };
 
-    QDeclarativeContactGender(QObject* parent = nullptr)
+    QDeclarativeContactGender(QObject* parent = Q_NULLPTR)
         :QDeclarativeContactDetail(parent)
     {
         setDetail(QContactGender());
