@@ -20,4 +20,6 @@ target_link_libraries(todo_pim PRIVATE Qt6::Organizer Qt6::Widgets)
 
 install(TARGETS todo_pim
     RUNTIME DESTINATION "${CMAKE_INSTALL_PREFIX}/examples/organizer/todo"
+    BUNDLE DESTINATION "${CMAKE_INSTALL_PREFIX}/examples/organizer/todo"
+    LIBRARY DESTINATION "${CMAKE_INSTALL_PREFIX}/examples/organizer/todo"
 )

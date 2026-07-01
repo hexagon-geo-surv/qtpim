@@ -35,4 +35,6 @@ target_link_libraries(calendardemo_pim PRIVATE Qt6::Organizer Qt6::Versit Qt6::W
 
 install(TARGETS calendardemo_pim
     RUNTIME DESTINATION "${CMAKE_INSTALL_PREFIX}/examples/organizer/calendardemo"
+    BUNDLE DESTINATION "${CMAKE_INSTALL_PREFIX}/examples/organizer/calendardemo"
+    LIBRARY DESTINATION "${CMAKE_INSTALL_PREFIX}/examples/organizer/calendardemo"
 )
