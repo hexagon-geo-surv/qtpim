@@ -27,20 +27,20 @@ DayPage::DayPage(QWidget *parent)
     dateLayout->addStretch();
 
     QPushButton* backButton = new QPushButton("View Month",this);
-    connect(backButton,SIGNAL(clicked()),this,SLOT(viewMonthClicked()));
+    connect(backButton, &QPushButton::clicked, this, &DayPage::viewMonthClicked);
     dateLayout->addWidget(backButton);
     mainLayout->addLayout(dateLayout);
 
     m_itemList = new QListWidget(this);
     mainLayout->addWidget(m_itemList);
-    connect(m_itemList, SIGNAL(itemDoubleClicked(QListWidgetItem *)), this, SLOT(itemDoubleClicked(QListWidgetItem *)));
+    connect(m_itemList, &QListWidget::itemDoubleClicked, this, &DayPage::itemDoubleClicked);
 
     QHBoxLayout* hbLayout = new QHBoxLayout();
     QPushButton* editEventButton = new QPushButton("Edit",this);
-    connect(editEventButton,SIGNAL(clicked()),this,SLOT(editItem()));
+    connect(editEventButton, &QPushButton::clicked, this, &DayPage::editItem);
     hbLayout->addWidget(editEventButton);
     QPushButton* removeEventButton = new QPushButton("Remove",this);
-    connect(removeEventButton,SIGNAL(clicked()),this,SLOT(removeItem()));
+    connect(removeEventButton, &QPushButton::clicked, this, &DayPage::removeItem);
     hbLayout->addWidget(removeEventButton);
     mainLayout->addLayout(hbLayout);
     setLayout(mainLayout);

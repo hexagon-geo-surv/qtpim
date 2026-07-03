@@ -30,7 +30,7 @@ MonthPage::MonthPage(QWidget *parent)
             m_managerComboBox->addItem(manager);
     }
     mainlayout->addRow("Backend:", m_managerComboBox);
-    connect(m_managerComboBox, SIGNAL(currentIndexChanged(const QString &)), this, SLOT(backendChanged(const QString &)));
+    connect(m_managerComboBox, &QComboBox::currentTextChanged, this, &MonthPage::backendChanged);
 
     m_dateLabel = new QLabel(this);
     m_dateLabel->setAlignment(Qt::AlignCenter);
@@ -41,9 +41,9 @@ MonthPage::MonthPage(QWidget *parent)
     m_calendarWidget->setHorizontalHeaderFormat(QCalendarWidget::SingleLetterDayNames);
     m_calendarWidget->setNavigationBarVisible(false);
     mainlayout->addRow(m_calendarWidget);
-    connect(m_calendarWidget, SIGNAL(selectionChanged()), this, SLOT(refreshDayItems()));
-    connect(m_calendarWidget, SIGNAL(currentPageChanged(int, int)), this, SLOT(currentMonthChanged()));
-    connect(m_calendarWidget, SIGNAL(activated(QDate)), this, SLOT(dayDoubleClicked(QDate)));
+    connect(m_calendarWidget, &QCalendarWidget::selectionChanged, this, &MonthPage::refreshDayItems);
+    connect(m_calendarWidget, &QCalendarWidget::currentPageChanged, this, &MonthPage::currentMonthChanged);
+    connect(m_calendarWidget, &QCalendarWidget::activated, this, &MonthPage::dayDoubleClicked);
 
     m_itemList = new QListWidget(this);
     m_itemList->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
@@ -51,7 +51,7 @@ MonthPage::MonthPage(QWidget *parent)
     m_itemList->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
     m_itemList->setFocusPolicy(Qt::NoFocus);
     mainlayout->addRow(m_itemList);
-    connect(m_itemList, SIGNAL(itemDoubleClicked(QListWidgetItem*)), this, SLOT(itemDoubleClicked(QListWidgetItem*)));
+    connect(m_itemList, &QListWidget::itemDoubleClicked, this, &MonthPage::itemDoubleClicked);
 
     setLayout(mainlayout);
 }

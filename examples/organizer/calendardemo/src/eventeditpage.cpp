@@ -37,8 +37,8 @@ EventEditPage::EventEditPage(QWidget *parent)
     m_typeComboBox->addItem("Weekly");
     m_typeComboBox->addItem("Monthly");
     m_typeComboBox->addItem("Yearly");
-    connect(m_typeComboBox, SIGNAL(currentIndexChanged(const QString&)), this,
-            SLOT(frequencyChanged(const QString&)));
+    connect(m_typeComboBox, &QComboBox::currentTextChanged, this,
+            &EventEditPage::frequencyChanged);
     QStringList alarmList;
     alarmList   << "None"
                 << "0 minutes before"
@@ -47,26 +47,26 @@ EventEditPage::EventEditPage(QWidget *parent)
                 << "30 minutes before"
                 << "1 hour before";
     m_alarmComboBox->addItems(alarmList);
-    connect(m_alarmComboBox, SIGNAL(currentIndexChanged(const QString)), this,
-                        SLOT(alarmIndexChanged(const QString)));
+    connect(m_alarmComboBox, &QComboBox::currentTextChanged, this,
+                        &EventEditPage::alarmIndexChanged);
 
     m_endConditionComboBox = new QComboBox(this);
     m_endConditionComboBox->addItem("Forever");
     m_endConditionComboBox->addItem("Until a date");
     m_endConditionComboBox->addItem("For a number of occurrences");
     m_endConditionComboBox->setVisible(false);
-    connect(m_endConditionComboBox, SIGNAL(currentIndexChanged(const QString&)),
-            this, SLOT(endConditionChanged(const QString&)));
+    connect(m_endConditionComboBox, &QComboBox::currentTextChanged,
+            this, &EventEditPage::endConditionChanged);
 
     m_countSpinBox = new QSpinBox(this);
     m_countSpinBox->setRange(1, 100);
     m_countSpinBox->setSingleStep(1);
     m_countSpinBox->setVisible(false);
-    connect(m_countSpinBox, SIGNAL(valueChanged(int)), this, SLOT(countChanged(int)));
+    connect(m_countSpinBox, &QSpinBox::valueChanged, this, &EventEditPage::countChanged);
 
     m_repeatUntilDate = new QDateEdit(this);
     m_repeatUntilDate->setVisible(false);
-    connect(m_repeatUntilDate, SIGNAL(dateChanged(QDate)), this, SLOT(untilChanged(QDate)));
+    connect(m_repeatUntilDate, &QDateEdit::dateChanged, this, &EventEditPage::untilChanged);
 
     m_calendarComboBox = new QComboBox(this);
     // the calendar names are not know here, fill the combo box later...
@@ -74,10 +74,10 @@ EventEditPage::EventEditPage(QWidget *parent)
     // Add push buttons
     QHBoxLayout* hbLayout = new QHBoxLayout();
     QPushButton *okButton = new QPushButton("Save", this);
-    connect(okButton,SIGNAL(clicked()),this,SLOT(saveClicked()));
+    connect(okButton, &QPushButton::clicked, this, &EventEditPage::saveClicked);
     hbLayout->addWidget(okButton);
     QPushButton *cancelButton = new QPushButton("Cancel", this);
-    connect(cancelButton,SIGNAL(clicked()),this,SLOT(cancelClicked()));
+    connect(cancelButton, &QPushButton::clicked, this, &EventEditPage::cancelClicked);
     hbLayout->addWidget(cancelButton);
 
     // check to see whether we support alarms.

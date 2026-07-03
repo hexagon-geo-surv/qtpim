@@ -13,10 +13,10 @@ AddCalendarPage::AddCalendarPage(QWidget *parent)
 {
     QHBoxLayout* hbLayout = new QHBoxLayout();
     QPushButton *okButton = new QPushButton("Save", this);
-    connect(okButton,SIGNAL(clicked()),this,SLOT(saveClicked()));
+    connect(okButton, &QPushButton::clicked, this, &AddCalendarPage::saveClicked);
     hbLayout->addWidget(okButton);
     QPushButton *cancelButton = new QPushButton("Cancel", this);
-    connect(cancelButton,SIGNAL(clicked()),this,SLOT(cancelClicked()));
+    connect(cancelButton, &QPushButton::clicked, this, &AddCalendarPage::cancelClicked);
     hbLayout->addWidget(cancelButton);
 
     QVBoxLayout *scrollAreaLayout = new QVBoxLayout();

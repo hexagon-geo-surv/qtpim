@@ -48,31 +48,29 @@ CalendarDemo::CalendarDemo(QWidget *parent)
     qRegisterMetaType<QOrganizerCollection>("QOrganizerCollection");
     qRegisterMetaType<QOrganizerAbstractRequest::State>("QOrganizerAbstractRequest::State");
 
-    connect(m_monthPage, SIGNAL(showDayPage(QDate)), this, SLOT(activateDayPage()), Qt::QueuedConnection);
-    connect(m_monthPage, SIGNAL(showEditPage(const QOrganizerItem &)), this, SLOT(activateEditPage(const QOrganizerItem &)), Qt::QueuedConnection);
-    connect(m_monthPage, SIGNAL(addNewEvent()), this, SLOT(addNewEvent()), Qt::QueuedConnection);
-    connect(m_monthPage, SIGNAL(addNewTodo()), this, SLOT(addNewTodo()), Qt::QueuedConnection);
-    connect(m_monthPage, SIGNAL(managerChanged(QOrganizerManager*)), this, SLOT(changeManager(QOrganizerManager*)), Qt::QueuedConnection);
-    connect(m_monthPage, SIGNAL(managerChanged(QOrganizerManager*)), m_dayPage, SLOT(changeManager(QOrganizerManager*)), Qt::QueuedConnection);
-    connect(m_monthPage, SIGNAL(currentDayChanged(QDate)), this, SLOT(updateSelectedDay(QDate)));
-    connect(m_dayPage, SIGNAL(showMonthPage()), this, SLOT(activateMonthPage()), Qt::QueuedConnection);
-    connect(m_dayPage, SIGNAL(showEditPage(const QOrganizerItem &)), this, SLOT(activateEditPage(const QOrganizerItem &)), Qt::QueuedConnection);
-    connect(m_dayPage, SIGNAL(addNewEvent()), this, SLOT(addNewEvent()), Qt::QueuedConnection);
-    connect(m_dayPage, SIGNAL(addNewTodo()), this, SLOT(addNewTodo()), Qt::QueuedConnection);
-    connect(m_eventEditPage, SIGNAL(showDayPage()), this, SLOT(activateDayPage()), Qt::QueuedConnection);
-    connect(m_todoEditPage, SIGNAL(showDayPage()), this, SLOT(activateDayPage()), Qt::QueuedConnection);
-    connect(m_journalEditPage, SIGNAL(showDayPage()), this, SLOT(activateDayPage()), Qt::QueuedConnection);
-    connect(m_eventOccurrenceEditPage, SIGNAL(showDayPage()), this, SLOT(activateDayPage()), Qt::QueuedConnection);
-    connect(m_addCalendarPage, SIGNAL(showPreviousPage()), this, SLOT(activatePreviousPage()), Qt::QueuedConnection);
-    connect(m_editCalendarsPage, SIGNAL(showAddCalendarPage(QOrganizerManager*,QOrganizerCollection*)), this, SLOT(editExistingCalendar(QOrganizerManager*,QOrganizerCollection*)), Qt::QueuedConnection);
-    connect(m_editCalendarsPage, SIGNAL(showPreviousPage()), this, SLOT(activateMonthPage()), Qt::QueuedConnection);
-    connect(m_editCalendarsPage, SIGNAL(addClicked()), this, SLOT(addCalendar()), Qt::QueuedConnection);
+    connect(m_monthPage, &MonthPage::showDayPage, this, &CalendarDemo::activateDayPage, Qt::QueuedConnection);
+    connect(m_monthPage, &MonthPage::showEditPage, this, &CalendarDemo::activateEditPage, Qt::QueuedConnection);
+    connect(m_monthPage, &MonthPage::addNewEvent, this, &CalendarDemo::addNewEvent, Qt::QueuedConnection);
+    connect(m_monthPage, &MonthPage::addNewTodo, this, &CalendarDemo::addNewTodo, Qt::QueuedConnection);
+    connect(m_monthPage, &MonthPage::managerChanged, this, &CalendarDemo::changeManager, Qt::QueuedConnection);
+    connect(m_monthPage, &MonthPage::managerChanged, m_dayPage, &DayPage::changeManager, Qt::QueuedConnection);
+    connect(m_monthPage, &MonthPage::currentDayChanged, this, &CalendarDemo::updateSelectedDay);
+    connect(m_dayPage, &DayPage::showMonthPage, this, &CalendarDemo::activateMonthPage, Qt::QueuedConnection);
+    connect(m_dayPage, &DayPage::showEditPage, this, &CalendarDemo::activateEditPage, Qt::QueuedConnection);
+    connect(m_dayPage, &DayPage::addNewEvent, this, &CalendarDemo::addNewEvent, Qt::QueuedConnection);
+    connect(m_dayPage, &DayPage::addNewTodo, this, &CalendarDemo::addNewTodo, Qt::QueuedConnection);
+    connect(m_eventEditPage, &EventEditPage::showDayPage, this, &CalendarDemo::activateDayPage, Qt::QueuedConnection);
+    connect(m_todoEditPage, &TodoEditPage::showDayPage, this, &CalendarDemo::activateDayPage, Qt::QueuedConnection);
+    connect(m_journalEditPage, &JournalEditPage::showDayPage, this, &CalendarDemo::activateDayPage, Qt::QueuedConnection);
+    connect(m_eventOccurrenceEditPage, &EventOccurrenceEditPage::showDayPage, this, &CalendarDemo::activateDayPage, Qt::QueuedConnection);
+    connect(m_addCalendarPage, &AddCalendarPage::showPreviousPage, this, &CalendarDemo::activatePreviousPage, Qt::QueuedConnection);
+    connect(m_editCalendarsPage, &EditCalendarsPage::showAddCalendarPage, this, &CalendarDemo::editExistingCalendar, Qt::QueuedConnection);
+    connect(m_editCalendarsPage, &EditCalendarsPage::showPreviousPage, this, &CalendarDemo::activateMonthPage, Qt::QueuedConnection);
+    connect(m_editCalendarsPage, &EditCalendarsPage::addClicked, this, &CalendarDemo::addCalendar, Qt::QueuedConnection);
 
     // Connect to the save and remove request status change signals
-    connect(&m_saveReq, SIGNAL(stateChanged(QOrganizerAbstractRequest::State)),
-            this, SLOT(saveReqStateChanged(QOrganizerAbstractRequest::State)));
-    connect(&m_remReq, SIGNAL(stateChanged(QOrganizerAbstractRequest::State)),
-            this, SLOT(removeReqStateChanged(QOrganizerAbstractRequest::State)));
+    connect(&m_saveReq, &QOrganizerAbstractRequest::stateChanged, this, &CalendarDemo::saveReqStateChanged);
+    connect(&m_remReq, &QOrganizerAbstractRequest::stateChanged, this, &CalendarDemo::removeReqStateChanged);
 
     m_monthPage->init();
 
@@ -109,37 +107,37 @@ void CalendarDemo::buildMenu()
     QList<QOrganizerItemType::ItemType> supportedItemTypes = defaultManager.supportedItemTypes();
     if (supportedItemTypes.contains(QOrganizerItemType::TypeEvent)) {
         QAction* addEventAction = optionsMenu->addAction("Add E&vent");
-        connect(addEventAction, SIGNAL(triggered(bool)), this, SLOT(addNewEvent()));
+        connect(addEventAction, &QAction::triggered, this, &CalendarDemo::addNewEvent);
     }
     if (supportedItemTypes.contains(QOrganizerItemType::TypeTodo)) {
         QAction* addTodoAction = optionsMenu->addAction("Add &Todo");
-        connect(addTodoAction, SIGNAL(triggered(bool)), this, SLOT(addNewTodo()));
+        connect(addTodoAction, &QAction::triggered, this, &CalendarDemo::addNewTodo);
     }
     if (supportedItemTypes.contains(QOrganizerItemType::TypeJournal)) {
         QAction* addJournalAction = optionsMenu->addAction("Add &Journal");
-        connect(addJournalAction, SIGNAL(triggered(bool)), this, SLOT(addNewJournal()));
+        connect(addJournalAction, &QAction::triggered, this, &CalendarDemo::addNewJournal);
     }
     optionsMenu->addSeparator();
     QAction* editAction = optionsMenu->addAction("&Edit");
-    connect(editAction, SIGNAL(triggered(bool)), this, SLOT(editItem()));
+    connect(editAction, &QAction::triggered, this, &CalendarDemo::editItem);
     QAction* removeAction = optionsMenu->addAction("&Remove");
-    connect(removeAction, SIGNAL(triggered(bool)), this, SLOT(removeItem()));
+    connect(removeAction, &QAction::triggered, this, &CalendarDemo::removeItem);
     optionsMenu->addSeparator();
     m_switchViewAction = optionsMenu->addAction("&Open Day");
-    connect(m_switchViewAction, SIGNAL(triggered(bool)), this, SLOT(switchView()));
+    connect(m_switchViewAction, &QAction::triggered, this, &CalendarDemo::switchView);
     optionsMenu->addSeparator();
     QAction* addHugeEntries = optionsMenu->addAction("Add Test Events");
-    connect(addHugeEntries, SIGNAL(triggered(bool)), this, SLOT(addEvents()));
+    connect(addHugeEntries, &QAction::triggered, this, &CalendarDemo::addEvents);
     QAction* importItems = optionsMenu->addAction("&Import Items...");
-    connect(importItems, SIGNAL(triggered(bool)), this, SLOT(importItems()));
+    connect(importItems, &QAction::triggered, this, &CalendarDemo::importItems);
     QAction* exportItems = optionsMenu->addAction("Ex&port Items...");
-    connect(exportItems, SIGNAL(triggered(bool)), this, SLOT(exportItems()));
+    connect(exportItems, &QAction::triggered, this, &CalendarDemo::exportItems);
     QAction* deleteAllEntries = optionsMenu->addAction("Delete All Items");
-    connect(deleteAllEntries, SIGNAL(triggered(bool)), this, SLOT(deleteAllEntries()));
+    connect(deleteAllEntries, &QAction::triggered, this, &CalendarDemo::deleteAllEntries);
     QAction* addCalendar = optionsMenu->addAction("New calendar");
-    connect(addCalendar, SIGNAL(triggered(bool)), this, SLOT(addCalendar()));
+    connect(addCalendar, &QAction::triggered, this, &CalendarDemo::addCalendar);
     QAction* editCalendar = optionsMenu->addAction("Edit calendars");
-    connect(editCalendar, SIGNAL(triggered(bool)), this, SLOT(editCalendar()));
+    connect(editCalendar, &QAction::triggered, this, &CalendarDemo::editCalendar);
 }
 
 void CalendarDemo::activateMonthPage()
@@ -486,7 +484,7 @@ void CalendarDemo::saveReqStateChanged(QOrganizerAbstractRequest::State reqState
     if (QOrganizerAbstractRequest::ActiveState == reqState) {
         // Request started. Show a progress or wait dialog
         m_progressDlg = new QProgressDialog("Saving events..", "Cancel", 100, 100, this);
-        connect(m_progressDlg, SIGNAL(canceled()), &m_saveReq, SLOT(cancel()));
+        connect(m_progressDlg, &QProgressDialog::canceled, &m_saveReq, &QOrganizerAbstractRequest::cancel);
         m_progressDlg->show();
     } else if (QOrganizerAbstractRequest::FinishedState == reqState ||
                QOrganizerAbstractRequest::CanceledState == reqState) {
@@ -502,7 +500,7 @@ void CalendarDemo::removeReqStateChanged(QOrganizerAbstractRequest::State reqSta
     if (QOrganizerAbstractRequest::ActiveState == reqState) {
         // Request started. Show a progress or wait dialog
         m_progressDlg = new QProgressDialog("Removing events..", "Cancel", 100, 100, this);
-        connect(m_progressDlg, SIGNAL(canceled()), &m_remReq, SLOT(cancel()));
+        connect(m_progressDlg, &QProgressDialog::canceled, &m_remReq, &QOrganizerAbstractRequest::cancel);
         m_progressDlg->show();
     } else if (QOrganizerAbstractRequest::FinishedState == reqState ||
                QOrganizerAbstractRequest::CanceledState == reqState) {

@@ -15,21 +15,21 @@ EditCalendarsPage::EditCalendarsPage(QWidget *parent)
     m_manager(0)
 {
     m_calendarList = new QListWidget(this);
-    connect(m_calendarList, SIGNAL(itemDoubleClicked(QListWidgetItem *)), this, SLOT(itemDoubleClicked(QListWidgetItem *)));
+    connect(m_calendarList, &QListWidget::itemDoubleClicked, this, &EditCalendarsPage::itemDoubleClicked);
 
     // Add push buttons
     QHBoxLayout* hbLayout = new QHBoxLayout();
     QPushButton *addButton = new QPushButton("Add new", this);
-    connect(addButton,SIGNAL(clicked()), this, SIGNAL(addClicked()));
+    connect(addButton, &QPushButton::clicked, this, &EditCalendarsPage::addClicked);
     hbLayout->addWidget(addButton);
     QPushButton *editButton = new QPushButton("Edit", this);
-    connect(editButton,SIGNAL(clicked()),this,SLOT(editClicked()));
+    connect(editButton, &QPushButton::clicked, this, &EditCalendarsPage::editClicked);
     hbLayout->addWidget(editButton);
     QPushButton *deleteButton = new QPushButton("Delete", this);
-    connect(deleteButton,SIGNAL(clicked()),this,SLOT(deleteClicked()));
+    connect(deleteButton, &QPushButton::clicked, this, &EditCalendarsPage::deleteClicked);
     hbLayout->addWidget(deleteButton);
     QPushButton *backButton = new QPushButton("Back", this);
-    connect(backButton,SIGNAL(clicked()),this,SLOT(backClicked()));
+    connect(backButton, &QPushButton::clicked, this, &EditCalendarsPage::backClicked);
     hbLayout->addWidget(backButton);
 
     QVBoxLayout *scrollAreaLayout = new QVBoxLayout();

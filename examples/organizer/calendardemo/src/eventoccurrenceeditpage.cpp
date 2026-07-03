@@ -31,10 +31,10 @@ EventOccurrenceEditPage::EventOccurrenceEditPage(QWidget *parent)
     // Add push buttons
     QHBoxLayout* hbLayout = new QHBoxLayout();
     QPushButton *okButton = new QPushButton("Ok", this);
-    connect(okButton,SIGNAL(clicked()),this,SLOT(saveOrNextClicked()));
+    connect(okButton, &QPushButton::clicked, this, &EventOccurrenceEditPage::saveOrNextClicked);
     hbLayout->addWidget(okButton);
     QPushButton *cancelButton = new QPushButton("Cancel", this);
-    connect(cancelButton,SIGNAL(clicked()),this,SLOT(cancelClicked()));
+    connect(cancelButton, &QPushButton::clicked, this, &EventOccurrenceEditPage::cancelClicked);
     hbLayout->addWidget(cancelButton);
 
     scrollAreaLayout = new QVBoxLayout();

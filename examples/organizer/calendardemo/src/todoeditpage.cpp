@@ -43,8 +43,8 @@ TodoEditPage::TodoEditPage(QWidget *parent)
                 << "30 minutes before"
                 << "1 hour before";
     m_alarmComboBox->addItems(alarmList);
-    connect(m_alarmComboBox, SIGNAL(currentIndexChanged(const QString)), this,
-                        SLOT(handleAlarmIndexChanged(const QString)));
+    connect(m_alarmComboBox, &QComboBox::currentTextChanged, this,
+                        &TodoEditPage::handleAlarmIndexChanged);
 
     m_calendarComboBox = new QComboBox(this);
     // the calendar names are not know here, fill the combo box later...
@@ -52,10 +52,10 @@ TodoEditPage::TodoEditPage(QWidget *parent)
     // Add push buttons
     QHBoxLayout* hbLayout = new QHBoxLayout();
     QPushButton *okButton = new QPushButton("Save", this);
-    connect(okButton,SIGNAL(clicked()),this,SLOT(saveClicked()));
+    connect(okButton, &QPushButton::clicked, this, &TodoEditPage::saveClicked);
     hbLayout->addWidget(okButton);
     QPushButton *cancelButton = new QPushButton("Cancel", this);
-    connect(cancelButton,SIGNAL(clicked()),this,SLOT(cancelClicked()));
+    connect(cancelButton, &QPushButton::clicked, this, &TodoEditPage::cancelClicked);
     hbLayout->addWidget(cancelButton);
 
     // check to see whether we support alarms.
